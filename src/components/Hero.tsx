@@ -25,12 +25,25 @@ const Hero = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
 
-      {/* CSS Effects - animations moved to index.css */}
+      {/* Animated mesh gradient background */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,hsl(var(--primary)/0.15),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,hsl(var(--accent)/0.12),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--gradient-end)/0.08),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_80%,hsl(var(--gradient-start)/0.1),transparent_50%)]" />
 
-      {/* Background & Glows */}
-      <div className="absolute inset-0 gradient-tech opacity-10" />
-      <div className="absolute top-20 left-10 w-72 h-72 bg-primary rounded-full blur-3xl opacity-20 animate-pulse" />
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent rounded-full blur-3xl opacity-20 animate-pulse" />
+      {/* Moving glow orbs */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-primary opacity-15 blur-[120px] animate-hero-orb-1" />
+      <div className="absolute bottom-1/3 right-1/4 w-80 h-80 rounded-full bg-accent opacity-15 blur-[100px] animate-hero-orb-2" />
+      <div className="absolute top-1/2 right-1/3 w-64 h-64 rounded-full bg-purple-600 opacity-10 blur-[90px] animate-hero-orb-3" />
+      <div className="absolute bottom-1/4 left-1/3 w-72 h-72 rounded-full bg-emerald-500 opacity-8 blur-[100px] animate-hero-orb-4" />
+      <div className="absolute top-1/3 right-1/2 w-56 h-56 rounded-full bg-rose-500 opacity-8 blur-[80px] animate-hero-orb-1" />
+      <div className="absolute bottom-1/2 left-1/4 w-48 h-48 rounded-full bg-cyan-400 opacity-10 blur-[70px] animate-hero-orb-2" />
+
+      {/* Subtle noise overlay */}
+      <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E\")" }} />
+
+      {/* Grid pattern overlay */}
+      <div className="absolute inset-0 opacity-[0.04] bg-[linear-gradient(to_right,hsl(var(--foreground)/0.3)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--foreground)/0.3)_1px,transparent_1px)] bg-[size:3rem_3rem]" />
 
       <div className="container mx-auto px-4 py-20 relative z-10">
         <div className="max-w-4xl mx-auto text-center space-y-8 animate-fade-in">
@@ -84,8 +97,6 @@ const Hero = () => {
               </a>
             </Button>
 
-            {/* Photo Button */}
-
             <Button
               asChild
               variant="outline"
@@ -98,8 +109,6 @@ const Hero = () => {
               </a>
             </Button>
           </div>
-
-          {/* Phone - hidden for privacy */}
 
         </div>
       </div>
