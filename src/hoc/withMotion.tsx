@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { motion, Variants, useAnimation } from "framer-motion";
 
@@ -26,15 +26,27 @@ export function withScrollMotion<T extends object>(
   return (props: T) => {
     const controls = useAnimation();
     const [ref, inView] = useInView({
-      threshold: 0.2,
-      triggerOnce: true, // Changed to true to prevent repeated animations
+      threshold: 0.05,
+      triggerOnce: true,
     });
+    const [hasAnimated, setHasAnimated] = useState(false);
 
     useEffect(() => {
-      if (inView) {
+      if (inView && !hasAnimated) {
         controls.start("visible");
+        setHasAnimated(true);
       }
-    }, [inView, controls]);
+    }, [inView, controls, hasAnimated]);
+
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        if (!hasAnimated) {
+          controls.start("visible");
+          setHasAnimated(true);
+        }
+      }, 3000);
+      return () => clearTimeout(timer);
+    }, [controls, hasAnimated]);
 
     return (
       <motion.section

@@ -125,7 +125,7 @@ const Projects = () => {
   const { t } = useTranslation();
 
   return (
-    <section id="projects" className="py-12 md:py-20 px-4 relative overflow-hidden bg-muted/30">
+    <section id="projects" className="py-12 md:py-20 px-4 relative bg-muted/30">
 
       {/* Animations consolidated in index.css */}
 
