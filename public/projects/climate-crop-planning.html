@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Climate-Aware Crop Planning Dashboard | Ahamad Ullah</title>
+  <meta name="description" content="Analyzes weather patterns and forecasts suitable planting periods for major crops." />
+  <style>body{background:#0a0a0f}.loader-bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:99999;pointer-events:none;background:linear-gradient(90deg,transparent,#8b5cf6,transparent);animation:loaderBar .45s ease forwards}@keyframes loaderBar{0%{transform:scaleX(0);transform-origin:left}40%{transform:scaleX(.55)}100%{transform:scaleX(1);opacity:0}}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --purple: #8b5cf6;
+      --purple-dark: #7c3aed;
+      --purple-glow: rgba(139, 92, 246, 0.3);
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #111118;
+      --bg-card: rgba(17, 17, 24, 0.8);
+      --text-primary: #f1f7f5;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border-color: rgba(139, 92, 246, 0.1);
+      --nav-bg: rgba(10,10,15,0.85);
+      --alpha-3: rgba(255,255,255,0.03);
+      --alpha-4: rgba(255,255,255,0.04);
+      --alpha-6: rgba(255,255,255,0.06);
+      --alpha-8: rgba(255,255,255,0.08);
+      --select-bg: rgba(255,255,255,0.04);
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+    [data-theme="light"] {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #f1f5f9;
+      --bg-card: rgba(255, 255, 255, 0.85);
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --border-color: rgba(0, 0, 0, 0.08);
+      --nav-bg: rgba(255,255,255,0.85);
+      --alpha-3: rgba(0,0,0,0.03);
+      --alpha-4: rgba(0,0,0,0.04);
+      --alpha-6: rgba(0,0,0,0.06);
+      --alpha-8: rgba(0,0,0,0.08);
+      --select-bg: rgba(255,255,255,0.7);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+    ::-webkit-scrollbar-thumb { background: var(--purple); border-radius: 4px; }
+    ::selection { background: var(--purple); color: #fff; }
+
+    .glass {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+    }
+
+    .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: var(--nav-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 0;
+    }
+    nav .container { display: flex; align-items: center; justify-content: space-between; }
+    .nav-title { font-size: 1.125rem; font-weight: 600; color: var(--text-primary); }
+    .nav-title span { color: var(--purple); }
+    .nav-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 50px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .nav-back:hover { border-color: var(--purple); color: var(--purple); box-shadow: 0 0 20px var(--purple-glow); transform: scale(1.02); }
+    .nav-controls { display: flex; align-items: center; gap: 12px; }
+    .theme-btn {
+      width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+      background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 50%;
+      color: var(--text-secondary); cursor: pointer; font-size: 1.1rem; transition: all 0.3s ease;
+      padding: 0; line-height: 1;
+    }
+    .theme-btn:hover { border-color: var(--purple); box-shadow: 0 0 15px var(--purple-glow); transform: scale(1.05); }
+    .lang-select {
+      padding: 6px 10px; background: var(--bg-card); border: 1px solid var(--border-color);
+      border-radius: 8px; color: var(--text-secondary); font-size: 0.75rem; font-family: inherit;
+      cursor: pointer; outline: none; transition: border-color 0.3s ease;
+      appearance: none; -webkit-appearance: none;
+    }
+    .lang-select:focus { border-color: var(--purple); }
+    .lang-select option { background: var(--bg-secondary); color: var(--text-primary); }
+
+    .hero {
+      min-height: 60vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 140px 0 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 30% 40%, rgba(139,92,246,0.08) 0%, transparent 60%),
+                  radial-gradient(ellipse at 70% 60%, rgba(139,92,246,0.05) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .hero-content { text-align: center; position: relative; z-index: 1; max-width: 800px; }
+    .hero-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      background: rgba(139,92,246,0.1);
+      border: 1px solid rgba(139,92,246,0.2);
+      border-radius: 50px;
+      color: var(--purple);
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 24px;
+      animation: fadeInUp 0.6s ease;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      animation: fadeInUp 0.6s ease 0.1s both;
+    }
+    .hero h1 span { color: var(--purple); }
+    .hero p {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--text-secondary);
+      max-width: 640px;
+      margin: 0 auto 32px;
+      animation: fadeInUp 0.6s ease 0.2s both;
+    }
+    .hero-tags { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; animation: fadeInUp 0.6s ease 0.3s both; }
+    .tag {
+      padding: 8px 20px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      background: rgba(139,92,246,0.08);
+      border: 1px solid rgba(139,92,246,0.15);
+      color: var(--purple);
+      transition: all 0.3s ease;
+    }
+    .tag:hover { background: rgba(139,92,246,0.15); box-shadow: 0 0 20px var(--purple-glow); transform: translateY(-2px); }
+
+    section { padding: 80px 0; position: relative; }
+    .section-label {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 50px;
+      background: rgba(139,92,246,0.08);
+      border: 1px solid rgba(139,92,246,0.15);
+      color: var(--purple);
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .section-title span { color: var(--purple); }
+    .section-sub {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      max-width: 600px;
+      margin-bottom: 48px;
+    }
+
+    .problem-card {
+      padding: 40px;
+      display: flex; gap: 24px;
+      align-items: flex-start;
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+    }
+    .problem-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, transparent, var(--purple), transparent);
+    }
+    .problem-icon {
+      flex-shrink: 0;
+      width: 56px; height: 56px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(139,92,246,0.1);
+      border-radius: var(--radius-sm);
+    }
+    .problem-icon svg { width: 28px; height: 28px; color: var(--purple); }
+    .problem-card h3 { font-size: 1.3rem; font-weight: 600; margin-bottom: 8px; }
+    .problem-card p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; }
+
+    .timeline { position: relative; max-width: 800px; margin: 0 auto; padding-left: 40px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 15px; top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--purple), transparent);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 40px;
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    .timeline-item.visible { animation: slideInLeft 0.6s ease forwards; }
+    .timeline-dot {
+      position: absolute; left: -33px; top: 6px;
+      width: 14px; height: 14px;
+      background: var(--purple);
+      border-radius: 50%;
+      border: 3px solid var(--bg-primary);
+      box-shadow: 0 0 12px var(--purple-glow);
+    }
+    .timeline-card { padding: 24px 28px; }
+    .timeline-card .step-num {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--purple);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    .timeline-card h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 6px; }
+    .timeline-card p { color: var(--text-secondary); font-size: 0.9rem; }
+
+    #demo { background: var(--bg-secondary); }
+    .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+    @media (max-width: 768px) { .demo-grid { grid-template-columns: 1fr; } }
+
+    .input-group { margin-bottom: 20px; }
+    .input-group label {
+      display: flex; justify-content: space-between;
+      font-size: 0.9rem; font-weight: 500; margin-bottom: 8px;
+    }
+    .input-group label span { color: var(--purple); }
+
+    .styled-select {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--select-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.3s ease;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%238b5cf6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+    }
+    .styled-select:focus { border-color: var(--purple); box-shadow: 0 0 12px var(--purple-glow); }
+    .styled-select option { background: var(--bg-secondary); color: var(--text-primary); }
+
+    .input-group input[type="range"] {
+      width: 100%; height: 6px;
+      -webkit-appearance: none; appearance: none;
+      background: var(--alpha-8);
+      border-radius: 3px;
+      outline: none;
+    }
+    .input-group input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 18px; height: 18px;
+      background: var(--purple);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 12px var(--purple-glow);
+    }
+    .input-group input[type="range"]::-moz-range-thumb {
+      width: 18px; height: 18px;
+      background: var(--purple);
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+    }
+    .input-value {
+      display: inline-block;
+      min-width: 36px;
+      padding: 2px 12px;
+      background: rgba(139,92,246,0.1);
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--purple);
+      text-align: center;
+    }
+
+    .analyze-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 36px;
+      background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+      border: none;
+      border-radius: 50px;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      justify-content: center;
+      margin-top: 8px;
+    }
+    .analyze-btn:hover { box-shadow: 0 0 30px var(--purple-glow); transform: translateY(-2px); }
+    .analyze-btn:active { transform: translateY(0); }
+    .analyze-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .result-card {
+      padding: 32px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
+    }
+    .result-card.visible { opacity: 1; transform: translateY(0); }
+
+    .circular-progress {
+      position: relative;
+      width: 130px; height: 130px;
+      margin: 0 auto 16px;
+    }
+    .circular-progress svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+    .circular-progress .bg-circle { fill: none; stroke: var(--alpha-6); stroke-width: 8; }
+    .circular-progress .fg-circle {
+      fill: none; stroke: var(--purple); stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 377;
+      stroke-dashoffset: 377;
+      transition: stroke-dashoffset 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .circular-progress .center-text {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+    .circular-progress .center-text .pct {
+      font-size: 2rem; font-weight: 700; color: var(--purple);
+    }
+    .circular-progress .center-text .label {
+      font-size: 0.7rem; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+
+    .window-text { font-size: 1rem; color: var(--text-secondary); margin-bottom: 12px; }
+    .window-text strong { color: var(--text-primary); }
+
+    .risk-badge {
+      display: inline-block;
+      padding: 4px 18px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .risk-low { background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+    .risk-moderate { background: rgba(234,179,8,0.15); color: #eab308; border: 1px solid rgba(234,179,8,0.3); }
+    .risk-high { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+
+    .forecast-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 16px; text-align: left; }
+
+    .forecast-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 6px;
+      align-items: end;
+      height: 140px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 6px;
+    }
+    .forecast-bar-wrap {
+      display: flex; flex-direction: column;
+      align-items: center;
+      height: 100%;
+      justify-content: flex-end;
+    }
+    .forecast-bar {
+      width: 100%;
+      border-radius: 4px 4px 0 0;
+      background: linear-gradient(180deg, #a78bfa, var(--purple));
+      transition: height 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      height: 0%;
+      min-height: 2px;
+    }
+    .forecast-bar-wrap .month-label {
+      font-size: 0.6rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+
+    .seasonal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .seasonal-grid .header {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      text-align: center;
+      padding: 8px 0;
+    }
+    .seasonal-grid .cell {
+      padding: 10px 4px;
+      text-align: center;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .seasonal-grid .cell:hover { transform: scale(1.08); }
+    .cell-optimal { background: rgba(34,197,94,0.2); border: 1px solid rgba(34,197,94,0.3); color: #22c55e; }
+    .cell-marginal { background: rgba(234,179,8,0.15); border: 1px solid rgba(234,179,8,0.25); color: #eab308; }
+    .cell-poor { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.15); color: #ef4444; }
+
+    .impact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    @media (max-width: 768px) { .impact-grid { grid-template-columns: 1fr; } }
+    .impact-card {
+      padding: 32px 24px;
+      text-align: center;
+      transition: all 0.4s ease;
+    }
+    .impact-card:hover { transform: translateY(-8px); border-color: rgba(139,92,246,0.3); box-shadow: 0 12px 40px rgba(139,92,246,0.1); }
+    .impact-card .icon {
+      width: 52px; height: 52px;
+      margin: 0 auto 16px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(139,92,246,0.1);
+      border-radius: 50%;
+    }
+    .impact-card .icon svg { width: 26px; height: 26px; color: var(--purple); }
+    .impact-card h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
+    .impact-card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; }
+
+    .tech-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    @media (max-width: 768px) { .tech-grid { grid-template-columns: 1fr; } }
+    .tech-card {
+      padding: 32px 24px;
+      text-align: center;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .tech-card::after {
+      content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 0; height: 3px;
+      background: var(--purple);
+      transition: width 0.4s ease;
+      border-radius: 2px;
+    }
+    .tech-card:hover::after { width: 80%; }
+    .tech-card:hover { transform: translateY(-6px); border-color: rgba(139,92,246,0.2); }
+    .tech-icon {
+      width: 64px; height: 64px;
+      margin: 0 auto 16px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(139,92,246,0.08);
+      border-radius: 16px;
+      font-size: 2rem;
+      transition: all 0.3s ease;
+    }
+    .tech-card:hover .tech-icon { background: rgba(139,92,246,0.15); box-shadow: 0 0 30px var(--purple-glow); }
+    .tech-card h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
+    .tech-card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; }
+
+    footer {
+      padding: 48px 0;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+    }
+    .footer-links { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+    .footer-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 28px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+    .footer-btn.primary {
+      background: linear-gradient(135deg, var(--purple), var(--purple-dark));
+      color: #fff;
+    }
+    .footer-btn.primary:hover { box-shadow: 0 0 25px var(--purple-glow); transform: translateY(-2px); }
+    .footer-btn.secondary {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+    }
+    .footer-btn.secondary:hover { border-color: var(--purple); color: var(--purple); box-shadow: 0 0 20px var(--purple-glow); transform: translateY(-2px); }
+    footer p { color: var(--text-muted); font-size: 0.85rem; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .fade-in { opacity: 0; transform: translateY(30px); transition: all 0.7s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .scroll-reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s ease; }
+    .scroll-reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .particles {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    .particle {
+      position: absolute; border-radius: 50%;
+      background: rgba(139,92,246,0.06);
+      animation: float linear infinite;
+    }
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
+    }
+    .particle:nth-child(1) { width: 6px; height: 6px; left: 10%; animation-duration: 18s; animation-delay: 0s; }
+    .particle:nth-child(2) { width: 4px; height: 4px; left: 25%; animation-duration: 22s; animation-delay: 2s; }
+    .particle:nth-child(3) { width: 8px; height: 8px; left: 40%; animation-duration: 20s; animation-delay: 4s; }
+    .particle:nth-child(4) { width: 5px; height: 5px; left: 55%; animation-duration: 25s; animation-delay: 1s; }
+    .particle:nth-child(5) { width: 7px; height: 7px; left: 70%; animation-duration: 19s; animation-delay: 3s; }
+    .particle:nth-child(6) { width: 4px; height: 4px; left: 85%; animation-duration: 23s; animation-delay: 5s; }
+    .particle:nth-child(7) { width: 6px; height: 6px; left: 50%; animation-duration: 21s; animation-delay: 7s; }
+    .particle:nth-child(8) { width: 3px; height: 3px; left: 15%; animation-duration: 26s; animation-delay: 2s; }
+
+    @media (max-width: 768px) {
+      section { padding: 48px 0; }
+      .hero { padding: 120px 0 48px; min-height: auto; }
+      .nav-title { font-size: 0.95rem; }
+      .problem-card { flex-direction: column; padding: 24px; }
+      .timeline { padding-left: 32px; }
+      .timeline-dot { left: -25px; width: 12px; height: 12px; }
+      .forecast-grid { height: 100px; gap: 4px; }
+      .forecast-bar-wrap .month-label { font-size: 0.5rem; }
+      .seasonal-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+  </style>
+</head>
+<body style="background:#0a0a0f">
+  <div class="loader-bar"></div>
+
+  <div class="particles">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div>
+  </div>
+
+  <nav>
+    <div class="container">
+      <div class="nav-title"><span>✦</span> <span data-i18n="nav.title">Climate-Aware Crop Planning</span></div>
+      <div class="nav-controls">
+        <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+        <select class="lang-select" id="lang-select" onchange="changeLang(this.value)">
+          <option value="en">EN</option>
+          <option value="bn">বাংলা</option>
+          <option value="zh">中文</option>
+          <option value="hi">हिन्दी</option>
+        </select>
+        <a href="/" class="nav-back">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+          <span data-i18n="nav.back">Back to Portfolio</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <div class="hero-badge" data-i18n="hero.badge">🌤️ Climate Intelligence</div>
+      <h1><span data-i18n="hero.title">Climate-Aware </span><span data-i18n="hero.titleSpan">Crop Planning</span> Dashboard</h1>
+      <p data-i18n="hero.desc">Analyzes weather patterns and forecasts suitable planting periods for major crops.</p>
+      <div class="hero-tags">
+        <span class="tag" data-i18n="hero.tag1">🐍 Python</span>
+        <span class="tag" data-i18n="hero.tag2">📈 Prophet</span>
+        <span class="tag" data-i18n="hero.tag3">📊 Plotly</span>
+        <span class="tag" data-i18n="hero.tag4">🖥️ Streamlit</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container" style="text-align:center;">
+      <div class="section-label" data-i18n="problem.label">Problem Statement</div>
+      <div class="problem-card glass fade-in">
+        <div class="problem-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        </div>
+        <div>
+          <h3 data-i18n="problem.title">The Climate Challenge</h3>
+          <p data-i18n="problem.desc">Climate variability causes uncertainty in planting schedules and yield outcomes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:var(--bg-secondary);">
+    <div class="container">
+      <div style="text-align:center;">
+        <div class="section-label" data-i18n="impl.label">Implementation</div>
+        <h2 class="section-title"><span data-i18n="impl.title">How It </span><span data-i18n="impl.titleSpan">Works</span></h2>
+        <p class="section-sub" style="margin:0 auto 48px;" data-i18n="impl.sub">From historical weather data to smart planting insights.</p>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item scroll-reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card glass">
+            <div class="step-num" data-i18n="step1.num">Step 01</div>
+            <h4 data-i18n="step1.title">📦 Data Collection</h4>
+            <p data-i18n="step1.desc">Collected multi-year weather and yield data from agricultural research stations and satellite sources.</p>
+          </div>
+        </div>
+        <div class="timeline-item scroll-reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card glass">
+            <div class="step-num" data-i18n="step2.num">Step 02</div>
+            <h4 data-i18n="step2.title">📈 Prophet Forecasting</h4>
+            <p data-i18n="step2.desc">Applied Facebook Prophet model for seasonal forecasting of temperature and rainfall patterns.</p>
+          </div>
+        </div>
+        <div class="timeline-item scroll-reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card glass">
+            <div class="step-num" data-i18n="step3.num">Step 03</div>
+            <h4 data-i18n="step3.title">📊 Visual Insights</h4>
+            <p data-i18n="step3.desc">Created visual insights with Plotly charts showing planting windows, risk zones, and yield projections.</p>
+          </div>
+        </div>
+        <div class="timeline-item scroll-reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card glass">
+            <div class="step-num" data-i18n="step4.num">Step 04</div>
+            <h4 data-i18n="step4.title">🖥️ Interactive Dashboard</h4>
+            <p data-i18n="step4.desc">Built an interactive dashboard for climate-smart planning with real-time data exploration and export.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="demo">
+    <div class="container">
+      <div style="text-align:center;">
+        <div class="section-label" data-i18n="demo.label">Live Demo</div>
+        <h2 class="section-title"><span data-i18n="demo.title">Climate </span><span data-i18n="demo.titleSpan">Analysis</span></h2>
+        <p class="section-sub" style="margin:0 auto 48px;" data-i18n="demo.sub">Select parameters to assess planting suitability and view climate forecasts.</p>
+      </div>
+      <div class="demo-grid">
+        <div class="glass" style="padding:32px;">
+          <h3 style="font-size:1.2rem;font-weight:600;margin-bottom:24px;">🌍 Parameters</h3>
+
+          <div class="input-group">
+            <label>Crop Type</label>
+            <select class="styled-select" id="crop-type">
+              <option value="rice">🌾 Rice</option>
+              <option value="wheat">🌾 Wheat</option>
+              <option value="maize">🌽 Maize</option>
+              <option value="cotton">🌿 Cotton</option>
+              <option value="sugarcane">🎋 Sugarcane</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label>Planned Month</label>
+            <select class="styled-select" id="plant-month">
+              <option value="0">January</option><option value="1">February</option><option value="2">March</option>
+              <option value="3">April</option><option value="4">May</option><option value="5">June</option>
+              <option value="6">July</option><option value="7">August</option><option value="8">September</option>
+              <option value="9">October</option><option value="10">November</option><option value="11">December</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label>Expected Rainfall <span id="rain-val" class="input-value">150</span> mm</label>
+            <input type="range" id="rainfall" min="0" max="300" value="150" oninput="document.getElementById('rain-val').textContent=this.value">
+          </div>
+
+          <button class="analyze-btn" id="analyze-btn" onclick="analyzeClimate()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            Analyze Climate
+          </button>
+        </div>
+
+        <div class="glass result-card" id="result-card">
+          <div style="font-size:1.8rem;margin-bottom:4px;">🌤️</div>
+          <div class="section-label" style="margin-bottom:12px;">Planting Suitability</div>
+
+          <div class="circular-progress">
+            <svg viewBox="0 0 130 130">
+              <circle class="bg-circle" cx="65" cy="65" r="60"/>
+              <circle class="fg-circle" id="progress-circle" cx="65" cy="65" r="60"/>
+            </svg>
+            <div class="center-text">
+              <div class="pct" id="suitability-pct">0%</div>
+              <div class="label">Score</div>
+            </div>
+          </div>
+
+          <div class="window-text" id="window-text">Best window: <strong>—</strong></div>
+          <div id="risk-badge-container"></div>
+
+          <div style="margin-top:20px;">
+            <div class="forecast-title">📊 12-Month Rainfall Forecast</div>
+            <div class="forecast-grid" id="forecast-grid">
+              <div class="forecast-bar-wrap"><div class="forecast-bar" id="f0"></div><span class="month-label">Jan</span></div>
+              <div class="forecast-bar-wrap"><div class="forecast-bar" id="f1"></div><span class="month-label">Feb</span></div>
+              <div class="forecast-bar-wrap"><div class="forecast-bar" id="f2"></div><span class="month-label">Mar</span></div>
+              <div class="forecast-bar-wrap"><div class="forecast-bar" id="f3"></div><span class="month-label">Apr</span></div>
+              <div class="forecast-bar-wrap"><div class="forecast-bar" id="f4"></div><span class="month-label">May</span></div>
+              <div class="forecast-bar-wrap"><div class="forecast-bar" id="f5"></div><span class="month-label">Jun</span></div>
+              <div class="forecast-bar-wrap"><div class="forecast-bar" id="f6"></div><span class="month-label">Jul</span></div>
+              <div class="forecast-bar-wrap"><div class="forecast-bar" id="f7"></div><span class="month-label">Aug</span></div>
+              <div class="forecast-bar-wrap"><div class="forecast-bar" id="f8"></div><span class="month-label">Sep</span></div>
+              <div class="forecast-bar-wrap"><div class="forecast-bar" id="f9"></div><span class="month-label">Oct</span></div>
+              <div class="forecast-bar-wrap"><div class="forecast-bar" id="f10"></div><span class="month-label">Nov</span></div>
+              <div class="forecast-bar-wrap"><div class="forecast-bar" id="f11"></div><span class="month-label">Dec</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div style="text-align:center;">
+        <div class="section-label" data-i18n="calendar.label">Seasonal Calendar</div>
+        <h2 class="section-title"><span data-i18n="calendar.title">Optimal </span><span data-i18n="calendar.titleSpan">Planting Months</span></h2>
+        <p class="section-sub" style="margin:0 auto 48px;" data-i18n="calendar.sub">Color-coded guide showing best planting windows for each crop.</p>
+      </div>
+      <div style="overflow-x:auto;padding:8px 0;">
+        <div class="seasonal-grid" id="seasonal-grid">
+          <div class="header">Crop</div>
+          <div class="header">Jan</div><div class="header">Feb</div><div class="header">Mar</div><div class="header">Apr</div><div class="header">May</div><div class="header">Jun</div>
+          <div class="header" style="grid-column:span 1;">Jul</div>
+          <div class="header">Aug</div><div class="header">Sep</div><div class="header">Oct</div><div class="header">Nov</div><div class="header">Dec</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:var(--bg-secondary);">
+    <div class="container">
+      <div style="text-align:center;">
+        <div class="section-label" data-i18n="impact.label">Project Impact</div>
+        <h2 class="section-title"><span data-i18n="impact.title">Why It </span><span data-i18n="impact.titleSpan">Matters</span></h2>
+        <p class="section-sub" style="margin:0 auto 48px;" data-i18n="impact.sub">Helping farmers adapt to a changing climate.</p>
+      </div>
+      <div class="impact-grid">
+        <div class="impact-card glass scroll-reveal">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+          <h4 data-i18n="impact1.title">Optimized Schedules</h4>
+          <p data-i18n="impact1.desc">Aligns planting with optimal climate windows to maximize crop growth and yield potential.</p>
+        </div>
+        <div class="impact-card glass scroll-reveal">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+          <h4 data-i18n="impact2.title">Reduced Weather Risk</h4>
+          <p data-i18n="impact2.desc">Minimizes exposure to adverse weather events through data-driven planning and forecasting.</p>
+        </div>
+        <div class="impact-card glass scroll-reveal">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/></svg></div>
+          <h4 data-i18n="impact3.title">Climate-Smart Farming</h4>
+          <p data-i18n="impact3.desc">Empowers farmers with actionable climate insights for sustainable and resilient agriculture.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div style="text-align:center;">
+        <div class="section-label" data-i18n="tech.label">Tech Stack</div>
+        <h2 class="section-title"><span data-i18n="tech.title">Built </span><span data-i18n="tech.titleSpan">With</span></h2>
+        <p class="section-sub" style="margin:0 auto 48px;" data-i18n="tech.sub">Forecasting and visualization tools driving the dashboard.</p>
+      </div>
+      <div class="tech-grid">
+        <div class="tech-card glass scroll-reveal">
+          <div class="tech-icon">🐍</div>
+          <h4 data-i18n="tech1.title">Python</h4>
+          <p data-i18n="tech1.desc">Core language for data analysis, forecasting pipeline, and backend dashboard logic.</p>
+        </div>
+        <div class="tech-card glass scroll-reveal">
+          <div class="tech-icon">📈</div>
+          <h4 data-i18n="tech2.title">Prophet</h4>
+          <p data-i18n="tech2.desc">Facebook's time-series forecasting library for predicting seasonal climate and weather patterns.</p>
+        </div>
+        <div class="tech-card glass scroll-reveal">
+          <div class="tech-icon">📊</div>
+          <h4 data-i18n="tech3.title">Plotly</h4>
+          <p data-i18n="tech3.desc">Interactive charting library for creating rich visual insights and climate data exploration.</p>
+        </div>
+        <div class="tech-card glass scroll-reveal">
+          <div class="tech-icon">🖥️</div>
+          <h4 data-i18n="tech4.title">Streamlit</h4>
+          <p data-i18n="tech4.desc">Web framework used to build an intuitive, interactive dashboard for climate-smart planning.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="#" class="footer-btn primary" onclick="window.open('https://github.com','_blank')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12 24 5.37 18.63 0 12 0z"/></svg>
+          <span data-i18n="footer.github">GitHub</span>
+        </a>
+        <a href="/" class="footer-btn secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+          <span data-i18n="footer.back">Back to Portfolio</span>
+        </a>
+      </div>
+      <p data-i18n="footer.text">&copy; 2026 Ahamad Ullah — AI Engineer Portfolio</p>
+    </div>
+  </footer>
+
+  <script>
+    // ─── Crop Climate Profiles ───
+    const cropProfiles = {
+      rice: { name: 'Rice', emoji: '🌾', optimalMonths: [5,6,7,8], idealRain: [100,250], minTemp: 20, maxTemp: 37 },
+      wheat: { name: 'Wheat', emoji: '🌾', optimalMonths: [10,11,0,1], idealRain: [40,100], minTemp: 10, maxTemp: 25 },
+      maize: { name: 'Maize', emoji: '🌽', optimalMonths: [3,4,5,6], idealRain: [60,120], minTemp: 15, maxTemp: 30 },
+      cotton: { name: 'Cotton', emoji: '🌿', optimalMonths: [4,5,6,7], idealRain: [40,80], minTemp: 20, maxTemp: 35 },
+      sugarcane: { name: 'Sugarcane', emoji: '🎋', optimalMonths: [2,3,4,5,6], idealRain: [100,200], minTemp: 25, maxTemp: 35 }
+    };
+
+    // ─── Monthly rainfall baselines ───
+    const monthlyRainBase = [25, 20, 30, 45, 70, 180, 220, 200, 160, 90, 50, 30];
+
+    function analyzeClimate() {
+      const cropKey = document.getElementById('crop-type').value;
+      const monthIdx = +document.getElementById('plant-month').value;
+      const rainfall = +document.getElementById('rainfall').value;
+      const crop = cropProfiles[cropKey];
+
+      const btn = document.getElementById('analyze-btn');
+      btn.disabled = true;
+      btn.textContent = 'Analyzing...';
+
+      setTimeout(() => {
+        const monthScore = crop.optimalMonths.includes(monthIdx) ? 1 : 0.3;
+        const rainMid = (crop.idealRain[0] + crop.idealRain[1]) / 2;
+        const rainRange = (crop.idealRain[1] - crop.idealRain[0]) / 2;
+        const rainDist = Math.abs(rainfall - rainMid);
+        const rainScore = Math.max(0, 1 - rainDist / (rainRange * 2.5));
+
+        const temp = 15 + (monthIdx >= 3 && monthIdx <= 8 ? monthIdx * 2 : (monthIdx + 12) % 12 * 1.5);
+        const tempMid = (crop.minTemp + crop.maxTemp) / 2;
+        const tempRange = (crop.maxTemp - crop.minTemp) / 2;
+        const tempDist = Math.abs(temp - tempMid);
+        const tempScore = Math.max(0, 1 - tempDist / (tempRange * 1.8));
+
+        const suitability = Math.round((monthScore * 0.4 + rainScore * 0.35 + tempScore * 0.25) * 100);
+        const clampedScore = Math.min(100, Math.max(10, suitability));
+
+        // Circular progress
+        const circle = document.getElementById('progress-circle');
+        const circumference = 377;
+        const offset = circumference - (clampedScore / 100) * circumference;
+        circle.style.transition = 'none';
+        circle.style.strokeDashoffset = circumference;
+        void circle.offsetWidth;
+        circle.style.transition = 'stroke-dashoffset 1.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        circle.style.strokeDashoffset = offset;
+        document.getElementById('suitability-pct').textContent = clampedScore + '%';
+
+        // Window text
+        const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const bestWindows = crop.optimalMonths.map(m => monthNames[m]).join(', ');
+        document.getElementById('window-text').innerHTML = 'Best planting window: <strong>' + bestWindows + '</strong>';
+
+        // Risk badge
+        const riskContainer = document.getElementById('risk-badge-container');
+        let riskClass, riskText;
+        if (clampedScore >= 70) { riskClass = 'risk-low'; riskText = '✅ Low Risk'; }
+        else if (clampedScore >= 40) { riskClass = 'risk-moderate'; riskText = '⚠️ Moderate Risk'; }
+        else { riskClass = 'risk-high'; riskText = '🔴 High Risk'; }
+        riskContainer.innerHTML = '<span class="risk-badge ' + riskClass + '">' + riskText + '</span>';
+
+        // 12-month forecast bars
+        const variation = 0.7 + Math.random() * 0.6;
+        for (let m = 0; m < 12; m++) {
+          const base = monthlyRainBase[m];
+          const noise = 0.6 + Math.random() * 0.8;
+          const val = Math.round(base * variation * noise);
+          const pct = Math.min(100, (val / 280) * 100);
+          const bar = document.getElementById('f' + m);
+          bar.style.transition = 'none';
+          bar.style.height = '0%';
+          void bar.offsetWidth;
+          bar.style.transition = 'height 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)';
+          requestAnimationFrame(() => { bar.style.height = pct + '%'; });
+        }
+
+        document.getElementById('result-card').classList.add('visible');
+
+        btn.disabled = false;
+        btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Analyze Climate`;
+      }, 900);
+    }
+
+    // ─── Build Seasonal Calendar ───
+    function buildSeasonalCalendar() {
+      const grid = document.getElementById('seasonal-grid');
+      const cropOrder = [
+        { key: 'rice', name: '🌾 Rice' },
+        { key: 'wheat', name: '🌾 Wheat' },
+        { key: 'maize', name: '🌽 Maize' },
+        { key: 'cotton', name: '🌿 Cotton' },
+        { key: 'sugarcane', name: '🎋 Sugarcane' }
+      ];
+
+      for (const c of cropOrder) {
+        const profile = cropProfiles[c.key];
+        const nameCell = document.createElement('div');
+        nameCell.className = 'cell';
+        nameCell.style.gridColumn = 'span 1';
+        nameCell.style.textAlign = 'left';
+        nameCell.style.fontWeight = '600';
+        nameCell.textContent = c.name;
+        grid.appendChild(nameCell);
+
+        // Adjacent months considered marginal
+        const marginalMap = {};
+        for (const om of profile.optimalMonths) {
+          const prev = (om - 1 + 12) % 12;
+          const next = (om + 1) % 12;
+          if (!profile.optimalMonths.includes(prev)) marginalMap[prev] = true;
+          if (!profile.optimalMonths.includes(next)) marginalMap[next] = true;
+        }
+
+        for (let m = 0; m < 12; m++) {
+          const cell = document.createElement('div');
+          cell.className = 'cell';
+          if (profile.optimalMonths.includes(m)) {
+            cell.classList.add('cell-optimal');
+            cell.textContent = '✓';
+          } else if (marginalMap[m]) {
+            cell.classList.add('cell-marginal');
+            cell.textContent = '~';
+          } else {
+            cell.classList.add('cell-poor');
+            cell.textContent = '✗';
+          }
+          grid.appendChild(cell);
+        }
+      }
+    }
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.scroll-reveal, .fade-in').forEach(el => revealObserver.observe(el));
+      buildSeasonalCalendar();
+      setTimeout(analyzeClimate, 600);
+    });
+
+    // ─── Theme Toggle ───
+    function toggleTheme() {
+      const html = document.documentElement;
+      const isLight = html.getAttribute('data-theme') === 'light';
+      html.setAttribute('data-theme', isLight ? '' : 'light');
+      document.getElementById('theme-btn').textContent = isLight ? '🌙' : '☀️';
+      localStorage.setItem('theme', isLight ? 'dark' : 'light');
+    }
+
+    // ─── Load saved theme ───
+    (function() {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        const btn = document.getElementById('theme-btn');
+        if (btn) btn.textContent = '☀️';
+      }
+    })();
+
+    // ─── Translations ───
+    const i18nData = {
+      en: {
+        'nav.title': 'Climate-Aware Crop Planning',
+        'nav.back': 'Back to Portfolio',
+        'hero.badge': '🌤️ Climate Intelligence',
+        'hero.title': 'Climate-Aware ',
+        'hero.titleSpan': 'Crop Planning',
+        'hero.desc': 'Analyzes weather patterns and forecasts suitable planting periods for major crops.',
+        'hero.tag1': '🐍 Python',
+        'hero.tag2': '📈 Prophet',
+        'hero.tag3': '📊 Plotly',
+        'hero.tag4': '🖥️ Streamlit',
+        'problem.label': 'Problem Statement',
+        'problem.title': 'The Climate Challenge',
+        'problem.desc': 'Climate variability causes uncertainty in planting schedules and yield outcomes.',
+        'impl.label': 'Implementation',
+        'impl.title': 'How It ',
+        'impl.titleSpan': 'Works',
+        'impl.sub': 'From historical weather data to smart planting insights.',
+        'step1.num': 'Step 01',
+        'step1.title': '📦 Data Collection',
+        'step1.desc': 'Collected multi-year weather and yield data from agricultural research stations and satellite sources.',
+        'step2.num': 'Step 02',
+        'step2.title': '📈 Prophet Forecasting',
+        'step2.desc': 'Applied Facebook Prophet model for seasonal forecasting of temperature and rainfall patterns.',
+        'step3.num': 'Step 03',
+        'step3.title': '📊 Visual Insights',
+        'step3.desc': 'Created visual insights with Plotly charts showing planting windows, risk zones, and yield projections.',
+        'step4.num': 'Step 04',
+        'step4.title': '🖥️ Interactive Dashboard',
+        'step4.desc': 'Built an interactive dashboard for climate-smart planning with real-time data exploration and export.',
+        'demo.label': 'Live Demo',
+        'demo.title': 'Climate ',
+        'demo.titleSpan': 'Analysis',
+        'demo.sub': 'Select parameters to assess planting suitability and view climate forecasts.',
+        'calendar.label': 'Seasonal Calendar',
+        'calendar.title': 'Optimal ',
+        'calendar.titleSpan': 'Planting Months',
+        'calendar.sub': 'Color-coded guide showing best planting windows for each crop.',
+        'impact.label': 'Project Impact',
+        'impact.title': 'Why It ',
+        'impact.titleSpan': 'Matters',
+        'impact.sub': 'Helping farmers adapt to a changing climate.',
+        'impact1.title': 'Optimized Schedules',
+        'impact1.desc': 'Aligns planting with optimal climate windows to maximize crop growth and yield potential.',
+        'impact2.title': 'Reduced Weather Risk',
+        'impact2.desc': 'Minimizes exposure to adverse weather events through data-driven planning and forecasting.',
+        'impact3.title': 'Climate-Smart Farming',
+        'impact3.desc': 'Empowers farmers with actionable climate insights for sustainable and resilient agriculture.',
+        'tech.label': 'Tech Stack',
+        'tech.title': 'Built ',
+        'tech.titleSpan': 'With',
+        'tech.sub': 'Forecasting and visualization tools driving the dashboard.',
+        'tech1.title': 'Python',
+        'tech1.desc': 'Core language for data analysis, forecasting pipeline, and backend dashboard logic.',
+        'tech2.title': 'Prophet',
+        'tech2.desc': 'Facebook\'s time-series forecasting library for predicting seasonal climate and weather patterns.',
+        'tech3.title': 'Plotly',
+        'tech3.desc': 'Interactive charting library for creating rich visual insights and climate data exploration.',
+        'tech4.title': 'Streamlit',
+        'tech4.desc': 'Web framework used to build an intuitive, interactive dashboard for climate-smart planning.',
+        'footer.github': 'GitHub',
+        'footer.back': 'Back to Portfolio',
+        'footer.text': '© 2026 Ahamad Ullah — AI Engineer Portfolio'
+      },
+      bn: {
+        'nav.title': 'জলবায়ু-সচেতন ফসল পরিকল্পনা',
+        'nav.back': 'পোর্টফোলিওতে ফিরুন',
+        'hero.badge': '🌤️ জলবায়ু বুদ্ধিমত্তা',
+        'hero.title': 'জলবায়ু-সচেতন ',
+        'hero.titleSpan': 'ফসল পরিকল্পনা',
+        'hero.desc': 'প্রধান ফসলের জন্য আবহাওয়ার ধরণ বিশ্লেষণ করে এবং উপযুক্ত রোপণের সময়কাল পূর্বাভাস দেয়।',
+        'hero.tag1': '🐍 পাইথন',
+        'hero.tag2': '📈 প্রফেট',
+        'hero.tag3': '📊 প্লটলি',
+        'hero.tag4': '🖥️ স্ট্রিমলিট',
+        'problem.label': 'সমস্যার বিবৃতি',
+        'problem.title': 'জলবায়ু চ্যালেঞ্জ',
+        'problem.desc': 'জলবায়ু পরিবর্তনশীলতা রোপণের সময়সূচী এবং ফলনের ফলাফলে অনিশ্চয়তা সৃষ্টি করে।',
+        'impl.label': 'বাস্তবায়ন',
+        'impl.title': 'এটি কীভাবে ',
+        'impl.titleSpan': 'কাজ করে',
+        'impl.sub': 'ঐতিহাসিক আবহাওয়া তথ্য থেকে স্মার্ট রোপণ অন্তর্দৃষ্টি পর্যন্ত।',
+        'step1.num': 'ধাপ ০১',
+        'step1.title': '📦 তথ্য সংগ্রহ',
+        'step1.desc': 'কৃষি গবেষণা স্টেশন এবং উপগ্রহ উত্স থেকে বহু-বছরের আবহাওয়া ও ফলনের তথ্য সংগ্রহ করা হয়েছে।',
+        'step2.num': 'ধাপ ০২',
+        'step2.title': '📈 প্রফেট পূর্বাভাস',
+        'step2.desc': 'তাপমাত্রা এবং বৃষ্টিপাতের ধরণের মৌসুমী পূর্বাভাসের জন্য ফেসবুক প্রফেট মডেল প্রয়োগ করা হয়েছে।',
+        'step3.num': 'ধাপ ০৩',
+        'step3.title': '📊 ভিজ্যুয়াল অন্তর্দৃষ্টি',
+        'step3.desc': 'রোপণের উইন্ডো, ঝুঁকি অঞ্চল এবং ফলন প্রকল্প দেখানো প্লটলি চার্টের সাথে ভিজ্যুয়াল অন্তর্দৃষ্টি তৈরি করা হয়েছে।',
+        'step4.num': 'ধাপ ০৪',
+        'step4.title': '🖥️ ইন্টারেক্টিভ ড্যাশবোর্ড',
+        'step4.desc': 'রিয়েল-টাইম ডেটা অনুসন্ধান এবং রপ্তানি সহ জলবায়ু-স্মার্ট পরিকল্পনার জন্য একটি ইন্টারেক্টিভ ড্যাশবোর্ড তৈরি করা হয়েছে।',
+        'demo.label': 'লাইভ ডেমো',
+        'demo.title': 'জলবায়ু ',
+        'demo.titleSpan': 'বিশ্লেষণ',
+        'demo.sub': 'রোপণের উপযুক্ততা মূল্যায়ন করতে এবং জলবায়ু পূর্বাভাস দেখতে পরামিতি নির্বাচন করুন।',
+        'calendar.label': 'মৌসুমী ক্যালেন্ডার',
+        'calendar.title': 'সর্বোত্তম ',
+        'calendar.titleSpan': 'রোপণের মাস',
+        'calendar.sub': 'প্রত্যেক ফসলের জন্য সেরা রোপণের উইন্ডো দেখানো রঙ-কোডেড গাইড।',
+        'impact.label': 'প্রকল্পের প্রভাব',
+        'impact.title': 'কেন এটি ',
+        'impact.titleSpan': 'গুরুত্বপূর্ণ',
+        'impact.sub': 'পরিবর্তনশীল জলবায়ুর সাথে খাপ খাইয়ে নিতে কৃষকদের সহায়তা করা।',
+        'impact1.title': 'অপ্টিমাইজড সময়সূচী',
+        'impact1.desc': 'ফসলের বৃদ্ধি এবং ফলনের সম্ভাবনা সর্বাধিক করতে সর্বোত্তম জলবায়ু উইন্ডোর সাথে রোপণকে সারিবদ্ধ করে।',
+        'impact2.title': 'হ্রাসকৃত আবহাওয়া ঝুঁকি',
+        'impact2.desc': 'তথ্য-চালিত পরিকল্পনা এবং পূর্বাভাসের মাধ্যমে প্রতিকূল আবহাওয়ার ঘটনার সংস্পর্শ হ্রাস করে।',
+        'impact3.title': 'জলবায়ু-স্মার্ট কৃষি',
+        'impact3.desc': 'টেকসই এবং স্থিতিস্থাপক কৃষির জন্য কার্যকরী জলবায়ু অন্তর্দৃষ্টি দিয়ে কৃষকদের ক্ষমতায়ন করে।',
+        'tech.label': 'প্রযুক্তি স্ট্যাক',
+        'tech.title': 'নির্মিত ',
+        'tech.titleSpan': 'সাথে',
+        'tech.sub': 'পূর্বাভাস এবং ভিজুয়ালাইজেশন টুল যা ড্যাশবোর্ডকে চালিত করে।',
+        'tech1.title': 'পাইথন',
+        'tech1.desc': 'ডেটা বিশ্লেষণ, পূর্বাভাস পাইপলাইন এবং ব্যাকএন্ড ড্যাশবোর্ড লজিকের জন্য মূল ভাষা।',
+        'tech2.title': 'প্রফেট',
+        'tech2.desc': 'মৌসুমী জলবায়ু এবং আবহাওয়ার ধরণ পূর্বাভাসের জন্য ফেসবুকের টাইম-সিরিজ পূর্বাভাস লাইব্রেরি।',
+        'tech3.title': 'প্লটলি',
+        'tech3.desc': 'সমৃদ্ধ ভিজ্যুয়াল অন্তর্দৃষ্টি এবং জলবায়ু ডেটা অন্বেষণ তৈরির জন্য ইন্টারেক্টিভ চার্টিং লাইব্রেরি।',
+        'tech4.title': 'স্ট্রিমলিট',
+        'tech4.desc': 'জলবায়ু-স্মার্ট পরিকল্পনার জন্য একটি স্বজ্ঞাত, ইন্টারেক্টিভ ড্যাশবোর্ড তৈরি করতে ব্যবহৃত ওয়েব ফ্রেমওয়ার্ক।',
+        'footer.github': 'গিটহাব',
+        'footer.back': 'পোর্টফোলিওতে ফিরুন',
+        'footer.text': '© ২০২৬ আহামাদ উল্লাহ — এআই ইঞ্জিনিয়ার পোর্টফোলিও'
+      },
+      zh: {
+        'nav.title': '气候感知作物规划',
+        'nav.back': '返回作品集',
+        'hero.badge': '🌤️ 气候智能',
+        'hero.title': '气候感知',
+        'hero.titleSpan': '作物规划',
+        'hero.desc': '分析天气模式并预测主要作物的适宜种植期。',
+        'hero.tag1': '🐍 Python',
+        'hero.tag2': '📈 Prophet',
+        'hero.tag3': '📊 Plotly',
+        'hero.tag4': '🖥️ Streamlit',
+        'problem.label': '问题陈述',
+        'problem.title': '气候挑战',
+        'problem.desc': '气候变异性导致种植计划 and 产量结果的不确定性。',
+        'impl.label': '实现方式',
+        'impl.title': '它是如何',
+        'impl.titleSpan': '工作的',
+        'impl.sub': '从历史天气数据到智能种植洞察。',
+        'step1.num': '步骤 01',
+        'step1.title': '📦 数据收集',
+        'step1.desc': '从农业研究站和卫星来源收集了多年天气和产量数据。',
+        'step2.num': '步骤 02',
+        'step2.title': '📈 Prophet预测',
+        'step2.desc': '应用Facebook Prophet模型进行温度和降雨模式的季节性预测。',
+        'step3.num': '步骤 03',
+        'step3.title': '📊 可视化洞察',
+        'step3.desc': '使用Plotly图表创建可视化洞察，显示种植窗口、风险区域和产量预测。',
+        'step4.num': '步骤 04',
+        'step4.title': '🖥️ 交互式仪表板',
+        'step4.desc': '构建了用于气候智能规划的交互式仪表板，支持实时数据探索和导出。',
+        'demo.label': '在线演示',
+        'demo.title': '气候',
+        'demo.titleSpan': '分析',
+        'demo.sub': '选择参数以评估种植适宜性并查看气候预测。',
+        'calendar.label': '季节性日历',
+        'calendar.title': '最佳',
+        'calendar.titleSpan': '种植月份',
+        'calendar.sub': '颜色编码指南，显示每种作物的最佳种植窗口。',
+        'impact.label': '项目影响',
+        'impact.title': '为什么它',
+        'impact.titleSpan': '重要',
+        'impact.sub': '帮助农民适应不断变化的气候。',
+        'impact1.title': '优化计划',
+        'impact1.desc': '将种植与最佳气候窗口对齐，以最大化作物生长和产量潜力。',
+        'impact2.title': '降低天气风险',
+        'impact2.desc': '通过数据驱动的规划和预测，最小化不利天气事件的影响。',
+        'impact3.title': '气候智能农业',
+        'impact3.desc': '为农民提供可操作的气候洞察，实现可持续和有韧性的农业。',
+        'tech.label': '技术栈',
+        'tech.title': '构建于',
+        'tech.titleSpan': '',
+        'tech.sub': '驱动仪表板的预测和可视化工具。',
+        'tech1.title': 'Python',
+        'tech1.desc': '用于数据分析、预测管道和后端仪表板逻辑的核心语言。',
+        'tech2.title': 'Prophet',
+        'tech2.desc': 'Facebook的时间序列预测库，用于预测季节性气候和天气模式。',
+        'tech3.title': 'Plotly',
+        'tech3.desc': '用于创建丰富的可视化洞察和气候数据探索的交互式图表库。',
+        'tech4.title': 'Streamlit',
+        'tech4.desc': '用于构建气候智能规划的直观交互式仪表板的Web框架。',
+        'footer.github': 'GitHub',
+        'footer.back': '返回作品集',
+        'footer.text': '© 2026 Ahamad Ullah — AI工程师作品集'
+      },
+      hi: {
+        'nav.title': 'जलवायु-जागरूक फसल योजना',
+        'nav.back': 'पोर्टफोलियो पर वापस जाएं',
+        'hero.badge': '🌤️ जलवायु बुद्धिमत्ता',
+        'hero.title': 'जलवायु-जागरूक ',
+        'hero.titleSpan': 'फसल योजना',
+        'hero.desc': 'मौसम के पैटर्न का विश्लेषण करता है और प्रमुख फसलों के लिए उपयुक्त रोपण अवधि का पूर्वानुमान लगाता है।',
+        'hero.tag1': '🐍 पायथन',
+        'hero.tag2': '📈 प्रोफेट',
+        'hero.tag3': '📊 प्लॉटली',
+        'hero.tag4': '🖥️ स्ट्रीमलिट',
+        'problem.label': 'समस्या विवरण',
+        'problem.title': 'जलवायु चुनौती',
+        'problem.desc': 'जलवायु परिवर्तनशीलता रोपण कार्यक्रम और उपज परिणामों में अनिश्चितता पैदा करती है।',
+        'impl.label': 'कार्यान्वयन',
+        'impl.title': 'यह कैसे ',
+        'impl.titleSpan': 'काम करता है',
+        'impl.sub': 'ऐतिहासिक मौसम डेटा से स्मार्ट रोपण अंतर्दृष्टि तक।',
+        'step1.num': 'चरण 01',
+        'step1.title': '📦 डेटा संग्रह',
+        'step1.desc': 'कृषि अनुसंधान केंद्रों और उपग्रह स्रोतों से बहु-वर्षीय मौसम और उपज डेटा एकत्र किया गया।',
+        'step2.num': 'चरण 02',
+        'step2.title': '📈 प्रोफेट पूर्वानुमान',
+        'step2.desc': 'तापमान और वर्षा पैटर्न के मौसमी पूर्वानुमान के लिए फेसबुक प्रोफेट मॉडल लागू किया गया।',
+        'step3.num': 'चरण 03',
+        'step3.title': '📊 दृश्य अंतर्दृष्टि',
+        'step3.desc': 'रोपण विंडो, जोखिम क्षेत्र और उपज अनुमान दिखाने वाले प्लॉटली चार्ट के साथ दृश्य अंतर्दृष्टि बनाई गई।',
+        'step4.num': 'चरण 04',
+        'step4.title': '🖥️ इंटरैक्टिव डैशबोर्ड',
+        'step4.desc': 'रीयल-टाइम डेटा अन्वेषण और निर्यात के साथ जलवायु-स्मार्ट योजना के लिए एक इंटरैक्टिव डैशबोर्ड बनाया गया।',
+        'demo.label': 'लाइव डेमो',
+        'demo.title': 'जलवायु ',
+        'demo.titleSpan': 'विश्लेषण',
+        'demo.sub': 'रोपण उपयुक्तता का आकलन करने और जलवायु पूर्वानुमान देखने के लिए पैरामीटर चुनें।',
+        'calendar.label': 'मौसमी कैलेंडर',
+        'calendar.title': 'इष्टतम ',
+        'calendar.titleSpan': 'रोपण महीने',
+        'calendar.sub': 'प्रत्येक फसल के लिए सर्वोत्तम रोपण विंडो दिखाने वाली रंग-कोडित मार्गदर्शिका।',
+        'impact.label': 'परियोजना प्रभाव',
+        'impact.title': 'यह क्यों ',
+        'impact.titleSpan': 'मायने रखता है',
+        'impact.sub': 'बदलती जलवायु के अनुकूल होने में किसानों की मदद करना।',
+        'impact1.title': 'अनुकूलित कार्यक्रम',
+        'impact1.desc': 'फसल वृद्धि और उपज क्षमता को अधिकतम करने के लिए इष्टतम जलवायु विंडो के साथ रोपण को संरेखित करता है।',
+        'impact2.title': 'कम मौसम जोखिम',
+        'impact2.desc': 'डेटा-संचालित योजना और पूर्वानुमान के माध्यम से प्रतिकूल मौसम की घटनाओं के संपर्क को कम करता है।',
+        'impact3.title': 'जलवायु-स्मार्ट खेती',
+        'impact3.desc': 'टिकाऊ और लचीली कृषि के लिए कार्रवाई योग्य जलवायु अंतर्दृष्टि के साथ किसानों को सशक्त बनाता है।',
+        'tech.label': 'टेक स्टैक',
+        'tech.title': 'निर्मित ',
+        'tech.titleSpan': 'साथ',
+        'tech.sub': 'पूर्वानुमान और विज़ुअलाइज़ेशन उपकरण जो डैशबोर्ड को संचालित करते हैं।',
+        'tech1.title': 'पायथन',
+        'tech1.desc': 'डेटा विश्लेषण, पूर्वानुमान पाइपलाइन और बैकएंड डैशबोर्ड लॉजिक के लिए मुख्य भाषा।',
+        'tech2.title': 'प्रोफेट',
+        'tech2.desc': 'मौसमी जलवायु और मौसम पैटर्न की भविष्यवाणी के लिए फेसबुक की टाइम-सीरीज़ पूर्वानुमान लाइब्रेरी।',
+        'tech3.title': 'प्लॉटली',
+        'tech3.desc': 'समृद्ध दृश्य अंतर्दृष्टि और जलवायु डेटा अन्वेषण बनाने के लिए इंटरैक्टिव चार्टिंग लाइब्रेरी।',
+        'tech4.title': 'स्ट्रीमलिट',
+        'tech4.desc': 'जलवायु-स्मार्ट योजना के लिए एक सहज, इंटरैक्टिव डैशबोर्ड बनाने के लिए उपयोग किया जाने वाला वेब फ्रेमवर्क।',
+        'footer.github': 'गिटहब',
+        'footer.back': 'पोर्टफोलियो पर वापस जाएं',
+        'footer.text': '© 2026 अहमद उल्लाह — एआई इंजीनियर पोर्टफोलियो'
+      }
+    };
+
+    function changeLang(lang) {
+      const data = i18nData[lang];
+      if (!data) return;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (data[key] !== undefined) {
+          el.innerHTML = data[key];
+        }
+      });
+      localStorage.setItem('lang', lang);
+    }
+
+    (function() {
+      const savedLang = localStorage.getItem('lang') || 'en';
+      document.getElementById('lang-select').value = savedLang;
+      changeLang(savedLang);
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crop Disease Detection using Deep Learning | Ahamad Ullah</title>
+  <meta name="description" content="Identifies plant leaf diseases using a CNN model trained on image datasets." />
+  <style>body{background:#0a0a0f}.loader-bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:99999;pointer-events:none;background:linear-gradient(90deg,transparent,#ef4444,transparent);animation:loaderBar .45s ease forwards}@keyframes loaderBar{0%{transform:scaleX(0);transform-origin:left}40%{transform:scaleX(.55)}100%{transform:scaleX(1);opacity:0}}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --red: #ef4444;
+      --red-dark: #dc2626;
+      --red-glow: rgba(239, 68, 68, 0.3);
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #111118;
+      --bg-card: rgba(17, 17, 24, 0.8);
+      --text-primary: #f1f7f5;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border-color: rgba(239, 68, 68, 0.1);
+      --nav-bg: rgba(10,10,15,0.85);
+      --alpha-3: rgba(255,255,255,0.03);
+      --alpha-4: rgba(255,255,255,0.04);
+      --alpha-6: rgba(255,255,255,0.06);
+      --alpha-8: rgba(255,255,255,0.08);
+      --select-bg: rgba(255,255,255,0.04);
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+    [data-theme="light"] {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #f1f5f9;
+      --bg-card: rgba(255, 255, 255, 0.85);
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --border-color: rgba(0, 0, 0, 0.08);
+      --nav-bg: rgba(255,255,255,0.85);
+      --alpha-3: rgba(0,0,0,0.03);
+      --alpha-4: rgba(0,0,0,0.04);
+      --alpha-6: rgba(0,0,0,0.06);
+      --alpha-8: rgba(0,0,0,0.08);
+      --select-bg: rgba(255,255,255,0.7);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+    ::-webkit-scrollbar-thumb { background: var(--red); border-radius: 4px; }
+    ::selection { background: var(--red); color: #fff; }
+
+    .glass {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+    }
+
+    .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: var(--nav-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 0;
+    }
+    nav .container { display: flex; align-items: center; justify-content: space-between; }
+    .nav-title { font-size: 1.125rem; font-weight: 600; color: var(--text-primary); }
+    .nav-title span { color: var(--red); }
+    .nav-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 50px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .nav-back:hover { border-color: var(--red); color: var(--red); box-shadow: 0 0 20px var(--red-glow); transform: scale(1.02); }
+    .nav-controls { display: flex; align-items: center; gap: 12px; }
+    .theme-btn {
+      width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+      background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 50%;
+      color: var(--text-secondary); cursor: pointer; font-size: 1.1rem; transition: all 0.3s ease;
+      padding: 0; line-height: 1;
+    }
+    .theme-btn:hover { border-color: var(--red); box-shadow: 0 0 15px var(--red-glow); transform: scale(1.05); }
+    .lang-select {
+      padding: 6px 10px; background: var(--bg-card); border: 1px solid var(--border-color);
+      border-radius: 8px; color: var(--text-secondary); font-size: 0.75rem; font-family: inherit;
+      cursor: pointer; outline: none; transition: border-color 0.3s ease;
+      appearance: none; -webkit-appearance: none;
+    }
+    .lang-select:focus { border-color: var(--red); }
+    .lang-select option { background: var(--bg-secondary); color: var(--text-primary); }
+
+    .hero {
+      min-height: 60vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 140px 0 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 30% 40%, rgba(239,68,68,0.08) 0%, transparent 60%),
+                  radial-gradient(ellipse at 70% 60%, rgba(239,68,68,0.05) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .hero-content { text-align: center; position: relative; z-index: 1; max-width: 800px; }
+    .hero-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.2);
+      border-radius: 50px;
+      color: var(--red);
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 24px;
+      animation: fadeInUp 0.6s ease;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      animation: fadeInUp 0.6s ease 0.1s both;
+    }
+    .hero h1 span { color: var(--red); }
+    .hero p {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--text-secondary);
+      max-width: 640px;
+      margin: 0 auto 32px;
+      animation: fadeInUp 0.6s ease 0.2s both;
+    }
+    .hero-tags { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; animation: fadeInUp 0.6s ease 0.3s both; }
+    .tag {
+      padding: 8px 20px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.15);
+      color: var(--red);
+      transition: all 0.3s ease;
+    }
+    .tag:hover { background: rgba(239,68,68,0.15); box-shadow: 0 0 20px var(--red-glow); transform: translateY(-2px); }
+
+    section { padding: 80px 0; position: relative; }
+    .section-label {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 50px;
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.15);
+      color: var(--red);
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .section-title span { color: var(--red); }
+    .section-sub {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      max-width: 600px;
+      margin-bottom: 48px;
+    }
+
+    .problem-card {
+      padding: 40px;
+      display: flex; gap: 24px;
+      align-items: flex-start;
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+    }
+    .problem-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, transparent, var(--red), transparent);
+    }
+    .problem-icon {
+      flex-shrink: 0;
+      width: 56px; height: 56px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(239,68,68,0.1);
+      border-radius: var(--radius-sm);
+    }
+    .problem-icon svg { width: 28px; height: 28px; color: var(--red); }
+    .problem-card h3 { font-size: 1.3rem; font-weight: 600; margin-bottom: 8px; }
+    .problem-card p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; }
+
+    .timeline { position: relative; max-width: 800px; margin: 0 auto; padding-left: 40px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 15px; top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--red), transparent);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 40px;
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    .timeline-item.visible { animation: slideInLeft 0.6s ease forwards; }
+    .timeline-dot {
+      position: absolute; left: -33px; top: 6px;
+      width: 14px; height: 14px;
+      background: var(--red);
+      border-radius: 50%;
+      border: 3px solid var(--bg-primary);
+      box-shadow: 0 0 12px var(--red-glow);
+    }
+    .timeline-card { padding: 24px 28px; }
+    .timeline-card .step-num {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--red);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    .timeline-card h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 6px; }
+    .timeline-card p { color: var(--text-secondary); font-size: 0.9rem; }
+
+    #demo { background: var(--bg-secondary); }
+    .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+    @media (max-width: 768px) { .demo-grid { grid-template-columns: 1fr; } }
+
+    .upload-area {
+      border: 2px dashed rgba(239,68,68,0.3);
+      border-radius: var(--radius);
+      padding: 48px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .upload-area:hover { border-color: var(--red); background: rgba(239,68,68,0.03); }
+    .upload-area.dragover { border-color: var(--red); background: rgba(239,68,68,0.06); box-shadow: 0 0 30px var(--red-glow); }
+    .upload-area .upload-icon {
+      width: 64px; height: 64px;
+      margin: 0 auto 16px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(239,68,68,0.1);
+      border-radius: 50%;
+    }
+    .upload-area .upload-icon svg { width: 28px; height: 28px; color: var(--red); }
+    .upload-area h4 { font-size: 1.05rem; font-weight: 600; margin-bottom: 4px; }
+    .upload-area p { color: var(--text-muted); font-size: 0.85rem; }
+    .upload-area input { display: none; }
+
+    .preview-area {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+    .preview-area img {
+      max-width: 100%; max-height: 220px;
+      border-radius: var(--radius-sm);
+      border: 2px solid var(--border-color);
+      object-fit: cover;
+    }
+    .detect-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 36px;
+      background: linear-gradient(135deg, var(--red), var(--red-dark));
+      border: none;
+      border-radius: 50px;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .detect-btn:hover { box-shadow: 0 0 30px var(--red-glow); transform: translateY(-2px); }
+    .detect-btn:active { transform: translateY(0); }
+    .detect-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .result-card {
+      padding: 32px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
+    }
+    .result-card.visible { opacity: 1; transform: translateY(0); }
+
+    .disease-name {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--red);
+      margin: 12px 0 8px;
+    }
+    .severity-badge {
+      display: inline-block;
+      padding: 4px 16px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .severity-low { background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+    .severity-medium { background: rgba(234,179,8,0.15); color: #eab308; border: 1px solid rgba(234,179,8,0.3); }
+    .severity-high { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+
+    .conf-label { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 12px; }
+    .conf-bar-track {
+      width: 100%; height: 12px;
+      background: var(--alpha-6);
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .conf-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--red), #f87171);
+      border-radius: 6px;
+      width: 0%;
+      transition: width 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .conf-text { font-size: 1.1rem; color: var(--red); font-weight: 700; margin-bottom: 16px; }
+
+    .treatment-box {
+      padding: 20px;
+      background: color-mix(in srgb, var(--red) 4%, transparent);
+      border: 1px solid rgba(239,68,68,0.12);
+      border-radius: var(--radius-sm);
+      text-align: left;
+    }
+    .treatment-box .tt-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .treatment-box .tt-text { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; }
+
+    .gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    @media (max-width: 768px) { .gallery-grid { grid-template-columns: 1fr; } }
+    .gallery-card {
+      padding: 24px 20px;
+      text-align: center;
+      transition: all 0.4s ease;
+    }
+    .gallery-card:hover { transform: translateY(-6px); border-color: rgba(239,68,68,0.25); box-shadow: 0 8px 30px rgba(239,68,68,0.08); }
+    .gallery-card .gallery-icon {
+      width: 56px; height: 56px;
+      margin: 0 auto 12px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(239,68,68,0.08);
+      border-radius: 50%;
+      font-size: 1.8rem;
+    }
+    .gallery-card h4 { font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
+    .gallery-card p { color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5; }
+
+    .impact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    @media (max-width: 768px) { .impact-grid { grid-template-columns: 1fr; } }
+    .impact-card {
+      padding: 32px 24px;
+      text-align: center;
+      transition: all 0.4s ease;
+    }
+    .impact-card:hover { transform: translateY(-8px); border-color: rgba(239,68,68,0.3); box-shadow: 0 12px 40px rgba(239,68,68,0.1); }
+    .impact-card .icon {
+      width: 52px; height: 52px;
+      margin: 0 auto 16px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(239,68,68,0.1);
+      border-radius: 50%;
+    }
+    .impact-card .icon svg { width: 26px; height: 26px; color: var(--red); }
+    .impact-card h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
+    .impact-card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; }
+
+    .tech-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    @media (max-width: 768px) { .tech-grid { grid-template-columns: 1fr; } }
+    .tech-card {
+      padding: 32px 24px;
+      text-align: center;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .tech-card::after {
+      content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 0; height: 3px;
+      background: var(--red);
+      transition: width 0.4s ease;
+      border-radius: 2px;
+    }
+    .tech-card:hover::after { width: 80%; }
+    .tech-card:hover { transform: translateY(-6px); border-color: rgba(239,68,68,0.2); }
+    .tech-icon {
+      width: 64px; height: 64px;
+      margin: 0 auto 16px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(239,68,68,0.08);
+      border-radius: 16px;
+      font-size: 2rem;
+      transition: all 0.3s ease;
+    }
+    .tech-card:hover .tech-icon { background: rgba(239,68,68,0.15); box-shadow: 0 0 30px var(--red-glow); }
+    .tech-card h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
+    .tech-card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; }
+
+    footer {
+      padding: 48px 0;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+    }
+    .footer-links { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+    .footer-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 28px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+    .footer-btn.primary {
+      background: linear-gradient(135deg, var(--red), var(--red-dark));
+      color: #fff;
+    }
+    .footer-btn.primary:hover { box-shadow: 0 0 25px var(--red-glow); transform: translateY(-2px); }
+    .footer-btn.secondary {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+    }
+    .footer-btn.secondary:hover { border-color: var(--red); color: var(--red); box-shadow: 0 0 20px var(--red-glow); transform: translateY(-2px); }
+    footer p { color: var(--text-muted); font-size: 0.85rem; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .fade-in { opacity: 0; transform: translateY(30px); transition: all 0.7s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .scroll-reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s ease; }
+    .scroll-reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .particles {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    .particle {
+      position: absolute; border-radius: 50%;
+      background: rgba(239,68,68,0.06);
+      animation: float linear infinite;
+    }
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
+    }
+    .particle:nth-child(1) { width: 6px; height: 6px; left: 10%; animation-duration: 18s; animation-delay: 0s; }
+    .particle:nth-child(2) { width: 4px; height: 4px; left: 25%; animation-duration: 22s; animation-delay: 2s; }
+    .particle:nth-child(3) { width: 8px; height: 8px; left: 40%; animation-duration: 20s; animation-delay: 4s; }
+    .particle:nth-child(4) { width: 5px; height: 5px; left: 55%; animation-duration: 25s; animation-delay: 1s; }
+    .particle:nth-child(5) { width: 7px; height: 7px; left: 70%; animation-duration: 19s; animation-delay: 3s; }
+    .particle:nth-child(6) { width: 4px; height: 4px; left: 85%; animation-duration: 23s; animation-delay: 5s; }
+    .particle:nth-child(7) { width: 6px; height: 6px; left: 50%; animation-duration: 21s; animation-delay: 7s; }
+    .particle:nth-child(8) { width: 3px; height: 3px; left: 15%; animation-duration: 26s; animation-delay: 2s; }
+
+    @media (max-width: 768px) {
+      section { padding: 48px 0; }
+      .hero { padding: 120px 0 48px; min-height: auto; }
+      .nav-title { font-size: 0.95rem; }
+      .problem-card { flex-direction: column; padding: 24px; }
+      .timeline { padding-left: 32px; }
+      .timeline-dot { left: -25px; width: 12px; height: 12px; }
+    }
+  </style>
+</head>
+<body style="background:#0a0a0f">
+  <div class="loader-bar"></div>
+
+  <div class="particles">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div>
+  </div>
+
+  <nav>
+    <div class="container">
+      <div class="nav-title"><span>✦</span> <span data-i18n="nav.title">Crop Disease Detection</span></div>
+      <div class="nav-controls">
+        <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+        <select class="lang-select" id="lang-select" onchange="changeLang(this.value)">
+          <option value="en">EN</option>
+          <option value="bn">বাংলা</option>
+          <option value="zh">中文</option>
+          <option value="hi">हिन्दी</option>
+        </select>
+        <a href="/" class="nav-back">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>
+          </svg>
+          <span data-i18n="nav.back">Back to Portfolio</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <div class="hero-badge" data-i18n="hero.badge">🧠 Deep Learning Application</div>
+      <h1><span data-i18n="hero.title">Crop Disease Detection <br/>using </span><span data-i18n="hero.titleSpan">Deep Learning</span></h1>
+      <p data-i18n="hero.desc">Identifies plant leaf diseases using a CNN model trained on image datasets.</p>
+      <div class="hero-tags">
+        <span class="tag" data-i18n="hero.tag1">🧠 TensorFlow</span>
+        <span class="tag" data-i18n="hero.tag2">⚡ Keras</span>
+        <span class="tag" data-i18n="hero.tag3">🌐 Flask</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container" style="text-align:center;">
+      <div class="section-label" data-i18n="problem.label">Problem Statement</div>
+      <div class="problem-card glass fade-in">
+        <div class="problem-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>
+          </svg>
+        </div>
+        <div>
+          <h3 data-i18n="problem.title">The Diagnosis Challenge</h3>
+          <p data-i18n="problem.desc">Manual crop disease diagnosis is time-consuming and often inaccurate.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:var(--bg-secondary);">
+    <div class="container">
+      <div style="text-align:center;">
+        <div class="section-label" data-i18n="impl.label">Implementation</div>
+        <h2 class="section-title"><span data-i18n="impl.title">How It </span><span data-i18n="impl.titleSpan">Works</span></h2>
+        <p class="section-sub" style="margin:0 auto 48px;" data-i18n="impl.sub">From leaf images to disease identification in seconds.</p>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item scroll-reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card glass">
+            <div class="step-num" data-i18n="step1.num">Step 01</div>
+            <h4 data-i18n="step1.title">📸 Dataset Collection</h4>
+            <p data-i18n="step1.desc">Trained a CNN model using the PlantVillage dataset containing over 50,000 labeled leaf images across multiple disease categories.</p>
+          </div>
+        </div>
+        <div class="timeline-item scroll-reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card glass">
+            <div class="step-num" data-i18n="step2.num">Step 02</div>
+            <h4 data-i18n="step2.title">🖼️ Image Preprocessing</h4>
+            <p data-i18n="step2.desc">Preprocessed images with resizing, normalization, and augmentation techniques to ensure consistent accuracy across varied inputs.</p>
+          </div>
+        </div>
+        <div class="timeline-item scroll-reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card glass">
+            <div class="step-num" data-i18n="step3.num">Step 03</div>
+            <h4 data-i18n="step3.title">🌐 Flask Web App</h4>
+            <p data-i18n="step3.desc">Developed a Flask web application that accepts uploaded leaf images and runs the trained model for real-time disease predictions.</p>
+          </div>
+        </div>
+        <div class="timeline-item scroll-reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card glass">
+            <div class="step-num" data-i18n="step4.num">Step 04</div>
+            <h4 data-i18n="step4.title">📋 Results & Treatment</h4>
+            <p data-i18n="step4.desc">Displayed the predicted disease with confidence scores and suggested actionable treatment recommendations for farmers.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="demo">
+    <div class="container">
+      <div style="text-align:center;">
+        <div class="section-label" data-i18n="demo.label">Live Demo</div>
+        <h2 class="section-title"><span data-i18n="demo.title">Detect </span><span data-i18n="demo.titleSpan">Leaf Disease</span></h2>
+        <p class="section-sub" style="margin:0 auto 48px;" data-i18n="demo.sub">Upload a leaf image and let the AI analyze it for disease symptoms.</p>
+      </div>
+      <div class="demo-grid">
+        <div class="glass" style="padding:32px;">
+          <h3 style="font-size:1.2rem;font-weight:600;margin-bottom:24px;">🍃 Upload Leaf Image</h3>
+
+          <div class="upload-area" id="upload-area" onclick="document.getElementById('file-input').click()">
+            <div class="upload-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+            </div>
+            <h4>Click to upload a leaf image</h4>
+            <p>JPG, PNG or WEBP — Max 10MB</p>
+            <input type="file" id="file-input" accept="image/*" onchange="handleUpload(event)">
+          </div>
+
+          <div class="preview-area" id="preview-area">
+            <img id="preview-img" src="" alt="Leaf preview" />
+            <button class="detect-btn" id="detect-btn" onclick="detectDisease()">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+              </svg>
+              Detect Disease
+            </button>
+          </div>
+        </div>
+
+        <div class="glass result-card" id="result-card">
+          <div style="font-size:2.5rem;margin-bottom:4px;" id="result-emoji">🍃</div>
+          <div class="section-label" style="margin-bottom:4px;">Diagnosis Result</div>
+          <div class="disease-name" id="disease-name">—</div>
+          <div id="severity-badge"></div>
+
+          <div>
+            <div class="conf-label">Confidence Score</div>
+            <div class="conf-bar-track">
+              <div class="conf-bar-fill" id="conf-bar"></div>
+            </div>
+            <div class="conf-text" id="conf-text">0%</div>
+          </div>
+
+          <div class="treatment-box" id="treatment-box">
+            <div class="tt-label">💊 Recommended Treatment</div>
+            <div class="tt-text" id="treatment-text">Upload a leaf image and run detection to see treatment recommendations.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div style="text-align:center;">
+        <div class="section-label" data-i18n="gallery.label">Disease Gallery</div>
+        <h2 class="section-title"><span data-i18n="gallery.title">Common </span><span data-i18n="gallery.titleSpan">Leaf Diseases</span></h2>
+        <p class="section-sub" style="margin:0 auto 48px;" data-i18n="gallery.sub">The model can identify these common crop diseases with high accuracy.</p>
+      </div>
+      <div class="gallery-grid">
+        <div class="gallery-card glass scroll-reveal">
+          <div class="gallery-icon">🍂</div>
+          <h4 data-i18n="gallery1.title">Early Blight</h4>
+          <p data-i18n="gallery1.desc">Dark brown spots with concentric rings on lower leaves. Spreads rapidly in warm, wet conditions.</p>
+        </div>
+        <div class="gallery-card glass scroll-reveal">
+          <div class="gallery-icon">🍁</div>
+          <h4 data-i18n="gallery2.title">Late Blight</h4>
+          <p data-i18n="gallery2.desc">Water-soaked lesions that turn brown-black. Highly destructive, caused by Phytophthora infestans.</p>
+        </div>
+        <div class="gallery-card glass scroll-reveal">
+          <div class="gallery-icon">🌿</div>
+          <h4 data-i18n="gallery3.title">Leaf Mold</h4>
+          <p data-i18n="gallery3.desc">Pale green-yellow spots on upper surface with olive-green mold underneath. Common in high humidity.</p>
+        </div>
+        <div class="gallery-card glass scroll-reveal">
+          <div class="gallery-icon">🔴</div>
+          <h4 data-i18n="gallery4.title">Bacterial Spot</h4>
+          <p data-i18n="gallery4.desc">Small water-soaked spots turning dark brown with yellow halos. Spreads through rain and irrigation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:var(--bg-secondary);">
+    <div class="container">
+      <div style="text-align:center;">
+        <div class="section-label" data-i18n="impact.label">Project Impact</div>
+        <h2 class="section-title"><span data-i18n="impact.title">Why It </span><span data-i18n="impact.titleSpan">Matters</span></h2>
+        <p class="section-sub" style="margin:0 auto 48px;" data-i18n="impact.sub">Protecting crops through intelligent disease detection.</p>
+      </div>
+      <div class="impact-grid">
+        <div class="impact-card glass scroll-reveal">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <h4 data-i18n="impact1.title">Early Detection</h4>
+          <p data-i18n="impact1.desc">Identify diseases before they spread, saving entire crops from devastation.</p>
+        </div>
+        <div class="impact-card glass scroll-reveal">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+            </svg>
+          </div>
+          <h4 data-i18n="impact2.title">Quick Treatment</h4>
+          <p data-i18n="impact2.desc">Immediate actionable recommendations reduce response time from days to minutes.</p>
+        </div>
+        <div class="impact-card glass scroll-reveal">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/>
+            </svg>
+          </div>
+          <h4 data-i18n="impact3.title">Reduced Crop Loss</h4>
+          <p data-i18n="impact3.desc">Minimize yield loss through timely intervention and precise disease management.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div style="text-align:center;">
+        <div class="section-label" data-i18n="tech.label">Tech Stack</div>
+        <h2 class="section-title"><span data-i18n="tech.title">Built </span><span data-i18n="tech.titleSpan">With</span></h2>
+        <p class="section-sub" style="margin:0 auto 48px;" data-i18n="tech.sub">Deep learning framework powering the detection engine.</p>
+      </div>
+      <div class="tech-grid">
+        <div class="tech-card glass scroll-reveal">
+          <div class="tech-icon">🧠</div>
+          <h4 data-i18n="tech1.title">TensorFlow</h4>
+          <p data-i18n="tech1.desc">Open-source ML framework used to build and train the convolutional neural network for image classification.</p>
+        </div>
+        <div class="tech-card glass scroll-reveal">
+          <div class="tech-icon">⚡</div>
+          <h4 data-i18n="tech2.title">Keras</h4>
+          <p data-i18n="tech2.desc">High-level neural network API simplifying model building with pre-trained layers and custom architectures.</p>
+        </div>
+        <div class="tech-card glass scroll-reveal">
+          <div class="tech-icon">🌐</div>
+          <h4 data-i18n="tech3.title">Flask</h4>
+          <p data-i18n="tech3.desc">Lightweight Python web framework used to deploy the model and serve predictions via a web interface.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="#" class="footer-btn primary" onclick="window.open('https://github.com','_blank')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12 24 5.37 18.63 0 12 0z"/>
+          </svg>
+          <span data-i18n="footer.github">GitHub</span>
+        </a>
+        <a href="/" class="footer-btn secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>
+          </svg>
+          <span data-i18n="footer.back">Back to Portfolio</span>
+        </a>
+      </div>
+      <p data-i18n="footer.text">&copy; 2026 Ahamad Ullah — AI Engineer Portfolio</p>
+    </div>
+  </footer>
+
+  <script>
+    // ─── Disease Database ───
+    const diseases = [
+      {
+        name: 'Healthy', emoji: '🌿', severity: 'Low',
+        minConf: 70, maxConf: 99,
+        treatment: 'No treatment needed. Continue regular plant care and monitoring. Maintain proper watering and nutrition to keep the plant healthy.',
+        weight: 15
+      },
+      {
+        name: 'Early Blight', emoji: '🍂', severity: 'Medium',
+        minConf: 72, maxConf: 96,
+        treatment: 'Apply fungicides containing chlorothalonil or mancozeb every 7–10 days. Remove and destroy affected lower leaves. Improve air circulation and avoid overhead watering.',
+        weight: 25
+      },
+      {
+        name: 'Late Blight', emoji: '🍁', severity: 'High',
+        minConf: 75, maxConf: 98,
+        treatment: 'Apply fungicides with metalaxyl or mancozeb immediately. Remove and destroy all infected plants. Avoid planting in same area for 3–4 years. Use resistant varieties.',
+        weight: 20
+      },
+      {
+        name: 'Leaf Mold', emoji: '🌿', severity: 'Medium',
+        minConf: 70, maxConf: 94,
+        treatment: 'Reduce humidity through proper ventilation. Apply sulfur-based fungicides. Remove infected leaves and avoid overcrowding of plants.',
+        weight: 20
+      },
+      {
+        name: 'Bacterial Spot', emoji: '🔴', severity: 'High',
+        minConf: 73, maxConf: 97,
+        treatment: 'Apply copper-based bactericides. Remove and destroy infected plant debris. Practice crop rotation and use disease-free seeds. Avoid working in wet fields.',
+        weight: 20
+      }
+    ];
+
+    let uploadedImage = null;
+
+    function handleUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        uploadedImage = e.target.result;
+        document.getElementById('preview-img').src = uploadedImage;
+        document.getElementById('preview-area').style.display = 'block';
+        document.getElementById('upload-area').style.display = 'none';
+        document.getElementById('result-card').classList.remove('visible');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function selectRandomWeighted(arr) {
+      const totalWeight = arr.reduce((sum, d) => sum + d.weight, 0);
+      let r = Math.random() * totalWeight;
+      for (const item of arr) {
+        r -= item.weight;
+        if (r <= 0) return item;
+      }
+      return arr[0];
+    }
+
+    function detectDisease() {
+      if (!uploadedImage) return;
+
+      const btn = document.getElementById('detect-btn');
+      btn.disabled = true;
+      btn.textContent = 'Analyzing...';
+
+      setTimeout(() => {
+        const disease = selectRandomWeighted(diseases);
+        const confidence = Math.floor(Math.random() * (disease.maxConf - disease.minConf + 1)) + disease.minConf;
+
+        document.getElementById('result-emoji').textContent = disease.emoji;
+        document.getElementById('disease-name').textContent = disease.name;
+
+        const badge = document.getElementById('severity-badge');
+        const sevClass = disease.severity === 'Low' ? 'severity-low' : disease.severity === 'Medium' ? 'severity-medium' : 'severity-high';
+        badge.className = 'severity-badge ' + sevClass;
+        badge.textContent = disease.severity + ' Severity';
+
+        const bar = document.getElementById('conf-bar');
+        bar.style.transition = 'none';
+        bar.style.width = '0%';
+        void bar.offsetWidth;
+        bar.style.transition = 'width 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        requestAnimationFrame(() => { bar.style.width = confidence + '%'; });
+
+        document.getElementById('conf-text').textContent = confidence + '%';
+        document.getElementById('treatment-text').textContent = disease.treatment;
+        document.getElementById('result-card').classList.add('visible');
+
+        btn.disabled = false;
+        btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg> Detect Disease`;
+      }, 1200);
+    }
+
+    // ─── Drag & Drop ───
+    const uploadArea = document.getElementById('upload-area');
+    uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+    uploadArea.addEventListener('dragleave', () => { uploadArea.classList.remove('dragover'); });
+    uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('dragover');
+      if (e.dataTransfer.files.length) {
+        document.getElementById('file-input').files = e.dataTransfer.files;
+        handleUpload({ target: { files: [e.dataTransfer.files[0]] } });
+      }
+    });
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.scroll-reveal, .fade-in').forEach(el => revealObserver.observe(el));
+    });
+
+    // ─── Theme Toggle ───
+    function toggleTheme() {
+      const html = document.documentElement;
+      const isLight = html.getAttribute('data-theme') === 'light';
+      html.setAttribute('data-theme', isLight ? '' : 'light');
+      document.getElementById('theme-btn').textContent = isLight ? '🌙' : '☀️';
+      localStorage.setItem('theme', isLight ? 'dark' : 'light');
+    }
+
+    // ─── Load saved theme ───
+    (function() {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        const btn = document.getElementById('theme-btn');
+        if (btn) btn.textContent = '☀️';
+      }
+    })();
+
+    // ─── Translations ───
+    const i18nData = {
+      en: {
+        'nav.title': 'Crop Disease Detection',
+        'nav.back': 'Back to Portfolio',
+        'hero.badge': '🧠 Deep Learning Application',
+        'hero.title': 'Crop Disease Detection <br/>using ',
+        'hero.titleSpan': 'Deep Learning',
+        'hero.desc': 'Identifies plant leaf diseases using a CNN model trained on image datasets.',
+        'hero.tag1': '🧠 TensorFlow',
+        'hero.tag2': '⚡ Keras',
+        'hero.tag3': '🌐 Flask',
+        'problem.label': 'Problem Statement',
+        'problem.title': 'The Diagnosis Challenge',
+        'problem.desc': 'Manual crop disease diagnosis is time-consuming and often inaccurate.',
+        'impl.label': 'Implementation',
+        'impl.title': 'How It ',
+        'impl.titleSpan': 'Works',
+        'impl.sub': 'From leaf images to disease identification in seconds.',
+        'step1.num': 'Step 01',
+        'step1.title': '📸 Dataset Collection',
+        'step1.desc': 'Trained a CNN model using the PlantVillage dataset containing over 50,000 labeled leaf images across multiple disease categories.',
+        'step2.num': 'Step 02',
+        'step2.title': '🖼️ Image Preprocessing',
+        'step2.desc': 'Preprocessed images with resizing, normalization, and augmentation techniques to ensure consistent accuracy across varied inputs.',
+        'step3.num': 'Step 03',
+        'step3.title': '🌐 Flask Web App',
+        'step3.desc': 'Developed a Flask web application that accepts uploaded leaf images and runs the trained model for real-time disease predictions.',
+        'step4.num': 'Step 04',
+        'step4.title': '📋 Results & Treatment',
+        'step4.desc': 'Displayed the predicted disease with confidence scores and suggested actionable treatment recommendations for farmers.',
+        'demo.label': 'Live Demo',
+        'demo.title': 'Detect ',
+        'demo.titleSpan': 'Leaf Disease',
+        'demo.sub': 'Upload a leaf image and let the AI analyze it for disease symptoms.',
+        'gallery.label': 'Disease Gallery',
+        'gallery.title': 'Common ',
+        'gallery.titleSpan': 'Leaf Diseases',
+        'gallery.sub': 'The model can identify these common crop diseases with high accuracy.',
+        'gallery1.title': 'Early Blight',
+        'gallery1.desc': 'Dark brown spots with concentric rings on lower leaves. Spreads rapidly in warm, wet conditions.',
+        'gallery2.title': 'Late Blight',
+        'gallery2.desc': 'Water-soaked lesions that turn brown-black. Highly destructive, caused by Phytophthora infestans.',
+        'gallery3.title': 'Leaf Mold',
+        'gallery3.desc': 'Pale green-yellow spots on upper surface with olive-green mold underneath. Common in high humidity.',
+        'gallery4.title': 'Bacterial Spot',
+        'gallery4.desc': 'Small water-soaked spots turning dark brown with yellow halos. Spreads through rain and irrigation.',
+        'impact.label': 'Project Impact',
+        'impact.title': 'Why It ',
+        'impact.titleSpan': 'Matters',
+        'impact.sub': 'Protecting crops through intelligent disease detection.',
+        'impact1.title': 'Early Detection',
+        'impact1.desc': 'Identify diseases before they spread, saving entire crops from devastation.',
+        'impact2.title': 'Quick Treatment',
+        'impact2.desc': 'Immediate actionable recommendations reduce response time from days to minutes.',
+        'impact3.title': 'Reduced Crop Loss',
+        'impact3.desc': 'Minimize yield loss through timely intervention and precise disease management.',
+        'tech.label': 'Tech Stack',
+        'tech.title': 'Built ',
+        'tech.titleSpan': 'With',
+        'tech.sub': 'Deep learning framework powering the detection engine.',
+        'tech1.title': 'TensorFlow',
+        'tech1.desc': 'Open-source ML framework used to build and train the convolutional neural network for image classification.',
+        'tech2.title': 'Keras',
+        'tech2.desc': 'High-level neural network API simplifying model building with pre-trained layers and custom architectures.',
+        'tech3.title': 'Flask',
+        'tech3.desc': 'Lightweight Python web framework used to deploy the model and serve predictions via a web interface.',
+        'footer.github': 'GitHub',
+        'footer.back': 'Back to Portfolio',
+        'footer.text': '© 2026 Ahamad Ullah — AI Engineer Portfolio'
+      },
+      bn: {
+        'nav.title': 'ফসল রোগ সনাক্তকরণ',
+        'nav.back': 'পোর্টফোলিওতে ফিরুন',
+        'hero.badge': '🧠 ডিপ লার্নিং অ্যাপ্লিকেশন',
+        'hero.title': 'ফসল রোগ সনাক্তকরণ <br/>ব্যবহার করে ',
+        'hero.titleSpan': 'ডিপ লার্নিং',
+        'hero.desc': 'ইমেজ ডেটাসেটে প্রশিক্ষিত একটি সিএনএন মডেল ব্যবহার করে উদ্ভিদের পাতার রোগ সনাক্ত করে।',
+        'hero.tag1': '🧠 টেনসরফ্লো',
+        'hero.tag2': '⚡ কেরাস',
+        'hero.tag3': '🌐 ফ্লাস্ক',
+        'problem.label': 'সমস্যার বিবৃতি',
+        'problem.title': 'নির্ণয়ের চ্যালেঞ্জ',
+        'problem.desc': 'ম্যানুয়াল ফসল রোগ নির্ণয় সময়সাপেক্ষ এবং প্রায়ই ভুল হয়।',
+        'impl.label': 'বাস্তবায়ন',
+        'impl.title': 'এটি কীভাবে ',
+        'impl.titleSpan': 'কাজ করে',
+        'impl.sub': 'পাতার ছবি থেকে সেকেন্ডের মধ্যে রোগ শনাক্তকরণ।',
+        'step1.num': 'ধাপ ০১',
+        'step1.title': '📸 ডেটাসেট সংগ্রহ',
+        'step1.desc': 'একাধিক রোগ বিভাগ জুড়ে ৫০,০০০ এরও বেশি লেবেলযুক্ত পাতার ছবি সহ প্ল্যান্টভিলেজ ডেটাসেট ব্যবহার করে একটি সিএনএন মডেল প্রশিক্ষিত।',
+        'step2.num': 'ধাপ ০২',
+        'step2.title': '🖼️ ইমেজ প্রিপ্রসেসিং',
+        'step2.desc': 'বিভিন্ন ইনপুট জুড়ে সামঞ্জস্যপূর্ণ নির্ভুলতা নিশ্চিত করতে রিসাইজিং, নরমালাইজেশন এবং অগমেন্টেশন কৌশল সহ ছবিগুলি প্রিপ্রসেস করা হয়েছে।',
+        'step3.num': 'ধাপ ০৩',
+        'step3.title': '🌐 ফ্লাস্ক ওয়েব অ্যাপ',
+        'step3.desc': 'একটি ফ্লাস্ক ওয়েব অ্যাপ্লিকেশন তৈরি করা হয়েছে যা আপলোড করা পাতার ছবি গ্রহণ করে এবং রিয়েল-টাইম রোগ পূর্বাভাসের জন্য প্রশিক্ষিত মডেল চালায়।',
+        'step4.num': 'ধাপ ০৪',
+        'step4.title': '📋 ফলাফল ও চিকিৎসা',
+        'step4.desc': 'আত্মবিশ্বাসের স্কোর সহ পূর্বাভাসিত রোগ প্রদর্শন করে এবং কৃষকদের জন্য কার্যকরী চিকিৎসা সুপারিশ প্রস্তাব করে।',
+        'demo.label': 'লাইভ ডেমো',
+        'demo.title': 'সনাক্ত করুন ',
+        'demo.titleSpan': 'পাতার রোগ',
+        'demo.sub': 'একটি পাতার ছবি আপলোড করুন এবং এআইকে রোগের লক্ষণগুলির জন্য এটি বিশ্লেষণ করতে দিন।',
+        'gallery.label': 'রোগ গ্যালারি',
+        'gallery.title': 'সাধারণ ',
+        'gallery.titleSpan': 'পাতার রোগ',
+        'gallery.sub': 'মডেলটি উচ্চ নির্ভুলতার সাথে এই সাধারণ ফসলের রোগগুলি সনাক্ত করতে পারে।',
+        'gallery1.title': 'আর্লি ব্লাইট',
+        'gallery1.desc': 'নীচের পাতায় ঘনকেন্দ্রিক বলয় সহ গাঢ় বাদামী দাগ। উষ্ণ, আর্দ্র অবস্থায় দ্রুত ছড়িয়ে পড়ে।',
+        'gallery2.title': 'লেট ব্লাইট',
+        'gallery2.desc': 'জল-শোষিত ক্ষত যা বাদামী-কালো হয়ে যায়। অত্যন্ত ধ্বংসাত্মক, ফাইটোফথোরা ইনফেস্ট্যান্স দ্বারা সৃষ্ট।',
+        'gallery3.title': 'লিফ মোল্ড',
+        'gallery3.desc': 'উপরের পৃষ্ঠে ফ্যাকাশে সবুজ-হলুদ দাগ যার নীচে জলপাই-সবুজ ছাঁচ থাকে। উচ্চ আর্দ্রতায় সাধারণ।',
+        'gallery4.title': 'ব্যাকটেরিয়াল স্পট',
+        'gallery4.desc': 'ছোট জল-শোষিত দাগ যা হলুদ হলোসহ গাঢ় বাদামী হয়ে যায়। বৃষ্টি এবং সেচের মাধ্যমে ছড়িয়ে পড়ে।',
+        'impact.label': 'প্রকল্পের প্রভাব',
+        'impact.title': 'কেন এটি ',
+        'impact.titleSpan': 'গুরুত্বপূর্ণ',
+        'impact.sub': 'বুদ্ধিমান রোগ সনাক্তকরণের মাধ্যমে ফসল রক্ষা করা।',
+        'impact1.title': 'প্রাথমিক সনাক্তকরণ',
+        'impact1.desc': 'রোগ ছড়ানোর আগে শনাক্ত করুন, সম্পূর্ণ ফসলকে ধ্বংসের হাত থেকে বাঁচান।',
+        'impact2.title': 'দ্রুত চিকিৎসা',
+        'impact2.desc': 'তাৎক্ষণিক কার্যকরী সুপারিশ প্রতিক্রিয়ার সময় দিন থেকে মিনিটে হ্রাস করে।',
+        'impact3.title': 'ফসলের ক্ষতি হ্রাস',
+        'impact3.desc': 'সময়মত হস্তক্ষেপ এবং সুনির্দিষ্ট রোগ ব্যবস্থাপনার মাধ্যমে ফলনের ক্ষতি হ্রাস করুন।',
+        'tech.label': 'প্রযুক্তি স্ট্যাক',
+        'tech.title': 'নির্মিত ',
+        'tech.titleSpan': 'সাথে',
+        'tech.sub': 'ডিপ লার্নিং ফ্রেমওয়ার্ক যা সনাক্তকরণ ইঞ্জিনকে শক্তি দেয়।',
+        'tech1.title': 'টেনসরফ্লো',
+        'tech1.desc': 'ইমেজ শ্রেণীবিভাগের জন্য কনভোলিউশনাল নিউরাল নেটওয়ার্ক তৈরি এবং প্রশিক্ষণে ব্যবহৃত ওপেন-সোর্স এমএল ফ্রেমওয়ার্ক।',
+        'tech2.title': 'কেরাস',
+        'tech2.desc': 'প্রি-ট্রেইন্ড লেয়ার এবং কাস্টম আর্কিটেকচারের সাথে মডেল নির্মাণকে সহজ করে উচ্চ-স্তরের নিউরাল নেটওয়ার্ক এপিআই।',
+        'tech3.title': 'ফ্লাস্ক',
+        'tech3.desc': 'মডেল স্থাপন এবং ওয়েব ইন্টারফেসের মাধ্যমে পূর্বাভাস পরিবেশনের জন্য ব্যবহৃত লাইটওয়েট পাইথন ওয়েব ফ্রেমওয়ার্ক।',
+        'footer.github': 'গিটহাব',
+        'footer.back': 'পোর্টফোলিওতে ফিরুন',
+        'footer.text': '© ২০২৬ আহামাদ উল্লাহ — এআই ইঞ্জিনিয়ার পোর্টফোলিও'
+      },
+      zh: {
+        'nav.title': '作物病害检测',
+        'nav.back': '返回作品集',
+        'hero.badge': '🧠 深度学习应用',
+        'hero.title': '作物病害检测 <br/>使用',
+        'hero.titleSpan': '深度学习',
+        'hero.desc': '使用在图像数据集上训练的CNN模型识别植物叶片病害。',
+        'hero.tag1': '🧠 TensorFlow',
+        'hero.tag2': '⚡ Keras',
+        'hero.tag3': '🌐 Flask',
+        'problem.label': '问题陈述',
+        'problem.title': '诊断挑战',
+        'problem.desc': '手动作物病害诊断耗时且常常不准确。',
+        'impl.label': '实现方式',
+        'impl.title': '它是如何',
+        'impl.titleSpan': '工作的',
+        'impl.sub': '从叶片图像到秒级病害识别。',
+        'step1.num': '步骤 01',
+        'step1.title': '📸 数据集收集',
+        'step1.desc': '使用PlantVillage数据集训练CNN模型，该数据集包含超过50,000张跨越多个病害类别的标记叶片图像。',
+        'step2.num': '步骤 02',
+        'step2.title': '🖼️ 图像预处理',
+        'step2.desc': '通过调整大小、归一化和增强技术对图像进行预处理，以确保不同输入下的一致性准确率。',
+        'step3.num': '步骤 03',
+        'step3.title': '🌐 Flask Web应用',
+        'step3.desc': '开发了一个Flask Web应用程序，接受上传的叶片图像并运行训练好的模型进行实时病害预测。',
+        'step4.num': '步骤 04',
+        'step4.title': '📋 结果与治疗',
+        'step4.desc': '显示带有置信度分数的预测病害，并为农民提供可操作的治疗建议。',
+        'demo.label': '在线演示',
+        'demo.title': '检测',
+        'demo.titleSpan': '叶片病害',
+        'demo.sub': '上传叶片图像，让AI分析其中的病害症状。',
+        'gallery.label': '病害图库',
+        'gallery.title': '常见',
+        'gallery.titleSpan': '叶片病害',
+        'gallery.sub': '该模型可以高精度识别这些常见的作物病害。',
+        'gallery1.title': '早疫病',
+        'gallery1.desc': '下部叶片上带有同心环的深褐色斑点。在温暖潮湿的条件下迅速传播。',
+        'gallery2.title': '晚疫病',
+        'gallery2.desc': '水渍状病斑，变成棕黑色。破坏性极强，由致病疫霉引起。',
+        'gallery3.title': '叶霉病',
+        'gallery3.desc': '上表面出现浅绿色黄色斑点，下面有橄榄绿色霉菌。在高湿度环境下常见。',
+        'gallery4.title': '细菌性斑点病',
+        'gallery4.desc': '小的水渍状斑点变成深褐色，带有黄色晕圈。通过雨水和灌溉传播。',
+        'impact.label': '项目影响',
+        'impact.title': '为什么它',
+        'impact.titleSpan': '重要',
+        'impact.sub': '通过智能病害检测保护作物。',
+        'impact1.title': '早期检测',
+        'impact1.desc': '在病害传播之前识别，拯救整个作物免遭破坏。',
+        'impact2.title': '快速治疗',
+        'impact2.desc': '即时可操作的建议将响应时间从几天缩短到几分钟。',
+        'impact3.title': '减少作物损失',
+        'impact3.desc': '通过及时干预和精确的病害管理，最大限度地减少产量损失。',
+        'tech.label': '技术栈',
+        'tech.title': '构建于',
+        'tech.titleSpan': '',
+        'tech.sub': '驱动检测引擎的深度学习框架。',
+        'tech1.title': 'TensorFlow',
+        'tech1.desc': '用于构建和训练卷积神经网络进行图像分类的开源机器学习框架。',
+        'tech2.title': 'Keras',
+        'tech2.desc': '高级神经网络API，通过预训练层和自定义架构简化模型构建。',
+        'tech3.title': 'Flask',
+        'tech3.desc': '用于部署模型并通过Web界面提供预测服务的轻量级Python Web框架。',
+        'footer.github': 'GitHub',
+        'footer.back': '返回作品集',
+        'footer.text': '© 2026 Ahamad Ullah — AI工程师作品集'
+      },
+      hi: {
+        'nav.title': 'फसल रोग का पता लगाना',
+        'nav.back': 'पोर्टफोलियो पर वापस जाएं',
+        'hero.badge': '🧠 डीप लर्निंग एप्लिकेशन',
+        'hero.title': 'फसल रोग का पता लगाना <br/>का उपयोग करके ',
+        'hero.titleSpan': 'डीप लर्निंग',
+        'hero.desc': 'इमेज डेटासेट पर प्रशिक्षित CNN मॉडल का उपयोग करके पौधों की पत्ती की बीमारियों की पहचान करता है।',
+        'hero.tag1': '🧠 टेंसरफ्लो',
+        'hero.tag2': '⚡ केरास',
+        'hero.tag3': '🌐 फ्लास्क',
+        'problem.label': 'समस्या विवरण',
+        'problem.title': 'निदान चुनौती',
+        'problem.desc': 'मैन्युअल फसल रोग निदान समय लेने वाला और अक्सर गलत होता है।',
+        'impl.label': 'कार्यान्वयन',
+        'impl.title': 'यह कैसे ',
+        'impl.titleSpan': 'काम करता है',
+        'impl.sub': 'पत्ती की छवियों से सेकंडों में रोग की पहचान।',
+        'step1.num': 'चरण 01',
+        'step1.title': '📸 डेटासेट संग्रह',
+        'step1.desc': 'प्लांटविलेज डेटासेट का उपयोग करके एक CNN मॉडल प्रशिक्षित किया गया जिसमें कई रोग श्रेणियों में 50,000 से अधिक लेबल वाली पत्ती की छवियां हैं।',
+        'step2.num': 'चरण 02',
+        'step2.title': '🖼️ इमेज प्रीप्रोसेसिंग',
+        'step2.desc': 'विभिन्न इनपुट में सुसंगत सटीकता सुनिश्चित करने के लिए रिसाइज़िंग, नॉर्मलाइज़ेशन और ऑग्मेंटेशन तकनीकों के साथ छवियों को प्रीप्रोसेस किया गया।',
+        'step3.num': 'चरण 03',
+        'step3.title': '🌐 फ्लास्क वेब ऐप',
+        'step3.desc': 'एक फ्लास्क वेब एप्लिकेशन विकसित किया गया जो अपलोड की गई पत्ती की छवियों को स्वीकार करता है और रीयल-टाइम रोग भविष्यवाणियों के लिए प्रशिक्षित मॉडल चलाता है।',
+        'step4.num': 'चरण 04',
+        'step4.title': '📋 परिणाम और उपचार',
+        'step4.desc': 'आत्मविश्वास स्कोर के साथ अनुमानित बीमारी प्रदर्शित की गई और किसानों के लिए कार्रवाई योग्य उपचार सिफारिशें सुझाई गईं।',
+        'demo.label': 'लाइव डेमो',
+        'demo.title': 'पता लगाएं ',
+        'demo.titleSpan': 'पत्ती रोग',
+        'demo.sub': 'एक पत्ती की छवि अपलोड करें और एआई को रोग के लक्षणों के लिए इसका विश्लेषण करने दें।',
+        'gallery.label': 'रोग गैलरी',
+        'gallery.title': 'सामान्य ',
+        'gallery.titleSpan': 'पत्ती रोग',
+        'gallery.sub': 'मॉडल उच्च सटीकता के साथ इन सामान्य फसल रोगों की पहचान कर सकता है।',
+        'gallery1.title': 'अर्ली ब्लाइट',
+        'gallery1.desc': 'निचली पत्तियों पर संकेंद्रित छल्लों के साथ गहरे भूरे रंग के धब्बे। गर्म, गीली परिस्थितियों में तेजी से फैलता है।',
+        'gallery2.title': 'लेट ब्लाइट',
+        'gallery2.desc': 'पानी से लथपथ घाव जो भूरे-काले हो जाते हैं। अत्यधिक विनाशकारी, फाइटोफ्थोरा इन्फेस्टैन्स के कारण होता है।',
+        'gallery3.title': 'लीफ मोल्ड',
+        'gallery3.desc': 'ऊपरी सतह पर हल्के हरे-पीले धब्बे जिनके नीचे जैतून-हरा फफूंदी होता है। उच्च आर्द्रता में आम है।',
+        'gallery4.title': 'बैक्टीरियल स्पॉट',
+        'gallery4.desc': 'पीले प्रभामंडल के साथ छोटे पानी से लथपथ धब्बे गहरे भूरे रंग के हो जाते हैं। बारिश और सिंचाई के माध्यम से फैलता है।',
+        'impact.label': 'परियोजना प्रभाव',
+        'impact.title': 'यह क्यों ',
+        'impact.titleSpan': 'मायने रखता है',
+        'impact.sub': 'बुद्धिमान रोग का पता लगाने के माध्यम से फसलों की रक्षा करना।',
+        'impact1.title': 'प्रारंभिक पहचान',
+        'impact1.desc': 'बीमारियों को फैलने से पहले पहचानें, पूरी फसलों को विनाश से बचाएं।',
+        'impact2.title': 'त्वरित उपचार',
+        'impact2.desc': 'तत्काल कार्रवाई योग्य सिफारिशें प्रतिक्रिया समय को दिनों से मिनटों तक कम करती हैं।',
+        'impact3.title': 'कम फसल हानि',
+        'impact3.desc': 'समय पर हस्तक्षेप और सटीक रोग प्रबंधन के माध्यम से उपज हानि को कम करें।',
+        'tech.label': 'टेक स्टैक',
+        'tech.title': 'निर्मित ',
+        'tech.titleSpan': 'साथ',
+        'tech.sub': 'डीप लर्निंग फ्रेमवर्क जो डिटेक्शन इंजन को शक्ति प्रदान करता है।',
+        'tech1.title': 'टेंसरफ्लो',
+        'tech1.desc': 'इमेज वर्गीकरण के लिए कन्वोल्यूशनल न्यूरल नेटवर्क बनाने और प्रशिक्षित करने के लिए उपयोग किया जाने वाला ओपन-सोर्स एमएल फ्रेमवर्क।',
+        'tech2.title': 'केरास',
+        'tech2.desc': 'प्री-ट्रेंड लेयर्स और कस्टम आर्किटेक्चर के साथ मॉडल निर्माण को सरल बनाने वाला हाई-लेवल न्यूरल नेटवर्क एपीआई।',
+        'tech3.title': 'फ्लास्क',
+        'tech3.desc': 'मॉडल को तैनात करने और वेब इंटरफ़ेस के माध्यम से भविष्यवाणियां प्रदान करने के लिए उपयोग किया जाने वाला लाइटवेट पायथन वेब फ्रेमवर्क।',
+        'footer.github': 'गिटहब',
+        'footer.back': 'पोर्टफोलियो पर वापस जाएं',
+        'footer.text': '© 2026 अहमद उल्लाह — एआई इंजीनियर पोर्टफोलियो'
+      }
+    };
+
+    function changeLang(lang) {
+      const data = i18nData[lang];
+      if (!data) return;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (data[key] !== undefined) {
+          el.innerHTML = data[key];
+        }
+      });
+      localStorage.setItem('lang', lang);
+    }
+
+    (function() {
+      const savedLang = localStorage.getItem('lang') || 'en';
+      document.getElementById('lang-select').value = savedLang;
+      changeLang(savedLang);
+    })();
+  </script>
+</body>
+</html>

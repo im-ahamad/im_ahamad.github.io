@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crop Yield Prediction using ML | Ahamad Ullah</title>
+  <meta name="description" content="Predicts expected crop yield using rainfall, fertilizer usage, and cultivation area data." />
+  <style>body{background:#0a0a0f}.loader-bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:99999;pointer-events:none;background:linear-gradient(90deg,transparent,#3b82f6,transparent);animation:loaderBar .45s ease forwards}@keyframes loaderBar{0%{transform:scaleX(0);transform-origin:left}40%{transform:scaleX(.55)}100%{transform:scaleX(1);opacity:0}}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --blue: #3b82f6;
+      --blue-dark: #2563eb;
+      --blue-glow: rgba(59, 130, 246, 0.3);
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #111118;
+      --bg-card: rgba(17, 17, 24, 0.8);
+      --text-primary: #f1f7f5;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border-color: rgba(59, 130, 246, 0.1);
+      --nav-bg: rgba(10,10,15,0.85);
+      --alpha-3: rgba(255,255,255,0.03);
+      --alpha-4: rgba(255,255,255,0.04);
+      --alpha-6: rgba(255,255,255,0.06);
+      --alpha-8: rgba(255,255,255,0.08);
+      --select-bg: rgba(255,255,255,0.04);
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+    [data-theme="light"] {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #f1f5f9;
+      --bg-card: rgba(255, 255, 255, 0.85);
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --border-color: rgba(0, 0, 0, 0.08);
+      --nav-bg: rgba(255,255,255,0.85);
+      --alpha-3: rgba(0,0,0,0.03);
+      --alpha-4: rgba(0,0,0,0.04);
+      --alpha-6: rgba(0,0,0,0.06);
+      --alpha-8: rgba(0,0,0,0.08);
+      --select-bg: rgba(255,255,255,0.7);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+    ::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 4px; }
+    ::selection { background: var(--blue); color: #fff; }
+
+    .glass {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+    }
+
+    .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: var(--nav-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 0;
+    }
+    nav .container { display: flex; align-items: center; justify-content: space-between; }
+    .nav-title { font-size: 1.125rem; font-weight: 600; color: var(--text-primary); }
+    .nav-title span { color: var(--blue); }
+    .nav-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 50px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .nav-back:hover { border-color: var(--blue); color: var(--blue); box-shadow: 0 0 20px var(--blue-glow); transform: scale(1.02); }
+    .nav-controls { display: flex; align-items: center; gap: 12px; }
+    .theme-btn {
+      width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+      background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 50%;
+      color: var(--text-secondary); cursor: pointer; font-size: 1.1rem; transition: all 0.3s ease;
+      padding: 0; line-height: 1;
+    }
+    .theme-btn:hover { border-color: var(--blue); box-shadow: 0 0 15px var(--blue-glow); transform: scale(1.05); }
+    .lang-select {
+      padding: 6px 10px; background: var(--bg-card); border: 1px solid var(--border-color);
+      border-radius: 8px; color: var(--text-secondary); font-size: 0.75rem; font-family: inherit;
+      cursor: pointer; outline: none; transition: border-color 0.3s ease;
+      appearance: none; -webkit-appearance: none;
+    }
+    .lang-select:focus { border-color: var(--blue); }
+    .lang-select option { background: var(--bg-secondary); color: var(--text-primary); }
+
+    .hero {
+      min-height: 60vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 140px 0 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 30% 40%, rgba(59,130,246,0.08) 0%, transparent 60%),
+                  radial-gradient(ellipse at 70% 60%, rgba(59,130,246,0.05) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .hero-content { text-align: center; position: relative; z-index: 1; max-width: 800px; }
+    .hero-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      background: rgba(59,130,246,0.1);
+      border: 1px solid rgba(59,130,246,0.2);
+      border-radius: 50px;
+      color: var(--blue);
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 24px;
+      animation: fadeInUp 0.6s ease;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      animation: fadeInUp 0.6s ease 0.1s both;
+    }
+    .hero h1 span { color: var(--blue); }
+    .hero p {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--text-secondary);
+      max-width: 640px;
+      margin: 0 auto 32px;
+      animation: fadeInUp 0.6s ease 0.2s both;
+    }
+    .hero-tags { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; animation: fadeInUp 0.6s ease 0.3s both; }
+    .tag {
+      padding: 8px 20px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      background: rgba(59,130,246,0.08);
+      border: 1px solid rgba(59,130,246,0.15);
+      color: var(--blue);
+      transition: all 0.3s ease;
+    }
+    .tag:hover { background: rgba(59,130,246,0.15); box-shadow: 0 0 20px var(--blue-glow); transform: translateY(-2px); }
+
+    section { padding: 80px 0; position: relative; }
+    .section-label {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 50px;
+      background: rgba(59,130,246,0.08);
+      border: 1px solid rgba(59,130,246,0.15);
+      color: var(--blue);
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .section-title span { color: var(--blue); }
+    .section-sub {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      max-width: 600px;
+      margin-bottom: 48px;
+    }
+
+    .problem-card {
+      padding: 40px;
+      display: flex; gap: 24px;
+      align-items: flex-start;
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+    }
+    .problem-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, transparent, var(--blue), transparent);
+    }
+    .problem-icon {
+      flex-shrink: 0;
+      width: 56px; height: 56px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(59,130,246,0.1);
+      border-radius: var(--radius-sm);
+    }
+    .problem-icon svg { width: 28px; height: 28px; color: var(--blue); }
+    .problem-card h3 { font-size: 1.3rem; font-weight: 600; margin-bottom: 8px; }
+    .problem-card p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; }
+
+    .timeline { position: relative; max-width: 800px; margin: 0 auto; padding-left: 40px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 15px; top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--blue), transparent);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 40px;
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    .timeline-item.visible { animation: slideInLeft 0.6s ease forwards; }
+    .timeline-dot {
+      position: absolute; left: -33px; top: 6px;
+      width: 14px; height: 14px;
+      background: var(--blue);
+      border-radius: 50%;
+      border: 3px solid var(--bg-primary);
+      box-shadow: 0 0 12px var(--blue-glow);
+    }
+    .timeline-card { padding: 24px 28px; }
+    .timeline-card .step-num {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--blue);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    .timeline-card h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 6px; }
+    .timeline-card p { color: var(--text-secondary); font-size: 0.9rem; }
+
+    #demo { background: var(--bg-secondary); }
+    .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+    @media (max-width: 768px) { .demo-grid { grid-template-columns: 1fr; } }
+
+    .input-group { margin-bottom: 20px; }
+    .input-group label {
+      display: flex; justify-content: space-between;
+      font-size: 0.9rem; font-weight: 500; margin-bottom: 8px;
+    }
+    .input-group label span { color: var(--blue); }
+    .input-group input[type="range"] {
+      width: 100%; height: 6px;
+      -webkit-appearance: none; appearance: none;
+      background: var(--alpha-8);
+      border-radius: 3px;
+      outline: none;
+    }
+    .input-group input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 18px; height: 18px;
+      background: var(--blue);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 12px var(--blue-glow);
+    }
+    .input-group input[type="range"]::-moz-range-thumb {
+      width: 18px; height: 18px;
+      background: var(--blue);
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+    }
+    .input-value {
+      display: inline-block;
+      min-width: 36px;
+      padding: 2px 12px;
+      background: rgba(59,130,246,0.1);
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--blue);
+      text-align: center;
+    }
+
+    .crop-select {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--select-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.3s ease;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%233b82f6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+    }
+    .crop-select:focus { border-color: var(--blue); box-shadow: 0 0 12px var(--blue-glow); }
+    .crop-select option { background: var(--bg-secondary); color: var(--text-primary); }
+
+    .predict-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 36px;
+      background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+      border: none;
+      border-radius: 50px;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      justify-content: center;
+    }
+    .predict-btn:hover { box-shadow: 0 0 30px var(--blue-glow); transform: translateY(-2px); }
+    .predict-btn:active { transform: translateY(0); }
+    .predict-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .result-card {
+      padding: 32px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
+    }
+    .result-card.visible { opacity: 1; transform: translateY(0); }
+
+    .yield-value {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--blue);
+      margin: 12px 0 4px;
+    }
+    .yield-value .unit { font-size: 1rem; color: var(--text-secondary); font-weight: 400; }
+    .yield-sub { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 24px; }
+
+    .yield-breakdown {
+      text-align: left;
+      margin: 24px 0;
+    }
+    .yield-breakdown .bar-item { margin-bottom: 16px; }
+    .yield-breakdown .bar-label {
+      display: flex; justify-content: space-between;
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+    }
+    .yield-breakdown .bar-label .bar-name { color: var(--text-secondary); }
+    .yield-breakdown .bar-label .bar-val { color: var(--text-primary); font-weight: 600; }
+    .bar-track {
+      width: 100%; height: 10px;
+      background: var(--alpha-6);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 5px;
+      width: 0%;
+      transition: width 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .impact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    @media (max-width: 768px) { .impact-grid { grid-template-columns: 1fr; } }
+    .impact-card {
+      padding: 32px 24px;
+      text-align: center;
+      transition: all 0.4s ease;
+    }
+    .impact-card:hover { transform: translateY(-8px); border-color: rgba(59,130,246,0.3); box-shadow: 0 12px 40px rgba(59,130,246,0.1); }
+    .impact-card .icon {
+      width: 52px; height: 52px;
+      margin: 0 auto 16px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(59,130,246,0.1);
+      border-radius: 50%;
+    }
+    .impact-card .icon svg { width: 26px; height: 26px; color: var(--blue); }
+    .impact-card h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
+    .impact-card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; }
+
+    .tech-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    @media (max-width: 768px) { .tech-grid { grid-template-columns: 1fr; } }
+    .tech-card {
+      padding: 32px 24px;
+      text-align: center;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .tech-card::after {
+      content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 0; height: 3px;
+      background: var(--blue);
+      transition: width 0.4s ease;
+      border-radius: 2px;
+    }
+    .tech-card:hover::after { width: 80%; }
+    .tech-card:hover { transform: translateY(-6px); border-color: rgba(59,130,246,0.2); }
+    .tech-icon {
+      width: 64px; height: 64px;
+      margin: 0 auto 16px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(59,130,246,0.08);
+      border-radius: 16px;
+      font-size: 2rem;
+      transition: all 0.3s ease;
+    }
+    .tech-card:hover .tech-icon { background: rgba(59,130,246,0.15); box-shadow: 0 0 30px var(--blue-glow); }
+    .tech-card h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
+    .tech-card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; }
+
+    footer {
+      padding: 48px 0;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+    }
+    .footer-links { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+    .footer-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 28px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+    .footer-btn.primary {
+      background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+      color: #fff;
+    }
+    .footer-btn.primary:hover { box-shadow: 0 0 25px var(--blue-glow); transform: translateY(-2px); }
+    .footer-btn.secondary {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+    }
+    .footer-btn.secondary:hover { border-color: var(--blue); color: var(--blue); box-shadow: 0 0 20px var(--blue-glow); transform: translateY(-2px); }
+    footer p { color: var(--text-muted); font-size: 0.85rem; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .fade-in { opacity: 0; transform: translateY(30px); transition: all 0.7s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .scroll-reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s ease; }
+    .scroll-reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .particles {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    .particle {
+      position: absolute; border-radius: 50%;
+      background: rgba(59,130,246,0.06);
+      animation: float linear infinite;
+    }
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
+    }
+    .particle:nth-child(1) { width: 6px; height: 6px; left: 10%; animation-duration: 18s; animation-delay: 0s; }
+    .particle:nth-child(2) { width: 4px; height: 4px; left: 25%; animation-duration: 22s; animation-delay: 2s; }
+    .particle:nth-child(3) { width: 8px; height: 8px; left: 40%; animation-duration: 20s; animation-delay: 4s; }
+    .particle:nth-child(4) { width: 5px; height: 5px; left: 55%; animation-duration: 25s; animation-delay: 1s; }
+    .particle:nth-child(5) { width: 7px; height: 7px; left: 70%; animation-duration: 19s; animation-delay: 3s; }
+    .particle:nth-child(6) { width: 4px; height: 4px; left: 85%; animation-duration: 23s; animation-delay: 5s; }
+    .particle:nth-child(7) { width: 6px; height: 6px; left: 50%; animation-duration: 21s; animation-delay: 7s; }
+    .particle:nth-child(8) { width: 3px; height: 3px; left: 15%; animation-duration: 26s; animation-delay: 2s; }
+
+    @media (max-width: 768px) {
+      section { padding: 48px 0; }
+      .hero { padding: 120px 0 48px; min-height: auto; }
+      .nav-title { font-size: 0.95rem; }
+      .problem-card { flex-direction: column; padding: 24px; }
+      .timeline { padding-left: 32px; }
+      .timeline-dot { left: -25px; width: 12px; height: 12px; }
+    }
+  </style>
+</head>
+<body style="background:#0a0a0f">
+  <div class="loader-bar"></div>
+
+  <div class="particles">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div>
+  </div>
+
+  <nav>
+    <div class="container">
+      <div class="nav-title"><span>✦</span> <span data-i18n="nav.title">Crop Yield Prediction</span></div>
+      <div class="nav-controls">
+        <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+        <select class="lang-select" id="lang-select" onchange="changeLang(this.value)">
+          <option value="en">EN</option>
+          <option value="bn">বাংলা</option>
+          <option value="zh">中文</option>
+          <option value="hi">हिन्दी</option>
+        </select>
+        <a href="/" class="nav-back">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>
+          </svg>
+          <span data-i18n="nav.back">Back to Portfolio</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <div class="hero-badge" data-i18n="hero.badge">🌟 ML-Powered Forecasting</div>
+      <h1><span data-i18n="hero.title">Crop Yield Prediction <br/>using </span><span data-i18n="hero.titleSpan">Machine Learning</span></h1>
+      <p data-i18n="hero.desc">Predicts expected crop yield using rainfall, fertilizer usage, and cultivation area data.</p>
+      <div class="hero-tags">
+        <span class="tag" data-i18n="hero.tag1">🐍 Python</span>
+        <span class="tag" data-i18n="hero.tag2">📊 Pandas</span>
+        <span class="tag" data-i18n="hero.tag3">🤖 Scikit-Learn</span>
+        <span class="tag" data-i18n="hero.tag4">📈 Plotly</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container" style="text-align:center;">
+      <div class="section-label" data-i18n="problem.label">Problem Statement</div>
+      <div class="problem-card glass fade-in">
+        <div class="problem-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>
+          </svg>
+        </div>
+        <div>
+          <h3 data-i18n="problem.title">Why Yield Forecasting?</h3>
+          <p data-i18n="problem.desc">Accurate yield forecasting is essential for planning and food supply stability.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:var(--bg-secondary);">
+    <div class="container">
+      <div style="text-align:center;">
+        <div class="section-label" data-i18n="impl.label">Implementation</div>
+        <h2 class="section-title"><span data-i18n="impl.title">How It </span><span data-i18n="impl.titleSpan">Works</span></h2>
+        <p class="section-sub" style="margin:0 auto 48px;" data-i18n="impl.sub">From raw agricultural data to accurate yield forecasts.</p>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item scroll-reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card glass">
+            <div class="step-num" data-i18n="step1.num">Step 01</div>
+            <h4 data-i18n="step1.title">📦 Data Collection</h4>
+            <p data-i18n="step1.desc">Used historical agricultural datasets including rainfall, temperature, fertilizer usage, and crop yield records spanning multiple years.</p>
+          </div>
+        </div>
+        <div class="timeline-item scroll-reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card glass">
+            <div class="step-num" data-i18n="step2.num">Step 02</div>
+            <h4 data-i18n="step2.title">🧮 Regression Modeling</h4>
+            <p data-i18n="step2.desc">Applied regression models (Linear Regression, Random Forest, XGBoost) using Scikit-Learn to predict yield with high accuracy.</p>
+          </div>
+        </div>
+        <div class="timeline-item scroll-reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card glass">
+            <div class="step-num" data-i18n="step3.num">Step 03</div>
+            <h4 data-i18n="step3.title">📊 Trend Visualization</h4>
+            <p data-i18n="step3.desc">Visualized yield trends over time and across regions using Plotly interactive charts for deeper insights.</p>
+          </div>
+        </div>
+        <div class="timeline-item scroll-reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card glass">
+            <div class="step-num" data-i18n="step4.num">Step 04</div>
+            <h4 data-i18n="step4.title">🖥️ Interactive Dashboard</h4>
+            <p data-i18n="step4.desc">Built an interactive dashboard for exploration, allowing users to adjust parameters and see real-time yield predictions.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="demo">
+    <div class="container">
+      <div style="text-align:center;">
+        <div class="section-label" data-i18n="demo.label">Live Demo</div>
+        <h2 class="section-title"><span data-i18n="demo.title">Predict </span><span data-i18n="demo.titleSpan">Crop Yield</span></h2>
+        <p class="section-sub" style="margin:0 auto 48px;" data-i18n="demo.sub">Enter your agricultural parameters to estimate expected yield and visualize the breakdown.</p>
+      </div>
+      <div class="demo-grid">
+        <div class="glass" style="padding:32px;">
+          <h3 style="font-size:1.2rem;font-weight:600;margin-bottom:24px;">🌾 Input Parameters</h3>
+
+          <div class="input-group">
+            <label>Rainfall <span id="rain-val" class="input-value">800</span> mm</label>
+            <input type="range" id="rainfall" min="100" max="2500" value="800" oninput="updateInputs()">
+          </div>
+          <div class="input-group">
+            <label>Fertilizer Usage <span id="fert-val" class="input-value">120</span> kg/ha</label>
+            <input type="range" id="fertilizer" min="0" max="300" value="120" oninput="updateInputs()">
+          </div>
+          <div class="input-group">
+            <label>Area <span id="area-val" class="input-value">5</span> hectares</label>
+            <input type="range" id="area" min="1" max="100" value="5" oninput="updateInputs()">
+          </div>
+          <div class="input-group">
+            <label style="margin-bottom:12px;">Crop Type</label>
+            <select class="crop-select" id="crop-type">
+              <option value="rice">🌾 Rice</option>
+              <option value="wheat">🌾 Wheat</option>
+              <option value="maize">🌽 Maize</option>
+              <option value="cotton">🌿 Cotton</option>
+            </select>
+          </div>
+
+          <button class="predict-btn" id="predict-btn" onclick="predictYield()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+            </svg>
+            Predict Yield
+          </button>
+        </div>
+
+        <div class="glass result-card" id="result-card">
+          <div style="font-size:2.5rem;margin-bottom:4px;" id="result-emoji">🌾</div>
+          <div class="section-label" style="margin-bottom:4px;">Predicted Yield</div>
+          <div class="yield-value" id="yield-value">— <span class="unit">tons/ha</span></div>
+          <div class="yield-sub" id="yield-sub">for Rice</div>
+
+          <div class="yield-breakdown" id="yield-breakdown">
+            <div class="bar-item">
+              <div class="bar-label"><span class="bar-name">🌧️ Rainfall Contribution</span><span class="bar-val" id="bar-rain-val">0%</span></div>
+              <div class="bar-track"><div class="bar-fill" id="bar-rain" style="background:linear-gradient(90deg,#3b82f6,#60a5fa);"></div></div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-label"><span class="bar-name">🧪 Fertilizer Contribution</span><span class="bar-val" id="bar-fert-val">0%</span></div>
+              <div class="bar-track"><div class="bar-fill" id="bar-fert" style="background:linear-gradient(90deg,#8b5cf6,#a78bfa);"></div></div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-label"><span class="bar-name">📐 Area Efficiency</span><span class="bar-val" id="bar-area-val">0%</span></div>
+              <div class="bar-track"><div class="bar-fill" id="bar-area" style="background:linear-gradient(90deg,#10b981,#34d399);"></div></div>
+            </div>
+            <div class="bar-item">
+              <div class="bar-label"><span class="bar-name">🌱 Base Potential</span><span class="bar-val" id="bar-base-val">0%</span></div>
+              <div class="bar-track"><div class="bar-fill" id="bar-base" style="background:linear-gradient(90deg,#f59e0b,#fbbf24);"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div style="text-align:center;">
+        <div class="section-label" data-i18n="impact.label">Project Impact</div>
+        <h2 class="section-title"><span data-i18n="impact.title">Why It </span><span data-i18n="impact.titleSpan">Matters</span></h2>
+        <p class="section-sub" style="margin:0 auto 48px;" data-i18n="impact.sub">Empowering agricultural planning with data science.</p>
+      </div>
+      <div class="impact-grid">
+        <div class="impact-card glass scroll-reveal">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <h4 data-i18n="impact1.title">Early Yield Estimation</h4>
+          <p data-i18n="impact1.desc">Forecast crop yields months in advance for better planning and resource allocation.</p>
+        </div>
+        <div class="impact-card glass scroll-reveal">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+            </svg>
+          </div>
+          <h4 data-i18n="impact2.title">Food Supply Planning</h4>
+          <p data-i18n="impact2.desc">Enables governments and agencies to anticipate supply gaps and stabilize food prices.</p>
+        </div>
+        <div class="impact-card glass scroll-reveal">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/>
+            </svg>
+          </div>
+          <h4 data-i18n="impact3.title">Data-Driven Agriculture</h4>
+          <p data-i18n="impact3.desc">Shifts farming decisions from intuition to evidence-based insights for maximum output.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:var(--bg-secondary);">
+    <div class="container">
+      <div style="text-align:center;">
+        <div class="section-label" data-i18n="tech.label">Tech Stack</div>
+        <h2 class="section-title"><span data-i18n="tech.title">Built </span><span data-i18n="tech.titleSpan">With</span></h2>
+        <p class="section-sub" style="margin:0 auto 48px;" data-i18n="tech.sub">Modern tools powering the yield prediction engine.</p>
+      </div>
+      <div class="tech-grid">
+        <div class="tech-card glass scroll-reveal">
+          <div class="tech-icon">🐍</div>
+          <h4 data-i18n="tech1.title">Python</h4>
+          <p data-i18n="tech1.desc">Core language for data processing, model development, and full pipeline orchestration.</p>
+        </div>
+        <div class="tech-card glass scroll-reveal">
+          <div class="tech-icon">📊</div>
+          <h4 data-i18n="tech2.title">Pandas</h4>
+          <p data-i18n="tech2.desc">Data manipulation and analysis library used to clean and transform agricultural datasets.</p>
+        </div>
+        <div class="tech-card glass scroll-reveal">
+          <div class="tech-icon">🤖</div>
+          <h4 data-i18n="tech3.title">Scikit-Learn</h4>
+          <p data-i18n="tech3.desc">Machine learning library providing regression algorithms for accurate yield prediction.</p>
+        </div>
+        <div class="tech-card glass scroll-reveal">
+          <div class="tech-icon">📈</div>
+          <h4 data-i18n="tech4.title">Plotly</h4>
+          <p data-i18n="tech4.desc">Interactive visualization library for creating insightful yield trend charts and dashboards.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="#" class="footer-btn primary" onclick="window.open('https://github.com','_blank')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12 24 5.37 18.63 0 12 0z"/>
+          </svg>
+          <span data-i18n="footer.github">GitHub</span>
+        </a>
+        <a href="/" class="footer-btn secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>
+          </svg>
+          <span data-i18n="footer.back">Back to Portfolio</span>
+        </a>
+      </div>
+      <p data-i18n="footer.text">&copy; 2026 Ahamad Ullah — AI Engineer Portfolio</p>
+    </div>
+  </footer>
+
+  <script>
+    // ─── Crop data ───
+    const cropData = {
+      rice: {
+        name: 'Rice', emoji: '🌾',
+        baseYield: 4.2,
+        optimalRain: [800, 1500],
+        optimalFert: [100, 180],
+        optimalArea: [2, 15]
+      },
+      wheat: {
+        name: 'Wheat', emoji: '🌾',
+        baseYield: 3.1,
+        optimalRain: [400, 900],
+        optimalFert: [80, 140],
+        optimalArea: [3, 20]
+      },
+      maize: {
+        name: 'Maize', emoji: '🌽',
+        baseYield: 5.0,
+        optimalRain: [600, 1200],
+        optimalFert: [120, 200],
+        optimalArea: [2, 12]
+      },
+      cotton: {
+        name: 'Cotton', emoji: '🌿',
+        baseYield: 2.6,
+        optimalRain: [500, 1000],
+        optimalFert: [60, 120],
+        optimalArea: [4, 25]
+      }
+    };
+
+    function updateInputs() {
+      document.getElementById('rain-val').textContent = document.getElementById('rainfall').value;
+      document.getElementById('fert-val').textContent = document.getElementById('fertilizer').value;
+      document.getElementById('area-val').textContent = document.getElementById('area').value;
+    }
+
+    function clamp(v, min, max) { return Math.min(max, Math.max(min, v)); }
+
+    function scoreParam(value, optimalMin, optimalMax) {
+      const mid = (optimalMin + optimalMax) / 2;
+      const halfRange = (optimalMax - optimalMin) / 2;
+      const dist = Math.abs(value - mid);
+      return clamp(1 - (dist / (halfRange * 2.5)), 0, 1);
+    }
+
+    function predictYield() {
+      const rainfall = +document.getElementById('rainfall').value;
+      const fertilizer = +document.getElementById('fertilizer').value;
+      const area = +document.getElementById('area').value;
+      const cropKey = document.getElementById('crop-type').value;
+      const crop = cropData[cropKey];
+
+      const btn = document.getElementById('predict-btn');
+      btn.disabled = true;
+      btn.textContent = 'Calculating...';
+
+      setTimeout(() => {
+        const rainScore = scoreParam(rainfall, crop.optimalRain[0], crop.optimalRain[1]);
+        const fertScore = scoreParam(fertilizer, crop.optimalFert[0], crop.optimalFert[1]);
+        const areaScore = scoreParam(area, crop.optimalArea[0], crop.optimalArea[1]);
+        const baseScore = 0.75;
+
+        const noise = 0.92 + Math.random() * 0.16;
+        const yieldPerHa = crop.baseYield * (0.3 + 0.25 * rainScore + 0.2 * fertScore + 0.05 * areaScore + 0.2 * baseScore) * noise;
+        const totalYield = yieldPerHa * area;
+
+        document.getElementById('yield-value').innerHTML = yieldPerHa.toFixed(2) + ' <span class="unit">tons/ha</span>';
+        document.getElementById('yield-sub').textContent = 'for ' + crop.name + '  |  Total: ' + totalYield.toFixed(1) + ' tons on ' + area + ' ha';
+        document.getElementById('result-emoji').textContent = crop.emoji;
+        document.getElementById('result-card').classList.add('visible');
+
+        const rainPct = Math.round(rainScore * 100);
+        const fertPct = Math.round(fertScore * 100);
+        const areaPct = Math.round(areaScore * 100);
+        const basePct = Math.round(baseScore * 100);
+
+        animateBar('bar-rain', rainPct, 'bar-rain-val');
+        animateBar('bar-fert', fertPct, 'bar-fert-val');
+        animateBar('bar-area', areaPct, 'bar-area-val');
+        animateBar('bar-base', basePct, 'bar-base-val');
+
+        btn.disabled = false;
+        btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Predict Yield`;
+      }, 700);
+    }
+
+    function animateBar(barId, pct, labelId) {
+      const bar = document.getElementById(barId);
+      const label = document.getElementById(labelId);
+      bar.style.transition = 'none';
+      bar.style.width = '0%';
+      void bar.offsetWidth;
+      bar.style.transition = 'width 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)';
+      requestAnimationFrame(() => {
+        bar.style.width = pct + '%';
+        label.textContent = pct + '%';
+      });
+    }
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.scroll-reveal, .fade-in').forEach(el => revealObserver.observe(el));
+      setTimeout(predictYield, 600);
+    });
+
+    // ─── Theme Toggle ───
+    function toggleTheme() {
+      const html = document.documentElement;
+      const isLight = html.getAttribute('data-theme') === 'light';
+      html.setAttribute('data-theme', isLight ? '' : 'light');
+      document.getElementById('theme-btn').textContent = isLight ? '🌙' : '☀️';
+      localStorage.setItem('theme', isLight ? 'dark' : 'light');
+    }
+
+    // ─── Load saved theme ───
+    (function() {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        const btn = document.getElementById('theme-btn');
+        if (btn) btn.textContent = '☀️';
+      }
+    })();
+
+    // ─── Translations ───
+    const i18nData = {
+      en: {
+        'nav.title': 'Crop Yield Prediction',
+        'nav.back': 'Back to Portfolio',
+        'hero.badge': '🌟 ML-Powered Forecasting',
+        'hero.title': 'Crop Yield Prediction <br/>using ',
+        'hero.titleSpan': 'Machine Learning',
+        'hero.desc': 'Predicts expected crop yield using rainfall, fertilizer usage, and cultivation area data.',
+        'hero.tag1': '🐍 Python',
+        'hero.tag2': '📊 Pandas',
+        'hero.tag3': '🤖 Scikit-Learn',
+        'hero.tag4': '📈 Plotly',
+        'problem.label': 'Problem Statement',
+        'problem.title': 'Why Yield Forecasting?',
+        'problem.desc': 'Accurate yield forecasting is essential for planning and food supply stability.',
+        'impl.label': 'Implementation',
+        'impl.title': 'How It ',
+        'impl.titleSpan': 'Works',
+        'impl.sub': 'From raw agricultural data to accurate yield forecasts.',
+        'step1.num': 'Step 01',
+        'step1.title': '📦 Data Collection',
+        'step1.desc': 'Used historical agricultural datasets including rainfall, temperature, fertilizer usage, and crop yield records spanning multiple years.',
+        'step2.num': 'Step 02',
+        'step2.title': '🧮 Regression Modeling',
+        'step2.desc': 'Applied regression models (Linear Regression, Random Forest, XGBoost) using Scikit-Learn to predict yield with high accuracy.',
+        'step3.num': 'Step 03',
+        'step3.title': '📊 Trend Visualization',
+        'step3.desc': 'Visualized yield trends over time and across regions using Plotly interactive charts for deeper insights.',
+        'step4.num': 'Step 04',
+        'step4.title': '🖥️ Interactive Dashboard',
+        'step4.desc': 'Built an interactive dashboard for exploration, allowing users to adjust parameters and see real-time yield predictions.',
+        'demo.label': 'Live Demo',
+        'demo.title': 'Predict ',
+        'demo.titleSpan': 'Crop Yield',
+        'demo.sub': 'Enter your agricultural parameters to estimate expected yield and visualize the breakdown.',
+        'impact.label': 'Project Impact',
+        'impact.title': 'Why It ',
+        'impact.titleSpan': 'Matters',
+        'impact.sub': 'Empowering agricultural planning with data science.',
+        'impact1.title': 'Early Yield Estimation',
+        'impact1.desc': 'Forecast crop yields months in advance for better planning and resource allocation.',
+        'impact2.title': 'Food Supply Planning',
+        'impact2.desc': 'Enables governments and agencies to anticipate supply gaps and stabilize food prices.',
+        'impact3.title': 'Data-Driven Agriculture',
+        'impact3.desc': 'Shifts farming decisions from intuition to evidence-based insights for maximum output.',
+        'tech.label': 'Tech Stack',
+        'tech.title': 'Built ',
+        'tech.titleSpan': 'With',
+        'tech.sub': 'Modern tools powering the yield prediction engine.',
+        'tech1.title': 'Python',
+        'tech1.desc': 'Core language for data processing, model development, and full pipeline orchestration.',
+        'tech2.title': 'Pandas',
+        'tech2.desc': 'Data manipulation and analysis library used to clean and transform agricultural datasets.',
+        'tech3.title': 'Scikit-Learn',
+        'tech3.desc': 'Machine learning library providing regression algorithms for accurate yield prediction.',
+        'tech4.title': 'Plotly',
+        'tech4.desc': 'Interactive visualization library for creating insightful yield trend charts and dashboards.',
+        'footer.github': 'GitHub',
+        'footer.back': 'Back to Portfolio',
+        'footer.text': '© 2026 Ahamad Ullah — AI Engineer Portfolio'
+      },
+      bn: {
+        'nav.title': 'ফসল ফলন ভবিষ্যদ্বাণী',
+        'nav.back': 'পোর্টফোলিওতে ফিরুন',
+        'hero.badge': '🌟 এমএল-চালিত পূর্বাভাস',
+        'hero.title': 'ফসল ফলন ভবিষ্যদ্বাণী <br/>ব্যবহার করে ',
+        'hero.titleSpan': 'মেশিন লার্নিং',
+        'hero.desc': 'বৃষ্টিপাত, সার ব্যবহার এবং চাষ এলাকার তথ্য ব্যবহার করে প্রত্যাশিত ফসল ফলন ভবিষ্যদ্বাণী করে।',
+        'hero.tag1': '🐍 পাইথন',
+        'hero.tag2': '📊 প্যান্ডাস',
+        'hero.tag3': '🤖 সিকিট-লার্ন',
+        'hero.tag4': '📈 প্লটলি',
+        'problem.label': 'সমস্যার বিবৃতি',
+        'problem.title': 'কেন ফলন পূর্বাভাস?',
+        'problem.desc': 'সঠিক ফলন পূর্বাভাস পরিকল্পনা এবং খাদ্য সরবরাহের স্থিতিশীলতার জন্য অপরিহার্য।',
+        'impl.label': 'বাস্তবায়ন',
+        'impl.title': 'এটি কীভাবে ',
+        'impl.titleSpan': 'কাজ করে',
+        'impl.sub': 'কাঁচা কৃষি তথ্য থেকে নির্ভুল ফলন পূর্বাভাস পর্যন্ত।',
+        'step1.num': 'ধাপ ০১',
+        'step1.title': '📦 তথ্য সংগ্রহ',
+        'step1.desc': 'একাধিক বছর জুড়ে বৃষ্টিপাত, তাপমাত্রা, সার ব্যবহার এবং ফসল ফলনের রেকর্ড সহ ঐতিহাসিক কৃষি ডেটাসেট ব্যবহার করা হয়েছে।',
+        'step2.num': 'ধাপ ০২',
+        'step2.title': '🧮 রিগ্রেশন মডেলিং',
+        'step2.desc': 'উচ্চ নির্ভুলতার সাথে ফলন পূর্বাভাস দিতে সিকিট-লার্ন ব্যবহার করে রিগ্রেশন মডেল (লিনিয়ার রিগ্রেশন, র্যান্ডম ফরেস্ট, এক্সজিবুস্ট) প্রয়োগ করা হয়েছে।',
+        'step3.num': 'ধাপ ০৩',
+        'step3.title': '📊 ট্রেন্ড ভিজুয়ালাইজেশন',
+        'step3.desc': 'গভীর অন্তর্দৃষ্টির জন্য প্লটলি ইন্টারেক্টিভ চার্ট ব্যবহার করে সময়ের সাথে এবং অঞ্চল জুড়ে ফলনের প্রবণতা দৃশ্যমান করা হয়েছে।',
+        'step4.num': 'ধাপ ০৪',
+        'step4.title': '🖥️ ইন্টারেক্টিভ ড্যাশবোর্ড',
+        'step4.desc': 'অন্বেষণের জন্য একটি ইন্টারেক্টিভ ড্যাশবোর্ড তৈরি করা হয়েছে, যা ব্যবহারকারীদের প্যারামিটার সামঞ্জস্য করতে এবং রিয়েল-টাইম ফলন পূর্বাভাস দেখতে দেয়।',
+        'demo.label': 'লাইভ ডেমো',
+        'demo.title': 'পূর্বাভাস ',
+        'demo.titleSpan': 'ফসল ফলন',
+        'demo.sub': 'প্রত্যাশিত ফলন অনুমান করতে এবং ব্রেকডাউন দৃশ্যমান করতে আপনার কৃষি পরামিতি প্রবেশ করান।',
+        'impact.label': 'প্রকল্পের প্রভাব',
+        'impact.title': 'কেন এটি ',
+        'impact.titleSpan': 'গুরুত্বপূর্ণ',
+        'impact.sub': 'ডেটা সায়েন্সের মাধ্যমে কৃষি পরিকল্পনাকে শক্তিশালী করা।',
+        'impact1.title': 'প্রাথমিক ফলন অনুমান',
+        'impact1.desc': 'উত্তম পরিকল্পনা এবং সম্পদ বরাদ্দের জন্য মাস আগে ফসলের ফলনের পূর্বাভাস দিন।',
+        'impact2.title': 'খাদ্য সরবরাহ পরিকল্পনা',
+        'impact2.desc': 'সরকার ও সংস্থাকে সরবরাহের ঘাটতি অনুমান করতে এবং খাদ্যের দাম স্থিতিশীল করতে সক্ষম করে।',
+        'impact3.title': 'তথ্য-চালিত কৃষি',
+        'impact3.desc': 'সর্বোচ্চ আউটপুটের জন্য কৃষি সিদ্ধান্তগুলিকে অন্তর্দৃষ্টি থেকে প্রমাণ-ভিত্তিক অন্তর্দৃষ্টিতে স্থানান্তরিত করে।',
+        'tech.label': 'প্রযুক্তি স্ট্যাক',
+        'tech.title': 'নির্মিত ',
+        'tech.titleSpan': 'সাথে',
+        'tech.sub': 'আধুনিক টুলস যা ফলন পূর্বাভাস ইঞ্জিনকে শক্তি দেয়।',
+        'tech1.title': 'পাইথন',
+        'tech1.desc': 'ডেটা প্রসেসিং, মডেল ডেভেলপমেন্ট এবং সম্পূর্ণ পাইপলাইন অর্কেস্ট্রেশনের জন্য মূল ভাষা।',
+        'tech2.title': 'প্যান্ডাস',
+        'tech2.desc': 'কৃষি ডেটাসেট পরিষ্কার ও রূপান্তর করতে ব্যবহৃত ডেটা ম্যানিপুলেশন এবং বিশ্লেষণ লাইব্রেরি।',
+        'tech3.title': 'সিকিট-লার্ন',
+        'tech3.desc': 'সঠিক ফলন পূর্বাভাসের জন্য রিগ্রেশন অ্যালগরিদম প্রদানকারী মেশিন লার্নিং লাইব্রেরি।',
+        'tech4.title': 'প্লটলি',
+        'tech4.desc': 'অন্তর্দৃষ্টিপূর্ণ ফলন ট্রেন্ড চার্ট এবং ড্যাশবোর্ড তৈরি করার জন্য ইন্টারেক্টিভ ভিজুয়ালাইজেশন লাইব্রেরি।',
+        'footer.github': 'গিটহাব',
+        'footer.back': 'পোর্টফোলিওতে ফিরুন',
+        'footer.text': '© ২০২৬ আহামাদ উল্লাহ — এআই ইঞ্জিনিয়ার পোর্টফোলিও'
+      },
+      zh: {
+        'nav.title': '作物产量预测',
+        'nav.back': '返回作品集',
+        'hero.badge': '🌟 机器学习驱动预测',
+        'hero.title': '作物产量预测 <br/>使用',
+        'hero.titleSpan': '机器学习',
+        'hero.desc': '利用降雨量、施肥量和种植面积数据预测预期作物产量。',
+        'hero.tag1': '🐍 Python',
+        'hero.tag2': '📊 Pandas',
+        'hero.tag3': '🤖 Scikit-Learn',
+        'hero.tag4': '📈 Plotly',
+        'problem.label': '问题陈述',
+        'problem.title': '为什么要进行产量预测？',
+        'problem.desc': '准确的产量预测对于规划和粮食供应稳定至关重要。',
+        'impl.label': '实现方式',
+        'impl.title': '它是如何',
+        'impl.titleSpan': '工作的',
+        'impl.sub': '从原始农业数据到准确的产量预测。',
+        'step1.num': '步骤 01',
+        'step1.title': '📦 数据收集',
+        'step1.desc': '使用了跨越多年的历史农业数据集，包括降雨量、温度、施肥量和作物产量记录。',
+        'step2.num': '步骤 02',
+        'step2.title': '🧮 回归建模',
+        'step2.desc': '使用Scikit-Learn应用回归模型（线性回归、随机森林、XGBoost）以高精度预测产量。',
+        'step3.num': '步骤 03',
+        'step3.title': '📊 趋势可视化',
+        'step3.desc': '使用Plotly交互式图表可视化不同时间和地区的产量趋势，以获得更深入的见解。',
+        'step4.num': '步骤 04',
+        'step4.title': '🖥️ 交互式仪表板',
+        'step4.desc': '构建了一个交互式探索仪表板，允许用户调整参数并实时查看产量预测。',
+        'demo.label': '在线演示',
+        'demo.title': '预测',
+        'demo.titleSpan': '作物产量',
+        'demo.sub': '输入您的农业参数以估算预期产量并可视化分解。',
+        'impact.label': '项目影响',
+        'impact.title': '为什么它',
+        'impact.titleSpan': '重要',
+        'impact.sub': '用数据科学赋能农业规划。',
+        'impact1.title': '早期产量估算',
+        'impact1.desc': '提前数月预测作物产量，以便更好地规划和资源分配。',
+        'impact2.title': '粮食供应规划',
+        'impact2.desc': '使政府和机构能够预测供应缺口并稳定粮食价格。',
+        'impact3.title': '数据驱动农业',
+        'impact3.desc': '将农业决策从直觉转变为基于证据的洞察，以实现最大产出。',
+        'tech.label': '技术栈',
+        'tech.title': '构建于',
+        'tech.titleSpan': '',
+        'tech.sub': '驱动产量预测引擎的现代工具。',
+        'tech1.title': 'Python',
+        'tech1.desc': '用于数据处理、模型开发和完整管道编排的核心语言。',
+        'tech2.title': 'Pandas',
+        'tech2.desc': '用于清理和转换农业数据集的数据操作和分析库。',
+        'tech3.title': 'Scikit-Learn',
+        'tech3.desc': '提供回归算法以实现准确产量预测的机器学习库。',
+        'tech4.title': 'Plotly',
+        'tech4.desc': '用于创建富有洞察力的产量趋势图表和仪表板的交互式可视化库。',
+        'footer.github': 'GitHub',
+        'footer.back': '返回作品集',
+        'footer.text': '© 2026 Ahamad Ullah — AI工程师作品集'
+      },
+      hi: {
+        'nav.title': 'फसल उपज भविष्यवाणी',
+        'nav.back': 'पोर्टफोलियो पर वापस जाएं',
+        'hero.badge': '🌟 एमएल-संचालित पूर्वानुमान',
+        'hero.title': 'फसल उपज भविष्यवाणी <br/>का उपयोग करके ',
+        'hero.titleSpan': 'मशीन लर्निंग',
+        'hero.desc': 'वर्षा, उर्वरक उपयोग और कृषि क्षेत्र डेटा का उपयोग करके अपेक्षित फसल उपज का पूर्वानुमान लगाता है।',
+        'hero.tag1': '🐍 पायथन',
+        'hero.tag2': '📊 पांडास',
+        'hero.tag3': '🤖 स्किकिट-लर्न',
+        'hero.tag4': '📈 प्लॉटली',
+        'problem.label': 'समस्या विवरण',
+        'problem.title': 'उपज पूर्वानुमान क्यों?',
+        'problem.desc': 'योजना और खाद्य आपूर्ति स्थिरता के लिए सटीक उपज पूर्वानुमान आवश्यक है।',
+        'impl.label': 'कार्यान्वयन',
+        'impl.title': 'यह कैसे ',
+        'impl.titleSpan': 'काम करता है',
+        'impl.sub': 'कच्चे कृषि डेटा से सटीक उपज पूर्वानुमान तक।',
+        'step1.num': 'चरण 01',
+        'step1.title': '📦 डेटा संग्रह',
+        'step1.desc': 'कई वर्षों में फैले वर्षा, तापमान, उर्वरक उपयोग और फसल उपज रिकॉर्ड सहित ऐतिहासिक कृषि डेटासेट का उपयोग किया गया।',
+        'step2.num': 'चरण 02',
+        'step2.title': '🧮 रिग्रेशन मॉडलिंग',
+        'step2.desc': 'उच्च सटीकता के साथ उपज की भविष्यवाणी करने के लिए स्किकिट-लर्न का उपयोग करके रिग्रेशन मॉडल (लीनियर रिग्रेशन, रैंडम फॉरेस्ट, XGBoost) लागू किए गए।',
+        'step3.num': 'चरण 03',
+        'step3.title': '📊 ट्रेंड विज़ुअलाइज़ेशन',
+        'step3.desc': 'गहन अंतर्दृष्टि के लिए प्लॉटली इंटरैक्टिव चार्ट का उपयोग करके समय और क्षेत्रों में उपज रुझानों की कल्पना की गई।',
+        'step4.num': 'चरण 04',
+        'step4.title': '🖥️ इंटरैक्टिव डैशबोर्ड',
+        'step4.desc': 'अन्वेषण के लिए एक इंटरैक्टिव डैशबोर्ड बनाया गया, जो उपयोगकर्ताओं को पैरामीटर समायोजित करने और रीयल-टाइम उपज पूर्वानुमान देखने की अनुमति देता है।',
+        'demo.label': 'लाइव डेमो',
+        'demo.title': 'पूर्वानुमान ',
+        'demo.titleSpan': 'फसल उपज',
+        'demo.sub': 'अपेक्षित उपज का अनुमान लगाने और ब्रेकडाउन देखने के लिए अपने कृषि पैरामीटर दर्ज करें।',
+        'impact.label': 'परियोजना प्रभाव',
+        'impact.title': 'यह क्यों ',
+        'impact.titleSpan': 'मायने रखता है',
+        'impact.sub': 'डेटा विज्ञान के साथ कृषि योजना को सशक्त बनाना।',
+        'impact1.title': 'प्रारंभिक उपज अनुमान',
+        'impact1.desc': 'बेहतर योजना और संसाधन आवंटन के लिए महीनों पहले फसल उपज का पूर्वानुमान लगाएं।',
+        'impact2.title': 'खाद्य आपूर्ति योजना',
+        'impact2.desc': 'सरकारों और एजेंसियों को आपूर्ति अंतराल का अनुमान लगाने और खाद्य कीमतों को स्थिर करने में सक्षम बनाता है।',
+        'impact3.title': 'डेटा-संचालित कृषि',
+        'impact3.desc': 'अधिकतम उत्पादन के लिए कृषि निर्णयों को अंतर्ज्ञान से साक्ष्य-आधारित अंतर्दृष्टि में स्थानांतरित करता है।',
+        'tech.label': 'टेक स्टैक',
+        'tech.title': 'निर्मित ',
+        'tech.titleSpan': 'साथ',
+        'tech.sub': 'आधुनिक उपकरण जो उपज पूर्वानुमान इंजन को शक्ति प्रदान करते हैं।',
+        'tech1.title': 'पायथन',
+        'tech1.desc': 'डेटा प्रोसेसिंग, मॉडल विकास और पूर्ण पाइपलाइन ऑर्केस्ट्रेशन के लिए मुख्य भाषा।',
+        'tech2.title': 'पांडास',
+        'tech2.desc': 'कृषि डेटासेट को साफ और रूपांतरित करने के लिए उपयोग की जाने वाली डेटा हेरफेर और विश्लेषण लाइब्रेरी।',
+        'tech3.title': 'स्किकिट-लर्न',
+        'tech3.desc': 'सटीक उपज भविष्यवाणी के लिए रिग्रेशन एल्गोरिदम प्रदान करने वाली मशीन लर्निंग लाइब्रेरी।',
+        'tech4.title': 'प्लॉटली',
+        'tech4.desc': 'अंतर्दृष्टिपूर्ण उपज रुझान चार्ट और डैशबोर्ड बनाने के लिए इंटरैक्टिव विज़ुअलाइज़ेशन लाइब्रेरी।',
+        'footer.github': 'गिटहब',
+        'footer.back': 'पोर्टफोलियो पर वापस जाएं',
+        'footer.text': '© 2026 अहमद उल्लाह — एआई इंजीनियर पोर्टफोलियो'
+      }
+    };
+
+    function changeLang(lang) {
+      const data = i18nData[lang];
+      if (!data) return;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (data[key] !== undefined) {
+          el.innerHTML = data[key];
+        }
+      });
+      localStorage.setItem('lang', lang);
+    }
+
+    (function() {
+      const savedLang = localStorage.getItem('lang') || 'en';
+      document.getElementById('lang-select').value = savedLang;
+      changeLang(savedLang);
+    })();
+  </script>
+</body>
+</html>

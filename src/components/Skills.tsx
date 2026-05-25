@@ -1,0 +1,239 @@
+import { useTranslation } from "react-i18next";
+import { Code, Database, Users, Languages, Brain } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { useMemo, useState } from "react";
+import { ChevronDown, ChevronUp, ExternalLink } from "lucide-react";
+
+const skillsData = [
+  {
+    category: "Programming Languages",
+    icon: Code,
+    skills: ["C / C++", "Python", "JavaScript(JS)", "TypeScript(TS)"],
+  },
+  {
+    category: "Frameworks & Libraries",
+    icon: Code,
+    skills: [
+      "TensorFlow", "Keras", "NumPy", "Pandas", "Scikit-Learn",
+      "React.js", "Next.js", "Vite.js", "Three.js", "Flask",
+      "Unity", "WebGL", "Plotly", "Node.js"
+    ],
+  },
+  {
+    category: "Databases & Tools",
+    icon: Database,
+    skills: [
+      "PostgreSQL", "MongoDB", "Firebase", "Git", "GitHub",
+      "ESP32", "Arduino", "Raspberry Pi", "MQTT", "HTTP", "LoRaWAN"
+    ],
+  },
+  {
+    category: "Language Skills",
+    icon: Languages,
+    skills: [
+      "Bangla (Native)", "English (Intermediate)",
+      "Urdu / Hindi (Intermediate)", "Chinese (Beginner)"
+    ],
+  },
+  {
+    category: "Soft Skills",
+    icon: Users,
+    skills: [
+      "Leadership", "Communication", "Adaptability",
+      "Teamwork", "Problem-Solving", "Project Management", "Time Management"
+    ],
+  },
+];
+
+// Skill to URL mapping
+const skillLinks = {
+  "C / C++": "https://en.cppreference.com/",
+  "Python": "https://www.python.org/",
+  "JavaScript(JS)": "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
+  "TypeScript(TS)": "https://www.typescriptlang.org/",
+  "TensorFlow": "https://www.tensorflow.org/",
+  "Keras": "https://keras.io/",
+  "NumPy": "https://numpy.org/",
+  "Pandas": "https://pandas.pydata.org/",
+  "Scikit-Learn": "https://scikit-learn.org/",
+  "React.js": "https://react.dev/",
+  "Next.js": "https://nextjs.org/",
+  "Vite.js": "https://vitejs.dev/",
+  "Three.js": "https://threejs.org/",
+  "Flask": "https://flask.palletsprojects.com/",
+  "Unity": "https://unity.com/",
+  "WebGL": "https://get.webgl.org/",
+  "Plotly": "https://plotly.com/",
+  "PostgreSQL": "https://www.postgresql.org/",
+  "MongoDB": "https://www.mongodb.com/",
+  "Firebase": "https://firebase.google.com/",
+  "Git": "https://git-scm.com/",
+  "GitHub": "https://github.com/",
+  "ESP32": "https://www.espressif.com/en/products/som/esp32",
+  "Arduino": "https://www.arduino.cc/",
+  "Raspberry Pi": "https://www.raspberrypi.org/",
+  "MQTT": "https://mqtt.org/",
+  "HTTP": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
+  "LoRaWAN": "https://lora-alliance.org/about-lorawan/",
+  "Node.js": "https://nodejs.org/",
+  "LLMs": "https://en.wikipedia.org/wiki/Large_language_model",
+  "Prompt Engineering": "https://www.promptingguide.ai/",
+  "RAG": "https://www.langchain.com/",
+  "Fine Tuning": "https://huggingface.co/docs/transformers/training",
+  "AI Agents": "https://www.langchain.com/agents",
+  "LangChain": "https://www.langchain.com/",
+  "Hugging Face": "https://huggingface.co/",
+  "REST APIs": "https://restfulapi.net/",
+};
+
+const Skills = () => {
+  const { t } = useTranslation();
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+
+  const bubbles = useMemo(() => {
+    const colors = [
+      "from-indigo-500 via-purple-500 to-pink-500",
+      "from-green-500 via-emerald-500 to-teal-400",
+      "from-amber-500 via-yellow-500 to-orange-400",
+      "from-red-500 via-rose-500 to-pink-400",
+      "from-sky-500 via-blue-500 to-indigo-400",
+    ];
+    return [...Array(25)].map((_, i) => ({
+      id: i,
+      size: Math.floor(Math.random() * 50) + 15,
+      top: Math.floor(Math.random() * 100),
+      left: Math.floor(Math.random() * 100),
+      duration: (Math.random() * 10 + 5).toFixed(2),
+      delay: (Math.random() * 5).toFixed(2),
+      opacity: Math.random() * 0.25 + 0.05,
+      color: colors[i % colors.length],
+    }));
+  }, []);
+
+  const toggleCategory = (categoryName: string) => {
+    setExpandedCategory(prev => (prev === categoryName ? null : categoryName));
+  };
+
+  return (
+    <section id="skills" className="relative py-20 px-6 bg-muted/30 overflow-hidden">
+
+      {/* Floating Bubbles */}
+      <div className="absolute inset-0 pointer-events-none z-0 hidden md:block">
+        {bubbles.map((bubble) => (
+          <div
+            key={bubble.id}
+            className={`absolute rounded-full bg-gradient-to-r ${bubble.color} animate-bubble`}
+            style={{
+              width: `${bubble.size}px`,
+              height: `${bubble.size}px`,
+              top: `${bubble.top}%`,
+              left: `${bubble.left}%`,
+              animationDuration: `${bubble.duration}s`,
+              animationDelay: `${bubble.delay}s`,
+              opacity: bubble.opacity,
+            }}
+          />
+        ))}
+
+        {/* Animations consolidated in index.css */}
+      </div>
+
+      <div className="container mx-auto max-w-6xl relative z-10">
+
+        {/* Section Header */}
+        <div className="text-center mb-12 animate-fade-in">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            <span className="gradient-text">{t("skills.title")}</span>
+          </h2>
+          <p className="text-muted-foreground">{t("skills.subtitle")}</p>
+        </div>
+
+        {/* Skills Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {skillsData.map((category, index) => {
+            const Icon = category.icon;
+            const isSoft = category.category === "Soft Skills";
+
+            return (
+              <Card
+                key={category.category}
+                onMouseEnter={() => setExpandedCategory(null)}
+                className={`group p-7 transition-all duration-500 hover:scale-[1.05] hover:-translate-y-2 hover:shadow-[0_30px_70px_rgba(0,0,0,0.15)] hover:shadow-accent/30 border border-transparent hover:border-accent/60 bg-card/50 backdrop-blur-sm ${isSoft ? "md:col-span-2" : ""}`}
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+
+                {/* Heading + Icon */}
+                <div className={`flex items-center gap-4 mb-6 ${isSoft ? "justify-center" : "justify-start"}`}>
+                  <div className="p-4 rounded-xl bg-accent/10 text-accent transition-all duration-500 group-hover:rotate-24 group-hover:scale-125">
+                    <Icon className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-xl font-bold pt-2 tracking-tight gradient-header">
+                    {category.category}
+                  </h3>
+                </div>
+
+                {/* Skills Badges */}
+                <div className={`flex flex-wrap gap-3 ${isSoft ? "justify-center" : ""}`}>
+                  {category.skills.map((skill) => (
+                    <Badge
+                      key={skill}
+                      variant="secondary"
+                      className="text-sm px-4 py-1.5 transition-all duration-300 cursor-default font-medium border border-transparent hover:-translate-y-1 hover:scale-105 will-change-transform transform-gpu hover:bg-accent hover:text-white hover:shadow-[0_10px_25px_rgba(var(--accent-rgb),0.5)]"
+                    >
+                      {skill}
+                    </Badge>
+                  ))}
+                </div>
+
+                {/* Visit Official Website */}
+                {!isSoft && category.category !== "Language Skills" && (
+                  <div className="mt-6">
+                    <button
+                      onClick={() => toggleCategory(category.category)}
+                      className="inline-flex items-center gap-1 px-2 py-1.5 text-xs font-semibold text-accent hover:text-white bg-accent/10 hover:bg-accent rounded-md transition-all duration-200 hover:scale-105 hover:shadow-sm border border-transparent hover:border-accent/50"
+                    >
+                      <ExternalLink className="h-3 w-3" />
+                      Visit Official Website
+                      {expandedCategory === category.category ? (
+                        <ChevronUp className="h-3 w-3 ml-auto" />
+                      ) : (
+                        <ChevronDown className="h-3 w-3 ml-auto" />
+                      )}
+                    </button>
+
+                    {expandedCategory === category.category && (
+                      <div className="mt-4 pt-4 border-t border-gray-200/20 dark:border-gray-700/20">
+                        <div className={`flex flex-wrap gap-2 ${isSoft ? "justify-center" : ""}`}>
+                          {category.skills.map((skill) => {
+                            const link = skillLinks[skill];
+                            return link ? (
+                              <a
+                                key={`link-${skill}`}
+                                href={link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-accent hover:text-white bg-accent/10 hover:bg-accent rounded-sm transition-all duration-200 hover:scale-105 hover:shadow-sm border border-transparent hover:border-accent/50"
+                                title={`Visit ${skill} official website`}
+                              >
+                                {skill}
+                                <ExternalLink className="h-3 w-3" />
+                              </a>
+                            ) : null;
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+              </Card>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default Skills;

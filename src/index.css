@@ -1,0 +1,277 @@
+@tailwind base;
+@tailwind utilities;
+@tailwind components;
+
+/* /* ───────────────────────────────
+   DESIGN SYSTEM (Light + Dark)
+─────────────────────────────── */
+@layer base {
+  :root {
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 188 94% 43%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 217 91% 60%;
+    --radius: 0.75rem;
+
+    /* Custom gradients */
+    --gradient-start: 217 91% 60%;
+    --gradient-end: 262 83% 58%;
+
+    /* Sidebar */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-spring: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .dark {
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
+    --card: 217 33% 17%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 188 94% 43%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 217 91% 60%;
+    --gradient-start: 217 91% 60%;
+    --gradient-end: 262 83% 58%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+/* ───────────────────────────────
+   UTILITIES
+─────────────────────────────── */
+@layer utilities {
+  /* Space Grotesk variants */
+  .space-grotesk-400 {
+    font-family: "Space Grotesk", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+  }
+  .space-grotesk-500 {
+    font-family: "Space Grotesk", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+  }
+  .space-grotesk-600 {
+    font-family: "Space Grotesk", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+  }
+
+  /* Playfair Display variants */
+  .playfair-display-400 {
+    font-family: "Playfair Display", serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+  }
+  .playfair-display-500 {
+    font-family: "Playfair Display", serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+  }
+  .playfair-display-600 {
+    font-family: "Playfair Display", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+  }
+
+  .gradient-tech {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--gradient-start)),
+      hsl(var(--gradient-end))
+    );
+  }
+
+  .gradient-text {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--gradient-start)),
+      hsl(var(--gradient-end))
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Auto shadow + hover scale for all cards */
+  .card-hover {
+    @apply shadow-xl transform transition-all duration-300;
+  }
+
+  .card-hover:hover {
+    @apply shadow-2xl scale-105;
+  }
+
+  /* Font utility helpers */
+  .font-body {
+    font-family: "Space Grotesk", ui-sans-serif, system-ui;
+  }
+  .font-heading {
+    font-family: "Space Grotesk", ui-sans-serif, system-ui;
+  }
+  .font-code {
+    font-family: "Fira Code", ui-monospace, monospace;
+  }
+}
+
+/* ───────────────────────────────
+   BASE TYPOGRAPHY & GLOBALS
+─────────────────────────────── */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-family: "Space Grotesk", sans-serif;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+  h1 {
+    @apply font-heading;
+    font-weight: 800;
+    font-size: 2.25rem;
+  }
+  h2 {
+    @apply font-heading;
+    font-weight: 700;
+    font-size: 1.875rem;
+  }
+  h3 {
+    @apply font-heading;
+    font-weight: 600;
+    font-size: 1.5rem;
+  }
+  h4,
+  h5 {
+    @apply space-grotesk-500;
+    font-size: 1.25rem; /* xl or lg */
+  }
+  h6 {
+    @apply space-grotesk-400;
+    font-size: 1rem; /* base */
+  }
+  p {
+    @apply font-body font-normal text-base leading-7;
+  }
+  li {
+    @apply font-body font-normal text-base leading-6;
+  }
+  strong {
+    @apply font-sans font-semibold;
+  }
+  code {
+    @apply font-code text-sm font-normal px-1 py-0.5 rounded bg-muted/20;
+  }
+  a {
+    @apply space-grotesk-500 underline;
+  }
+}
+
+/* ───────────────────────────────
+   CONSOLIDATED ANIMATIONS
+─────────────────────────────── */
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+.animate-bounce-slow { animation: bounce-slow 6s ease-in-out infinite; }
+
+@keyframes bounce-slower {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.animate-bounce-slower { animation: bounce-slower 8s ease-in-out infinite; }
+
+@keyframes bubble-move {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-25px); }
+}
+.animate-bubble { animation: bubble-move ease-in-out infinite; }
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.gradient-header {
+  background: linear-gradient(90deg,#1e3a8a,#9333ea,#f59e0b,#065f46);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientFlow 6s ease infinite;
+}
+
+.name-blue-style {
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+}
+
+.name-glow-animation {
+  background: linear-gradient(90deg,#1e3a8a,#9333ea,#f59e0b,#065f46);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientFlow 6s ease infinite;
+  display: inline-block;
+}
+
+@media (max-width: 768px) {
+  .animate-bounce-slow,
+  .animate-bounce-slower {
+    animation: none;
+    opacity: 0.1 !important;
+  }
+}

@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI-Based Crop Recommendation System | Ahamad Ullah</title>
+  <meta name="description" content="Recommends the most suitable crop for a given region using soil, rainfall, and climate data." />
+  <style>body{background:#0a0a0f}.loader-bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:99999;pointer-events:none;background:linear-gradient(90deg,transparent,#22c55e,transparent);animation:loaderBar .45s ease forwards}@keyframes loaderBar{0%{transform:scaleX(0);transform-origin:left}40%{transform:scaleX(.55)}100%{transform:scaleX(1);opacity:0}}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --green: #22c55e;
+      --green-dark: #16a34a;
+      --green-glow: rgba(34, 197, 94, 0.3);
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #111118;
+      --bg-card: rgba(17, 17, 24, 0.8);
+      --text-primary: #f1f7f5;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border-color: rgba(34, 197, 94, 0.1);
+      --nav-bg: rgba(10,10,15,0.85);
+      --alpha-3: rgba(255,255,255,0.03);
+      --alpha-4: rgba(255,255,255,0.04);
+      --alpha-6: rgba(255,255,255,0.06);
+      --alpha-8: rgba(255,255,255,0.08);
+      --select-bg: rgba(255,255,255,0.04);
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+    [data-theme="light"] {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #f1f5f9;
+      --bg-card: rgba(255, 255, 255, 0.85);
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --border-color: rgba(0, 0, 0, 0.08);
+      --nav-bg: rgba(255,255,255,0.85);
+      --alpha-3: rgba(0,0,0,0.03);
+      --alpha-4: rgba(0,0,0,0.04);
+      --alpha-6: rgba(0,0,0,0.06);
+      --alpha-8: rgba(0,0,0,0.08);
+      --select-bg: rgba(255,255,255,0.7);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+    ::-webkit-scrollbar-thumb { background: var(--green); border-radius: 4px; }
+    ::selection { background: var(--green); color: #000; }
+
+    /* ─── Glass Card ─── */
+    .glass {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+    }
+
+    /* ─── Container ─── */
+    .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* ─── Nav ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      background: var(--nav-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 0;
+    }
+    nav .container { display: flex; align-items: center; justify-content: space-between; }
+    .nav-title { font-size: 1.125rem; font-weight: 600; color: var(--text-primary); }
+    .nav-title span { color: var(--green); }
+    .nav-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 50px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .nav-back:hover { border-color: var(--green); color: var(--green); box-shadow: 0 0 20px var(--green-glow); transform: scale(1.02); }
+    .nav-controls { display: flex; align-items: center; gap: 12px; }
+    .theme-btn {
+      width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+      background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 50%;
+      color: var(--text-secondary); cursor: pointer; font-size: 1.1rem; transition: all 0.3s ease;
+      padding: 0; line-height: 1;
+    }
+    .theme-btn:hover { border-color: var(--green); box-shadow: 0 0 15px var(--green-glow); transform: scale(1.05); }
+    .lang-select {
+      padding: 6px 10px; background: var(--bg-card); border: 1px solid var(--border-color);
+      border-radius: 8px; color: var(--text-secondary); font-size: 0.75rem; font-family: inherit;
+      cursor: pointer; outline: none; transition: border-color 0.3s ease;
+      appearance: none; -webkit-appearance: none;
+    }
+    .lang-select:focus { border-color: var(--green); }
+    .lang-select option { background: var(--bg-secondary); color: var(--text-primary); }
+    select option { background: var(--bg-secondary); color: var(--text-primary); }
+
+    /* ─── Hero ─── */
+    .hero {
+      min-height: 60vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 140px 0 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 30% 40%, rgba(34,197,94,0.08) 0%, transparent 60%),
+                  radial-gradient(ellipse at 70% 60%, rgba(34,197,94,0.05) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .hero-content { text-align: center; position: relative; z-index: 1; max-width: 800px; }
+    .hero-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      background: rgba(34,197,94,0.1);
+      border: 1px solid rgba(34,197,94,0.2);
+      border-radius: 50px;
+      color: var(--green);
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 24px;
+      animation: fadeInUp 0.6s ease;
+    }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 16px;
+      animation: fadeInUp 0.6s ease 0.1s both;
+    }
+    .hero h1 span { color: var(--green); }
+    .hero p {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--text-secondary);
+      max-width: 640px;
+      margin: 0 auto 32px;
+      animation: fadeInUp 0.6s ease 0.2s both;
+    }
+    .hero-tags { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; animation: fadeInUp 0.6s ease 0.3s both; }
+    .tag {
+      padding: 8px 20px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      background: rgba(34,197,94,0.08);
+      border: 1px solid rgba(34,197,94,0.15);
+      color: var(--green);
+      transition: all 0.3s ease;
+    }
+    .tag:hover { background: rgba(34,197,94,0.15); box-shadow: 0 0 20px var(--green-glow); transform: translateY(-2px); }
+
+    /* ─── Section ─── */
+    section { padding: 80px 0; position: relative; }
+    .section-label {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 50px;
+      background: rgba(34,197,94,0.08);
+      border: 1px solid rgba(34,197,94,0.15);
+      color: var(--green);
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .section-title span { color: var(--green); }
+    .section-sub {
+      color: var(--text-secondary);
+      font-size: 1.05rem;
+      max-width: 600px;
+      margin-bottom: 48px;
+    }
+
+    /* ─── Problem Card ─── */
+    .problem-card {
+      padding: 40px;
+      display: flex; gap: 24px;
+      align-items: flex-start;
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+    }
+    .problem-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, transparent, var(--green), transparent);
+    }
+    .problem-icon {
+      flex-shrink: 0;
+      width: 56px; height: 56px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(34,197,94,0.1);
+      border-radius: var(--radius-sm);
+    }
+    .problem-icon svg { width: 28px; height: 28px; color: var(--green); }
+    .problem-card h3 { font-size: 1.3rem; font-weight: 600; margin-bottom: 8px; }
+    .problem-card p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; }
+
+    /* ─── Timeline ─── */
+    .timeline { position: relative; max-width: 800px; margin: 0 auto; padding-left: 40px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 15px; top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--green), transparent);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 40px;
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    .timeline-item.visible {
+      animation: slideInLeft 0.6s ease forwards;
+    }
+    .timeline-dot {
+      position: absolute; left: -33px; top: 6px;
+      width: 14px; height: 14px;
+      background: var(--green);
+      border-radius: 50%;
+      border: 3px solid var(--bg-primary);
+      box-shadow: 0 0 12px var(--green-glow);
+    }
+    .timeline-card {
+      padding: 24px 28px;
+    }
+    .timeline-card .step-num {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--green);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    .timeline-card h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 6px; }
+    .timeline-card p { color: var(--text-secondary); font-size: 0.9rem; }
+
+    /* ─── Demo Section ─── */
+    #demo { background: var(--bg-secondary); }
+    .demo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+    @media (max-width: 768px) { .demo-grid { grid-template-columns: 1fr; } }
+
+    .input-group { margin-bottom: 20px; }
+    .input-group label {
+      display: flex; justify-content: space-between;
+      font-size: 0.9rem; font-weight: 500; margin-bottom: 8px;
+    }
+    .input-group label span { color: var(--green); }
+    .input-group input[type="range"] {
+      width: 100%; height: 6px;
+      -webkit-appearance: none; appearance: none;
+      background: var(--alpha-8);
+      border-radius: 3px;
+      outline: none;
+    }
+    .input-group input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 18px; height: 18px;
+      background: var(--green);
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 12px var(--green-glow);
+    }
+    .input-group input[type="range"]::-moz-range-thumb {
+      width: 18px; height: 18px;
+      background: var(--green);
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+    }
+    .input-value {
+      display: inline-block;
+      min-width: 36px;
+      padding: 2px 12px;
+      background: rgba(34,197,94,0.1);
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--green);
+      text-align: center;
+    }
+
+    .recommend-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 36px;
+      background: linear-gradient(135deg, var(--green), var(--green-dark));
+      border: none;
+      border-radius: 50px;
+      color: #000;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      justify-content: center;
+    }
+    .recommend-btn:hover { box-shadow: 0 0 30px var(--green-glow); transform: translateY(-2px); }
+    .recommend-btn:active { transform: translateY(0); }
+    .recommend-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    .result-card {
+      padding: 32px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
+    }
+    .result-card.visible { opacity: 1; transform: translateY(0); }
+    .result-crop {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--green);
+      margin: 16px 0;
+    }
+    .result-crop .emoji { font-size: 2rem; }
+    .confidence-label { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 12px; }
+    .confidence-bar-track {
+      width: 100%; height: 10px;
+      background: var(--alpha-6);
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .confidence-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--green), #4ade80);
+      border-radius: 5px;
+      width: 0%;
+      transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .confidence-text { font-size: 0.9rem; color: var(--green); font-weight: 600; }
+
+    .result-details {
+      margin-top: 20px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+      text-align: left;
+    }
+    .result-detail-item {
+      padding: 12px 16px;
+      background: var(--alpha-3);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color);
+    }
+    .result-detail-item .label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .result-detail-item .value { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); }
+
+    /* ─── Impact ─── */
+    .impact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    @media (max-width: 768px) { .impact-grid { grid-template-columns: 1fr; } }
+    .impact-card {
+      padding: 32px 24px;
+      text-align: center;
+      transition: all 0.4s ease;
+    }
+    .impact-card:hover { transform: translateY(-8px); border-color: rgba(34,197,94,0.3); box-shadow: 0 12px 40px rgba(34,197,94,0.1); }
+    .impact-card .icon {
+      width: 52px; height: 52px;
+      margin: 0 auto 16px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(34,197,94,0.1);
+      border-radius: 50%;
+    }
+    .impact-card .icon svg { width: 26px; height: 26px; color: var(--green); }
+    .impact-card h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
+    .impact-card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; }
+
+    /* ─── Tech Stack ─── */
+    .tech-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    @media (max-width: 768px) { .tech-grid { grid-template-columns: 1fr; } }
+    .tech-card {
+      padding: 32px 24px;
+      text-align: center;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .tech-card::after {
+      content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 0; height: 3px;
+      background: var(--green);
+      transition: width 0.4s ease;
+      border-radius: 2px;
+    }
+    .tech-card:hover::after { width: 80%; }
+    .tech-card:hover { transform: translateY(-6px); border-color: rgba(34,197,94,0.2); }
+    .tech-icon {
+      width: 64px; height: 64px;
+      margin: 0 auto 16px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(34,197,94,0.08);
+      border-radius: 16px;
+      font-size: 2rem;
+      transition: all 0.3s ease;
+    }
+    .tech-card:hover .tech-icon { background: rgba(34,197,94,0.15); box-shadow: 0 0 30px var(--green-glow); }
+    .tech-card h4 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
+    .tech-card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; }
+
+    /* ─── Footer ─── */
+    footer {
+      padding: 48px 0;
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+    }
+    .footer-links { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+    .footer-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 28px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+    .footer-btn.primary {
+      background: linear-gradient(135deg, var(--green), var(--green-dark));
+      color: #000;
+    }
+    .footer-btn.primary:hover { box-shadow: 0 0 25px var(--green-glow); transform: translateY(-2px); }
+    .footer-btn.secondary {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+    }
+    .footer-btn.secondary:hover { border-color: var(--green); color: var(--green); box-shadow: 0 0 20px var(--green-glow); transform: translateY(-2px); }
+    footer p { color: var(--text-muted); font-size: 0.85rem; }
+
+    /* ─── Animations ─── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 12px var(--green-glow); }
+      50% { box-shadow: 0 0 30px var(--green-glow); }
+    }
+
+    .fade-in { opacity: 0; transform: translateY(30px); transition: all 0.7s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    .scroll-reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s ease; }
+    .scroll-reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ─── Floating particles (CSS-only) ─── */
+    .particles {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    .particle {
+      position: absolute; border-radius: 50%;
+      background: rgba(34,197,94,0.06);
+      animation: float linear infinite;
+    }
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
+    }
+    .particle:nth-child(1) { width: 6px; height: 6px; left: 10%; animation-duration: 18s; animation-delay: 0s; }
+    .particle:nth-child(2) { width: 4px; height: 4px; left: 25%; animation-duration: 22s; animation-delay: 2s; }
+    .particle:nth-child(3) { width: 8px; height: 8px; left: 40%; animation-duration: 20s; animation-delay: 4s; }
+    .particle:nth-child(4) { width: 5px; height: 5px; left: 55%; animation-duration: 25s; animation-delay: 1s; }
+    .particle:nth-child(5) { width: 7px; height: 7px; left: 70%; animation-duration: 19s; animation-delay: 3s; }
+    .particle:nth-child(6) { width: 4px; height: 4px; left: 85%; animation-duration: 23s; animation-delay: 5s; }
+    .particle:nth-child(7) { width: 6px; height: 6px; left: 50%; animation-duration: 21s; animation-delay: 7s; }
+    .particle:nth-child(8) { width: 3px; height: 3px; left: 15%; animation-duration: 26s; animation-delay: 2s; }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 768px) {
+      section { padding: 48px 0; }
+      .hero { padding: 120px 0 48px; min-height: auto; }
+      .nav-title { font-size: 0.95rem; }
+      .problem-card { flex-direction: column; padding: 24px; }
+      .timeline { padding-left: 32px; }
+      .timeline-dot { left: -25px; width: 12px; height: 12px; }
+      .result-details { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body style="background:#0a0a0f">
+  <div class="loader-bar"></div>
+
+  <!-- Particles -->
+  <div class="particles">
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div>
+  </div>
+
+  <!-- ═══ Navigation ═══ -->
+  <nav>
+    <div class="container">
+      <div class="nav-title"><span>✦</span> <span data-i18n="nav.title">AI-Based Crop Recommendation</span></div>
+      <div class="nav-controls">
+        <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+        <select class="lang-select" id="lang-select" onchange="changeLang(this.value)">
+          <option value="en">EN</option>
+          <option value="bn">বাংলা</option>
+          <option value="zh">中文</option>
+          <option value="hi">हिन्दी</option>
+        </select>
+        <a href="/" class="nav-back">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>
+          </svg>
+          <span data-i18n="nav.back">Back to Portfolio</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══ Hero ═══ -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <div class="hero-badge" data-i18n="hero.badge">🌟 Featured AI Project</div>
+      <h1><span data-i18n="hero.title">AI-Based Crop </span><span data-i18n="hero.titleSpan">Recommendation</span> System</h1>
+      <p data-i18n="hero.desc">Recommends the most suitable crop for a given region using soil, rainfall, and climate data.</p>
+      <div class="hero-tags">
+        <span class="tag" data-i18n="hero.tag1">🐍 Python</span>
+        <span class="tag" data-i18n="hero.tag2">🤖 Scikit-Learn</span>
+        <span class="tag" data-i18n="hero.tag3">📊 Streamlit</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Problem Statement ═══ -->
+  <section>
+    <div class="container" style="text-align:center;">
+      <div class="section-label" data-i18n="problem.label">Problem Statement</div>
+      <div class="problem-card glass fade-in">
+        <div class="problem-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>
+          </svg>
+        </div>
+        <div>
+          <h3 data-i18n="problem.title">Why This Matters</h3>
+          <p data-i18n="problem.desc">Farmers often rely on experience rather than data, leading to inefficient crop selection and reduced yield.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Implementation ═══ -->
+  <section style="background:var(--bg-secondary);">
+    <div class="container">
+      <div style="text-align:center;">
+        <div class="section-label" data-i18n="impl.label">Implementation</div>
+        <h2 class="section-title"><span data-i18n="impl.title">How It </span><span data-i18n="impl.titleSpan">Works</span></h2>
+        <p class="section-sub" style="margin:0 auto 48px;" data-i18n="impl.sub">Four key steps from data collection to deployment.</p>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item scroll-reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card glass">
+            <div class="step-num" data-i18n="step1.num">Step 01</div>
+            <h4 data-i18n="step1.title">📡 Data Collection</h4>
+            <p data-i18n="step1.desc">Collected open soil and weather datasets from government and research repositories covering multiple regions and seasons.</p>
+          </div>
+        </div>
+        <div class="timeline-item scroll-reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card glass">
+            <div class="step-num" data-i18n="step2.num">Step 02</div>
+            <h4 data-i18n="step2.title">🧠 Model Training</h4>
+            <p data-i18n="step2.desc">Trained a classification model using Scikit-Learn with algorithms like Random Forest and XGBoost for high accuracy crop prediction.</p>
+          </div>
+        </div>
+        <div class="timeline-item scroll-reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card glass">
+            <div class="step-num" data-i18n="step3.num">Step 03</div>
+            <h4 data-i18n="step3.title">🌐 Web Interface</h4>
+            <p data-i18n="step3.desc">Built an interactive web interface with Streamlit that takes soil and climate inputs and provides real-time crop suggestions.</p>
+          </div>
+        </div>
+        <div class="timeline-item scroll-reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-card glass">
+            <div class="step-num" data-i18n="step4.num">Step 04</div>
+            <h4 data-i18n="step4.title">📈 Visualization</h4>
+            <p data-i18n="step4.desc">Visualized predictions and confidence scores with intuitive charts and graphs for easy interpretation by farmers.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Live Demo ═══ -->
+  <section id="demo">
+    <div class="container">
+      <div style="text-align:center;">
+        <div class="section-label" data-i18n="demo.label">Live Demo</div>
+        <h2 class="section-title"><span data-i18n="demo.title">Try the </span><span data-i18n="demo.titleSpan">Recommender</span></h2>
+        <p class="section-sub" style="margin:0 auto 48px;" data-i18n="demo.sub">Adjust the sliders to match your soil and climate conditions, then get a crop recommendation.</p>
+      </div>
+      <div class="demo-grid">
+        <!-- Inputs -->
+        <div class="glass" style="padding:32px;">
+          <h3 style="font-size:1.2rem;font-weight:600;margin-bottom:24px;">🌱 Soil & Climate Parameters</h3>
+
+          <div class="input-group">
+            <label>Nitrogen (N) <span id="n-val" class="input-value">70</span></label>
+            <input type="range" id="nitrogen" min="0" max="140" value="70" oninput="updateDemo()">
+          </div>
+          <div class="input-group">
+            <label>Phosphorus (P) <span id="p-val" class="input-value">70</span></label>
+            <input type="range" id="phosphorus" min="0" max="145" value="70" oninput="updateDemo()">
+          </div>
+          <div class="input-group">
+            <label>Potassium (K) <span id="k-val" class="input-value">100</span></label>
+            <input type="range" id="potassium" min="0" max="205" value="100" oninput="updateDemo()">
+          </div>
+          <div class="input-group">
+            <label>Temperature <span id="temp-val" class="input-value">25</span> °C</label>
+            <input type="range" id="temperature" min="0" max="50" value="25" oninput="updateDemo()">
+          </div>
+          <div class="input-group">
+            <label>Humidity <span id="hum-val" class="input-value">60</span> %</label>
+            <input type="range" id="humidity" min="0" max="100" value="60" oninput="updateDemo()">
+          </div>
+          <div class="input-group">
+            <label>Rainfall <span id="rain-val" class="input-value">120</span> mm</label>
+            <input type="range" id="rainfall" min="0" max="300" value="120" oninput="updateDemo()">
+          </div>
+
+          <button class="recommend-btn" id="recommend-btn" onclick="getRecommendation()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+            </svg>
+            Get Recommendation
+          </button>
+        </div>
+
+        <!-- Result -->
+        <div class="glass result-card" id="result-card">
+          <div style="font-size:3rem;margin-bottom:8px;" id="result-emoji">🌾</div>
+          <div class="section-label" style="margin-bottom:4px;">Recommended Crop</div>
+          <div class="result-crop" id="result-crop">—</div>
+
+          <div>
+            <div class="confidence-label">Confidence Score</div>
+            <div class="confidence-bar-track">
+              <div class="confidence-bar-fill" id="confidence-bar"></div>
+            </div>
+            <div class="confidence-text" id="confidence-text">0%</div>
+          </div>
+
+          <div class="result-details" id="result-details">
+            <div class="result-detail-item">
+              <div class="label">Optimal Season</div>
+              <div class="value" id="detail-season">—</div>
+            </div>
+            <div class="result-detail-item">
+              <div class="label">Water Need</div>
+              <div class="value" id="detail-water">—</div>
+            </div>
+            <div class="result-detail-item">
+              <div class="label">Growth Duration</div>
+              <div class="value" id="detail-duration">—</div>
+            </div>
+            <div class="result-detail-item">
+              <div class="label">Soil Preference</div>
+              <div class="value" id="detail-soil">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Impact ═══ -->
+  <section>
+    <div class="container">
+      <div style="text-align:center;">
+        <div class="section-label" data-i18n="impact.label">Project Impact</div>
+        <h2 class="section-title"><span data-i18n="impact.title">Why It </span><span data-i18n="impact.titleSpan">Matters</span></h2>
+        <p class="section-sub" style="margin:0 auto 48px;" data-i18n="impact.sub">Transforming agriculture through data-driven intelligence.</p>
+      </div>
+      <div class="impact-grid">
+        <div class="impact-card glass scroll-reveal">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <h4 data-i18n="impact1.title">Data-Driven Decisions</h4>
+          <p data-i18n="impact1.desc">Replaces guesswork with scientific, data-backed crop selection for every region.</p>
+        </div>
+        <div class="impact-card glass scroll-reveal">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+            </svg>
+          </div>
+          <h4 data-i18n="impact2.title">Higher Yield</h4>
+          <p data-i18n="impact2.desc">Optimizes crop selection to maximize agricultural output and farmer profitability.</p>
+        </div>
+        <div class="impact-card glass scroll-reveal">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/>
+            </svg>
+          </div>
+          <h4 data-i18n="impact3.title">Efficient Land Use</h4>
+          <p data-i18n="impact3.desc">Ensures every plot of land is used for the most suitable crop, reducing waste.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Tech Stack ═══ -->
+  <section style="background:var(--bg-secondary);">
+    <div class="container">
+      <div style="text-align:center;">
+        <div class="section-label" data-i18n="tech.label">Tech Stack</div>
+        <h2 class="section-title"><span data-i18n="tech.title">Built </span><span data-i18n="tech.titleSpan">With</span></h2>
+        <p class="section-sub" style="margin:0 auto 48px;" data-i18n="tech.sub">Modern tools and libraries powering the recommendation engine.</p>
+      </div>
+      <div class="tech-grid">
+        <div class="tech-card glass scroll-reveal">
+          <div class="tech-icon">🐍</div>
+          <h4 data-i18n="tech1.title">Python</h4>
+          <p data-i18n="tech1.desc">Core programming language used for data processing, model training, and backend logic.</p>
+        </div>
+        <div class="tech-card glass scroll-reveal">
+          <div class="tech-icon">🤖</div>
+          <h4 data-i18n="tech2.title">Scikit-Learn</h4>
+          <p data-i18n="tech2.desc">Machine learning library used to train classification models for accurate crop predictions.</p>
+        </div>
+        <div class="tech-card glass scroll-reveal">
+          <div class="tech-icon">📊</div>
+          <h4 data-i18n="tech3.title">Streamlit</h4>
+          <p data-i18n="tech3.desc">Web framework used to build an intuitive, interactive dashboard for end-users.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ Footer ═══ -->
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="#" class="footer-btn primary" onclick="window.open('https://github.com','_blank')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12 24 5.37 18.63 0 12 0z"/>
+          </svg>
+          <span data-i18n="footer.github">GitHub</span>
+        </a>
+        <a href="/" class="footer-btn secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>
+          </svg>
+          <span data-i18n="footer.back">Back to Portfolio</span>
+        </a>
+      </div>
+      <p data-i18n="footer.text">&copy; 2026 Ahamad Ullah — AI Engineer Portfolio</p>
+    </div>
+  </footer>
+
+  <script>
+    // ─── Update slider values ───
+    function updateDemo() {
+      document.getElementById('n-val').textContent = document.getElementById('nitrogen').value;
+      document.getElementById('p-val').textContent = document.getElementById('phosphorus').value;
+      document.getElementById('k-val').textContent = document.getElementById('potassium').value;
+      document.getElementById('temp-val').textContent = document.getElementById('temperature').value;
+      document.getElementById('hum-val').textContent = document.getElementById('humidity').value;
+      document.getElementById('rain-val').textContent = document.getElementById('rainfall').value;
+    }
+
+    // ─── Crop Database ───
+    const crops = {
+      rice: {
+        name: 'Rice', emoji: '🌾',
+        season: 'Kharif (Monsoon)',
+        water: 'High (1200+ mm)',
+        duration: '120–150 days',
+        soil: 'Clay / Loamy',
+        check: (n, p, k, t, h, r) => {
+          let score = 0;
+          if (r > 150) score += 3;
+          else if (r > 100) score += 2;
+          else if (r > 60) score += 1;
+          if (t >= 20 && t <= 37) score += 3;
+          else if (t >= 15 && t <= 40) score += 1;
+          if (h > 65) score += 3;
+          else if (h > 50) score += 1;
+          if (n >= 50 && n <= 120) score += 2;
+          if (p >= 40 && p <= 100) score += 1;
+          if (k >= 60 && k <= 160) score += 2;
+          return score;
+        }
+      },
+      wheat: {
+        name: 'Wheat', emoji: '🌾',
+        season: 'Rabi (Winter)',
+        water: 'Moderate (450–650 mm)',
+        duration: '100–130 days',
+        soil: 'Loamy / Clay-loam',
+        check: (n, p, k, t, h, r) => {
+          let score = 0;
+          if (r >= 40 && r <= 100) score += 3;
+          else if (r >= 20 && r <= 130) score += 1;
+          if (t >= 10 && t <= 25) score += 3;
+          else if (t >= 5 && t <= 30) score += 1;
+          if (h >= 40 && h <= 70) score += 2;
+          else if (h >= 30 && h <= 80) score += 1;
+          if (n >= 60 && n <= 130) score += 2;
+          if (p >= 30 && p <= 90) score += 2;
+          if (k >= 40 && k <= 120) score += 1;
+          return score;
+        }
+      },
+      maize: {
+        name: 'Maize', emoji: '🌽',
+        season: 'Kharif / Spring',
+        water: 'Moderate (500–800 mm)',
+        duration: '90–120 days',
+        soil: 'Well-drained loamy',
+        check: (n, p, k, t, h, r) => {
+          let score = 0;
+          if (r >= 60 && r <= 120) score += 3;
+          else if (r >= 40 && r <= 150) score += 1;
+          if (t >= 15 && t <= 30) score += 3;
+          else if (t >= 10 && t <= 35) score += 1;
+          if (h >= 50 && h <= 80) score += 2;
+          else if (h >= 40 && h <= 90) score += 1;
+          if (n >= 40 && n <= 110) score += 2;
+          if (p >= 30 && p <= 85) score += 2;
+          if (k >= 30 && k <= 100) score += 1;
+          return score;
+        }
+      },
+      cotton: {
+        name: 'Cotton', emoji: '🌿',
+        season: 'Kharif',
+        water: 'Moderate (600–1000 mm)',
+        duration: '150–200 days',
+        soil: 'Black / Alluvial',
+        check: (n, p, k, t, h, r) => {
+          let score = 0;
+          if (r >= 40 && r <= 80) score += 3;
+          else if (r >= 20 && r <= 100) score += 1;
+          if (t >= 20 && t <= 35) score += 3;
+          else if (t >= 15 && t <= 38) score += 1;
+          if (h >= 40 && h <= 70) score += 2;
+          else if (h >= 30 && h <= 80) score += 1;
+          if (n >= 30 && n <= 90) score += 2;
+          if (p >= 40 && p <= 100) score += 2;
+          if (k >= 40 && k <= 120) score += 2;
+          return score;
+        }
+      },
+      sugarcane: {
+        name: 'Sugarcane', emoji: '🎋',
+        season: 'Year-round / Tropical',
+        water: 'High (1000–2000 mm)',
+        duration: '10–18 months',
+        soil: 'Deep loamy / Clay-loam',
+        check: (n, p, k, t, h, r) => {
+          let score = 0;
+          if (r >= 100 && r <= 200) score += 3;
+          else if (r >= 75 && r <= 250) score += 1;
+          if (t >= 25 && t <= 35) score += 3;
+          else if (t >= 20 && t <= 40) score += 1;
+          if (h >= 60 && h <= 85) score += 2;
+          else if (h >= 50 && h <= 90) score += 1;
+          if (n >= 50 && n <= 120) score += 2;
+          if (p >= 30 && p <= 90) score += 1;
+          if (k >= 80 && k <= 200) score += 3;
+          else if (k >= 50) score += 1;
+          return score;
+        }
+      }
+    };
+
+    // ─── Recommendation Engine ───
+    function getRecommendation() {
+      const n = +document.getElementById('nitrogen').value;
+      const p = +document.getElementById('phosphorus').value;
+      const k = +document.getElementById('potassium').value;
+      const t = +document.getElementById('temperature').value;
+      const h = +document.getElementById('humidity').value;
+      const r = +document.getElementById('rainfall').value;
+
+      const btn = document.getElementById('recommend-btn');
+      btn.disabled = true;
+      btn.textContent = 'Analyzing...';
+
+      setTimeout(() => {
+        let bestCrop = null;
+        let bestScore = -1;
+        let totalScore = 0;
+
+        const entries = Object.entries(crops);
+        const scores = entries.map(([key, crop]) => {
+          const s = crop.check(n, p, k, t, h, r);
+          totalScore += s;
+          if (s > bestScore) { bestScore = s; bestCrop = crop; }
+          return { crop, score: s };
+        });
+
+        const maxPossible = 16;
+        const confidence = Math.min(100, Math.round((bestScore / maxPossible) * 100));
+        const bar = document.getElementById('confidence-bar');
+        const confText = document.getElementById('confidence-text');
+        const resultCrop = document.getElementById('result-crop');
+        const resultEmoji = document.getElementById('result-emoji');
+        const card = document.getElementById('result-card');
+
+        // Animate confidence bar
+        bar.style.width = '0%';
+        requestAnimationFrame(() => { bar.style.width = confidence + '%'; });
+
+        confText.textContent = confidence + '%';
+        resultCrop.textContent = bestCrop.emoji + ' ' + bestCrop.name;
+        resultEmoji.textContent = bestCrop.emoji;
+
+        document.getElementById('detail-season').textContent = bestCrop.season;
+        document.getElementById('detail-water').textContent = bestCrop.water;
+        document.getElementById('detail-duration').textContent = bestCrop.duration;
+        document.getElementById('detail-soil').textContent = bestCrop.soil;
+
+        card.classList.add('visible');
+
+        btn.disabled = false;
+        btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Get Recommendation`;
+
+        // Reset animation by removing/re-adding
+        bar.style.transition = 'none';
+        bar.style.width = '0%';
+        void bar.offsetWidth;
+        bar.style.transition = 'width 1s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        requestAnimationFrame(() => { bar.style.width = confidence + '%'; });
+
+      }, 800);
+    }
+
+    // ─── Scroll Reveal ───
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.scroll-reveal, .fade-in').forEach(el => revealObserver.observe(el));
+    });
+
+    // ─── Trigger first recommendation on load ───
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(getRecommendation, 600);
+    });
+
+    // ─── Theme Toggle ───
+    function toggleTheme() {
+      const html = document.documentElement;
+      const isLight = html.getAttribute('data-theme') === 'light';
+      html.setAttribute('data-theme', isLight ? '' : 'light');
+      document.getElementById('theme-btn').textContent = isLight ? '🌙' : '☀️';
+      localStorage.setItem('theme', isLight ? 'dark' : 'light');
+    }
+
+    // ─── Load saved theme ───
+    (function() {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        const btn = document.getElementById('theme-btn');
+        if (btn) btn.textContent = '☀️';
+      }
+    })();
+
+    // ─── Translations ───
+    const i18nData = {
+      en: {
+        'nav.title': 'AI-Based Crop Recommendation',
+        'nav.back': 'Back to Portfolio',
+        'hero.badge': '🌟 Featured AI Project',
+        'hero.title': 'AI-Based Crop ',
+        'hero.titleSpan': 'Recommendation',
+        'hero.desc': 'Recommends the most suitable crop for a given region using soil, rainfall, and climate data.',
+        'hero.tag1': '🐍 Python',
+        'hero.tag2': '🤖 Scikit-Learn',
+        'hero.tag3': '📊 Streamlit',
+        'problem.label': 'Problem Statement',
+        'problem.title': 'Why This Matters',
+        'problem.desc': 'Farmers often rely on experience rather than data, leading to inefficient crop selection and reduced yield.',
+        'impl.label': 'Implementation',
+        'impl.title': 'How It ',
+        'impl.titleSpan': 'Works',
+        'impl.sub': 'Four key steps from data collection to deployment.',
+        'step1.num': 'Step 01',
+        'step1.title': '📡 Data Collection',
+        'step1.desc': 'Collected open soil and weather datasets from government and research repositories covering multiple regions and seasons.',
+        'step2.num': 'Step 02',
+        'step2.title': '🧠 Model Training',
+        'step2.desc': 'Trained a classification model using Scikit-Learn with algorithms like Random Forest and XGBoost for high accuracy crop prediction.',
+        'step3.num': 'Step 03',
+        'step3.title': '🌐 Web Interface',
+        'step3.desc': 'Built an interactive web interface with Streamlit that takes soil and climate inputs and provides real-time crop suggestions.',
+        'step4.num': 'Step 04',
+        'step4.title': '📈 Visualization',
+        'step4.desc': 'Visualized predictions and confidence scores with intuitive charts and graphs for easy interpretation by farmers.',
+        'demo.label': 'Live Demo',
+        'demo.title': 'Try the ',
+        'demo.titleSpan': 'Recommender',
+        'demo.sub': 'Adjust the sliders to match your soil and climate conditions, then get a crop recommendation.',
+        'impact.label': 'Project Impact',
+        'impact.title': 'Why It ',
+        'impact.titleSpan': 'Matters',
+        'impact.sub': 'Transforming agriculture through data-driven intelligence.',
+        'impact1.title': 'Data-Driven Decisions',
+        'impact1.desc': 'Replaces guesswork with scientific, data-backed crop selection for every region.',
+        'impact2.title': 'Higher Yield',
+        'impact2.desc': 'Optimizes crop selection to maximize agricultural output and farmer profitability.',
+        'impact3.title': 'Efficient Land Use',
+        'impact3.desc': 'Ensures every plot of land is used for the most suitable crop, reducing waste.',
+        'tech.label': 'Tech Stack',
+        'tech.title': 'Built ',
+        'tech.titleSpan': 'With',
+        'tech.sub': 'Modern tools and libraries powering the recommendation engine.',
+        'tech1.title': 'Python',
+        'tech1.desc': 'Core programming language used for data processing, model training, and backend logic.',
+        'tech2.title': 'Scikit-Learn',
+        'tech2.desc': 'Machine learning library used to train classification models for accurate crop predictions.',
+        'tech3.title': 'Streamlit',
+        'tech3.desc': 'Web framework used to build an intuitive, interactive dashboard for end-users.',
+        'footer.github': 'GitHub',
+        'footer.back': 'Back to Portfolio',
+        'footer.text': '© 2026 Ahamad Ullah — AI Engineer Portfolio'
+      },
+      bn: {
+        'nav.title': 'এআই-ভিত্তিক ফসল সুপারিশ',
+        'nav.back': 'পোর্টফোলিওতে ফিরুন',
+        'hero.badge': '🌟 ফিচারড এআই প্রজেক্ট',
+        'hero.title': 'এআই-ভিত্তিক ফসল ',
+        'hero.titleSpan': 'সুপারিশ',
+        'hero.desc': 'মাটি, বৃষ্টিপাত এবং জলবায়ু তথ্য ব্যবহার করে নির্দিষ্ট অঞ্চলের জন্য সবচেয়ে উপযুক্ত ফসল সুপারিশ করে।',
+        'hero.tag1': '🐍 পাইথন',
+        'hero.tag2': '🤖 সিকিট-লার্ন',
+        'hero.tag3': '📊 স্ট্রিমলিট',
+        'problem.label': 'সমস্যার বিবৃতি',
+        'problem.title': 'কেন এটি গুরুত্বপূর্ণ',
+        'problem.desc': 'কৃষকরা প্রায়ই তথ্যের পরিবর্তে অভিজ্ঞতার উপর নির্ভর করে, যা অদক্ষ ফসল নির্বাচন এবং ফলন হ্রাসের দিকে নিয়ে যায়।',
+        'impl.label': 'বাস্তবায়ন',
+        'impl.title': 'এটি কীভাবে ',
+        'impl.titleSpan': 'কাজ করে',
+        'impl.sub': 'তথ্য সংগ্রহ থেকে স্থাপনা পর্যন্ত চারটি মূল ধাপ।',
+        'step1.num': 'ধাপ ০১',
+        'step1.title': '📡 তথ্য সংগ্রহ',
+        'step1.desc': 'একাধিক অঞ্চল ও মৌসুম কভার করে সরকারি ও গবেষণা ভান্ডার থেকে খোলা মাটি ও আবহাওয়া ডেটাসেট সংগ্রহ করা হয়েছে।',
+        'step2.num': 'ধাপ ০২',
+        'step2.title': '🧠 মডেল প্রশিক্ষণ',
+        'step2.desc': 'উচ্চ নির্ভুলতা ফসল ভবিষ্যদ্বাণীর জন্য র্যান্ডম ফরেস্ট এবং এক্সজিবুস্টের মতো অ্যালগরিদম ব্যবহার করে সিকিট-লার্ন দিয়ে একটি শ্রেণিবিন্যাস মডেল প্রশিক্ষিত।',
+        'step3.num': 'ধাপ ০৩',
+        'step3.title': '🌐 ওয়েব ইন্টারফেস',
+        'step3.desc': 'স্ট্রিমলিট দিয়ে একটি ইন্টারেক্টিভ ওয়েব ইন্টারফেস তৈরি করা হয়েছে যা মাটি ও জলবায়ু ইনপুট নিয়ে রিয়েল-টাইম ফসল সুপারিশ প্রদান করে।',
+        'step4.num': 'ধাপ ০৪',
+        'step4.title': '📈 ভিজুয়ালাইজেশন',
+        'step4.desc': 'কৃষকদের সহজ ব্যাখ্যার জন্য স্বজ্ঞাত চার্ট ও গ্রাফ সহ ভবিষ্যদ্বাণী এবং আত্মবিশ্বাসের স্কোর দৃশ্যমান করা হয়েছে।',
+        'demo.label': 'লাইভ ডেমো',
+        'demo.title': 'চেষ্টা করুন ',
+        'demo.titleSpan': 'সুপারিশকারী',
+        'demo.sub': 'আপনার মাটি ও জলবায়ু শর্তের সাথে মেলাতে স্লাইডারগুলি সামঞ্জস্য করুন, তারপর ফসলের সুপারিশ পান।',
+        'impact.label': 'প্রকল্পের প্রভাব',
+        'impact.title': 'কেন এটি ',
+        'impact.titleSpan': 'গুরুত্বপূর্ণ',
+        'impact.sub': 'তথ্য-চালিত বুদ্ধিমত্তার মাধ্যমে কৃষি রূপান্তর।',
+        'impact1.title': 'তথ্য-চালিত সিদ্ধান্ত',
+        'impact1.desc': 'প্রত্যেক অঞ্চলের জন্য বৈজ্ঞানিক, তথ্য-সমর্থিত ফসল নির্বাচনের মাধ্যমে অনুমান প্রতিস্থাপন করে।',
+        'impact2.title': 'উচ্চ ফলন',
+        'impact2.desc': 'কৃষি আউটপুট এবং কৃষক লাভ সর্বাধিক করতে ফসল নির্বাচন অপ্টিমাইজ করে।',
+        'impact3.title': 'দক্ষ জমি ব্যবহার',
+        'impact3.desc': 'প্রত্যেক জমির প্লট সবচেয়ে উপযুক্ত ফসলের জন্য ব্যবহার করা নিশ্চিত করে, অপচয় হ্রাস করে।',
+        'tech.label': 'প্রযুক্তি স্ট্যাক',
+        'tech.title': 'নির্মিত ',
+        'tech.titleSpan': 'সাথে',
+        'tech.sub': 'আধুনিক টুলস এবং লাইব্রেরি যা সুপারিশ ইঞ্জিনকে শক্তি দেয়।',
+        'tech1.title': 'পাইথন',
+        'tech1.desc': 'তথ্য প্রক্রিয়াকরণ, মডেল প্রশিক্ষণ এবং ব্যাকএন্ড লজিকের জন্য ব্যবহৃত মূল প্রোগ্রামিং ভাষা।',
+        'tech2.title': 'সিকিট-লার্ন',
+        'tech2.desc': 'সঠিক ফসল ভবিষ্যদ্বাণীর জন্য শ্রেণিবিন্যাস মডেল প্রশিক্ষণে ব্যবহৃত মেশিন লার্নিং লাইব্রেরি।',
+        'tech3.title': 'স্ট্রিমলিট',
+        'tech3.desc': 'শেষ-ব্যবহারকারীদের জন্য একটি স্বজ্ঞাত, ইন্টারেক্টিভ ড্যাশবোর্ড তৈরি করতে ব্যবহৃত ওয়েব ফ্রেমওয়ার্ক।',
+        'footer.github': 'গিটহাব',
+        'footer.back': 'পোর্টফোলিওতে ফিরুন',
+        'footer.text': '© ২০২৬ আহামাদ উল্লাহ — এআই ইঞ্জিনিয়ার পোর্টফোলিও'
+      },
+      zh: {
+        'nav.title': '基于AI的作物推荐',
+        'nav.back': '返回作品集',
+        'hero.badge': '🌟 精选AI项目',
+        'hero.title': '基于AI的作物',
+        'hero.titleSpan': '推荐',
+        'hero.desc': '利用土壤、降雨和气候数据，为特定区域推荐最合适的作物。',
+        'hero.tag1': '🐍 Python',
+        'hero.tag2': '🤖 Scikit-Learn',
+        'hero.tag3': '📊 Streamlit',
+        'problem.label': '问题陈述',
+        'problem.title': '为什么这很重要',
+        'problem.desc': '农民通常依赖经验而非数据，导致作物选择效率低下和产量下降。',
+        'impl.label': '实现方式',
+        'impl.title': '它是如何',
+        'impl.titleSpan': '工作的',
+        'impl.sub': '从数据收集到部署的四个关键步骤。',
+        'step1.num': '步骤 01',
+        'step1.title': '📡 数据收集',
+        'step1.desc': '从政府和研究机构收集了涵盖多个地区和季节的公开土壤和天气数据集。',
+        'step2.num': '步骤 02',
+        'step2.title': '🧠 模型训练',
+        'step2.desc': '使用Scikit-Learn训练分类模型，采用随机森林和XGBoost等算法实现高精度作物预测。',
+        'step3.num': '步骤 03',
+        'step3.title': '🌐 网页界面',
+        'step3.desc': '使用Streamlit构建交互式网页界面，接收土壤和气候输入并提供实时作物建议。',
+        'step4.num': '步骤 04',
+        'step4.title': '📈 可视化',
+        'step4.desc': '通过直观的图表和图形展示预测结果和置信度分数，方便农民理解。',
+        'demo.label': '在线演示',
+        'demo.title': '尝试',
+        'demo.titleSpan': '推荐器',
+        'demo.sub': '调整滑块以匹配您的土壤和气候条件，然后获取作物推荐。',
+        'impact.label': '项目影响',
+        'impact.title': '为什么它',
+        'impact.titleSpan': '重要',
+        'impact.sub': '通过数据驱动智能改变农业。',
+        'impact1.title': '数据驱动决策',
+        'impact1.desc': '用科学的、数据支持的作物选择取代每个地区的猜测。',
+        'impact2.title': '更高产量',
+        'impact2.desc': '优化作物选择，最大化农业产出和农民盈利能力。',
+        'impact3.title': '高效土地利用',
+        'impact3.desc': '确保每块土地都用于最合适的作物，减少浪费。',
+        'tech.label': '技术栈',
+        'tech.title': '构建于',
+        'tech.titleSpan': '',
+        'tech.sub': '驱动推荐引擎的现代工具和库。',
+        'tech1.title': 'Python',
+        'tech1.desc': '用于数据处理、模型训练和后端逻辑的核心编程语言。',
+        'tech2.title': 'Scikit-Learn',
+        'tech2.desc': '用于训练分类模型以进行准确作物预测的机器学习库。',
+        'tech3.title': 'Streamlit',
+        'tech3.desc': '用于为最终用户构建直观、交互式仪表板的Web框架。',
+        'footer.github': 'GitHub',
+        'footer.back': '返回作品集',
+        'footer.text': '© 2026 Ahamad Ullah — AI工程师作品集'
+      },
+      hi: {
+        'nav.title': 'एआई-आधारित फसल अनुशंसा',
+        'nav.back': 'पोर्टफोलियो पर वापस जाएं',
+        'hero.badge': '🌟 विशेष एआई प्रोजेक्ट',
+        'hero.title': 'एआई-आधारित फसल ',
+        'hero.titleSpan': 'अनुशंसा',
+        'hero.desc': 'मिट्टी, वर्षा और जलवायु डेटा का उपयोग करके किसी दिए गए क्षेत्र के लिए सबसे उपयुक्त फसल की सिफारिश करता है।',
+        'hero.tag1': '🐍 पायथन',
+        'hero.tag2': '🤖 स्किकिट-लर्न',
+        'hero.tag3': '📊 स्ट्रीमलिट',
+        'problem.label': 'समस्या विवरण',
+        'problem.title': 'यह क्यों महत्वपूर्ण है',
+        'problem.desc': 'किसान अक्सर डेटा के बजाय अनुभव पर निर्भर होते हैं, जिससे अकुशल फसल चयन और कम उपज होती है।',
+        'impl.label': 'कार्यान्वयन',
+        'impl.title': 'यह कैसे ',
+        'impl.titleSpan': 'काम करता है',
+        'impl.sub': 'डेटा संग्रह से परिनियोजन तक चार प्रमुख चरण।',
+        'step1.num': 'चरण 01',
+        'step1.title': '📡 डेटा संग्रह',
+        'step1.desc': 'कई क्षेत्रों और मौसमों को कवर करने वाले सरकारी और अनुसंधान भंडारों से खुले मिट्टी और मौसम डेटासेट एकत्र किए गए।',
+        'step2.num': 'चरण 02',
+        'step2.title': '🧠 मॉडल प्रशिक्षण',
+        'step2.desc': 'उच्च सटीकता फसल भविष्यवाणी के लिए रैंडम फॉरेस्ट और XGBoost जैसे एल्गोरिदम का उपयोग करके स्किकिट-लर्न के साथ एक वर्गीकरण मॉडल प्रशिक्षित किया गया।',
+        'step3.num': 'चरण 03',
+        'step3.title': '🌐 वेब इंटरफ़ेस',
+        'step3.desc': 'स्ट्रीमलिट के साथ एक इंटरैक्टिव वेब इंटरफ़ेस बनाया गया जो मिट्टी और जलवायु इनपुट लेता है और रीयल-टाइम फसल सुझाव प्रदान करता है।',
+        'step4.num': 'चरण 04',
+        'step4.title': '📈 विज़ुअलाइज़ेशन',
+        'step4.desc': 'किसानों द्वारा आसान व्याख्या के लिए सहज ज्ञान युक्त चार्ट और ग्राफ़ के साथ भविष्यवाणियों और आत्मविश्वास स्कोर की कल्पना की गई।',
+        'demo.label': 'लाइव डेमो',
+        'demo.title': 'आज़माएं ',
+        'demo.titleSpan': 'अनुशंसाकर्ता',
+        'demo.sub': 'अपनी मिट्टी और जलवायु परिस्थितियों से मेल खाने के लिए स्लाइडर्स को समायोजित करें, फिर फसल अनुशंसा प्राप्त करें।',
+        'impact.label': 'परियोजना प्रभाव',
+        'impact.title': 'यह क्यों ',
+        'impact.titleSpan': 'मायने रखता है',
+        'impact.sub': 'डेटा-संचालित बुद्धिमत्ता के माध्यम से कृषि को बदलना।',
+        'impact1.title': 'डेटा-संचालित निर्णय',
+        'impact1.desc': 'हर क्षेत्र के लिए वैज्ञानिक, डेटा-समर्थित फसल चयन के साथ अनुमान को बदलता है।',
+        'impact2.title': 'उच्च उपज',
+        'impact2.desc': 'कृषि उत्पादन और किसान लाभप्रदता को अधिकतम करने के लिए फसल चयन को अनुकूलित करता है।',
+        'impact3.title': 'कुशल भूमि उपयोग',
+        'impact3.desc': 'सुनिश्चित करता है कि भूमि का हर टुकड़ा सबसे उपयुक्त फसल के लिए उपयोग किया जाए, अपशिष्ट को कम करना।',
+        'tech.label': 'टेक स्टैक',
+        'tech.title': 'निर्मित ',
+        'tech.titleSpan': 'साथ',
+        'tech.sub': 'आधुनिक उपकरण और पुस्तकालय जो अनुशंसा इंजन को शक्ति प्रदान करते हैं।',
+        'tech1.title': 'पायथन',
+        'tech1.desc': 'डेटा प्रोसेसिंग, मॉडल प्रशिक्षण और बैकएंड लॉजिक के लिए उपयोग की जाने वाली मुख्य प्रोग्रामिंग भाषा।',
+        'tech2.title': 'स्किकिट-लर्न',
+        'tech2.desc': 'सटीक फसल भविष्यवाणियों के लिए वर्गीकरण मॉडल को प्रशिक्षित करने के लिए उपयोग की जाने वाली मशीन लर्निंग लाइब्रेरी।',
+        'tech3.title': 'स्ट्रीमलिट',
+        'tech3.desc': 'अंतिम-उपयोगकर्ताओं के लिए एक सहज, इंटरैक्टिव डैशबोर्ड बनाने के लिए उपयोग किया जाने वाला वेब फ्रेमवर्क।',
+        'footer.github': 'गिटहब',
+        'footer.back': 'पोर्टफोलियो पर वापस जाएं',
+        'footer.text': '© 2026 अहमद उल्लाह — एआई इंजीनियर पोर्टफोलियो'
+      }
+    };
+
+    function changeLang(lang) {
+      const data = i18nData[lang];
+      if (!data) return;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (data[key] !== undefined) {
+          el.innerHTML = data[key];
+        }
+      });
+      localStorage.setItem('lang', lang);
+    }
+
+    (function() {
+      const savedLang = localStorage.getItem('lang') || 'en';
+      document.getElementById('lang-select').value = savedLang;
+      changeLang(savedLang);
+    })();
+  </script>
+</body>
+</html>
