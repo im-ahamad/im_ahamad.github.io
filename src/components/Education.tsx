@@ -18,13 +18,15 @@ const Education = () => {
   return (
     <section id="education" className="py-20 px-4 relative overflow-hidden">
 
-      {/* Animations consolidated in index.css */}
+      {/* Mesh gradient background */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,hsl(var(--primary)/0.1),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,hsl(var(--accent)/0.08),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--gradient-end)/0.06),transparent_50%)]" />
 
-      {/* Background decoration */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent rounded-full blur-3xl" />
-      </div>
+      {/* Glow orbs */}
+      <div className="absolute top-1/3 left-1/4 w-64 h-64 rounded-full bg-primary opacity-10 blur-[100px] animate-hero-orb-1" />
+      <div className="absolute bottom-1/3 right-1/4 w-48 h-48 rounded-full bg-accent opacity-10 blur-[80px] animate-hero-orb-2" />
+      <div className="absolute top-1/2 right-1/3 w-40 h-40 rounded-full bg-purple-600 opacity-8 blur-[70px] animate-hero-orb-3" />
 
       {/* Floating bubbles - hidden on mobile for better performance */}
       <div className="hidden md:block absolute top-10 left-5 w-20 h-20 rounded-full bg-indigo-900 opacity-20 animate-bounce-slow"></div>

@@ -118,6 +118,16 @@ const Skills = () => {
   return (
     <section id="skills" className="relative py-20 px-6 bg-muted/30 overflow-hidden">
 
+      {/* Mesh gradient background */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--gradient-start)/0.1),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--accent)/0.08),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.06),transparent_50%)]" />
+
+      {/* Glow orbs */}
+      <div className="absolute top-1/4 right-1/4 w-72 h-72 rounded-full bg-accent opacity-10 blur-[100px] animate-hero-orb-2" />
+      <div className="absolute bottom-1/3 left-1/4 w-56 h-56 rounded-full bg-primary opacity-10 blur-[90px] animate-hero-orb-1" />
+      <div className="absolute top-1/2 left-1/3 w-44 h-44 rounded-full bg-emerald-500 opacity-8 blur-[70px] animate-hero-orb-3" />
+
       {/* Floating Bubbles */}
       <div className="absolute inset-0 pointer-events-none z-0 hidden md:block">
         {bubbles.map((bubble) => (

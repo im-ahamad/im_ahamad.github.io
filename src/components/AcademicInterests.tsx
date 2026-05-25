@@ -16,7 +16,16 @@ const AcademicInterests = () => {
 
   return (
     <section id="interests" className="relative py-20 px-4 bg-muted/30 overflow-hidden">
-      {/* Animations consolidated in index.css */}
+
+      {/* Mesh gradient background */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,hsl(var(--primary)/0.1),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,hsl(var(--accent)/0.08),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--gradient-start)/0.06),transparent_50%)]" />
+
+      {/* Glow orbs */}
+      <div className="absolute top-1/3 right-1/3 w-60 h-60 rounded-full bg-accent opacity-8 blur-[90px] animate-hero-orb-3" />
+      <div className="absolute bottom-1/4 left-1/4 w-52 h-52 rounded-full bg-primary opacity-8 blur-[80px] animate-hero-orb-1" />
+      <div className="absolute top-1/2 left-1/2 w-36 h-36 rounded-full bg-emerald-500 opacity-8 blur-[60px] animate-hero-orb-2" />
 
       {/* Floating Bubbles */}
       <div className="absolute top-10 left-5 w-20 h-20 bg-indigo-900 rounded-full opacity-20 animate-bounce-slow"></div>

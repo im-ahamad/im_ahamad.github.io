@@ -125,9 +125,17 @@ const Projects = () => {
   const { t } = useTranslation();
 
   return (
-    <section id="projects" className="py-12 md:py-20 px-4 relative bg-muted/30">
+    <section id="projects" className="py-12 md:py-20 px-4 relative bg-muted/30 overflow-hidden">
 
-      {/* Animations consolidated in index.css */}
+      {/* Mesh gradient background */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--primary)/0.1),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--accent)/0.08),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--gradient-start)/0.05),transparent_50%)]" />
+
+      {/* Glow orbs */}
+      <div className="absolute top-1/3 right-1/4 w-80 h-80 rounded-full bg-primary opacity-8 blur-[110px] animate-hero-orb-3" />
+      <div className="absolute bottom-1/4 left-1/4 w-60 h-60 rounded-full bg-accent opacity-8 blur-[90px] animate-hero-orb-1" />
+      <div className="absolute top-1/2 left-1/2 w-48 h-48 rounded-full bg-cyan-400 opacity-8 blur-[80px] animate-hero-orb-2" />
 
       {/* Floating bubbles */}
       <div className="hidden md:block absolute top-10 left-5 w-20 h-20 rounded-full bg-indigo-900 opacity-20 animate-bounce-slow"></div>
