@@ -125,7 +125,7 @@ const Projects = () => {
   const { t } = useTranslation();
 
   return (
-    <section id="projects" className="py-12 md:py-20 px-4 relative bg-muted/30 overflow-hidden">
+    <section id="projects" className="py-12 md:py-20 px-4 relative bg-muted/30 overflow-hidden scroll-mt-14">
 
       {/* Mesh gradient background */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--primary)/0.1),transparent_50%)]" />
