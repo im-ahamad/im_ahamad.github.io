@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI-Based Soil Moisture Prediction | Ahamad Ullah</title>
+  <meta name="description" content="Forecasts soil moisture levels to automate and optimize irrigation schedules." />
+  <style>body{background:#0a0a0f}.loader-bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:99999;pointer-events:none;background:linear-gradient(90deg,transparent,#06b6d4,transparent);animation:loaderBar .45s ease forwards}@keyframes loaderBar{0%{transform:scaleX(0);transform-origin:left}40%{transform:scaleX(.55)}100%{transform:scaleX(1);opacity:0}}</style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --cyan: #06b6d4; --cyan-dark: #0891b2; --cyan-glow: rgba(6,182,212,0.3);
+      --bg-primary: #0a0a0f; --bg-secondary: #111118; --bg-card: rgba(17,17,24,0.8);
+      --text-primary: #f1f7f5; --text-secondary: #94a3b8; --text-muted: #64748b;
+      --border-color: rgba(6,182,212,0.1); --nav-bg: rgba(10,10,15,0.85); --alpha-3: rgba(255,255,255,0.03); --alpha-4: rgba(255,255,255,0.04); --alpha-6: rgba(255,255,255,0.06); --alpha-8: rgba(255,255,255,0.08); --select-bg: rgba(255,255,255,0.04); --radius: 16px; --radius-sm: 10px;
+    }
+    [data-theme="light"] {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #f1f5f9;
+      --bg-card: rgba(255, 255, 255, 0.85);
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --border-color: rgba(0, 0, 0, 0.08);
+      --nav-bg: rgba(255,255,255,0.85); --alpha-3: rgba(0,0,0,0.03); --alpha-4: rgba(0,0,0,0.04); --alpha-6: rgba(0,0,0,0.06); --alpha-8: rgba(0,0,0,0.08); --select-bg: rgba(255,255,255,0.7);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family:'Space Grotesk',sans-serif; background:var(--bg-primary); color:var(--text-primary); line-height:1.6; overflow-x:hidden; }
+    ::-webkit-scrollbar { width:8px; } ::-webkit-scrollbar-track { background:var(--bg-secondary); } ::-webkit-scrollbar-thumb { background:var(--cyan); border-radius:4px; }
+    ::selection { background:var(--cyan); color:#000; }
+    .glass { background:var(--bg-card); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:1px solid var(--border-color); border-radius:var(--radius); }
+    .container { width:100%; max-width:1200px; margin:0 auto; padding:0 24px; }
+
+    nav { position:fixed; top:0; left:0; right:0; z-index:1000; background:var(--nav-bg); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-bottom:1px solid var(--border-color); padding:16px 0; }
+    nav .container { display:flex; align-items:center; justify-content:space-between; }
+    .nav-title { font-size:1.125rem; font-weight:600; color:var(--text-primary); }
+    .nav-title span { color:var(--cyan); }
+    .nav-back { display:inline-flex; align-items:center; gap:8px; padding:8px 20px; background:var(--bg-card); border:1px solid var(--border-color); border-radius:50px; color:var(--text-secondary); text-decoration:none; font-size:0.875rem; font-weight:500; transition:all 0.3s ease; }
+    .nav-back:hover { border-color:var(--cyan); color:var(--cyan); box-shadow:0 0 20px var(--cyan-glow); transform:scale(1.02); }
+    .nav-controls { display: flex; align-items: center; gap: 12px; }
+    .theme-btn {
+      width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+      background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 50%;
+      color: var(--text-secondary); cursor: pointer; font-size: 1.1rem; transition: all 0.3s ease;
+      padding: 0; line-height: 1;
+    }
+    .theme-btn:hover { border-color: var(--cyan); box-shadow: 0 0 15px var(--cyan-glow); transform: scale(1.05); }
+    .lang-select {
+      padding: 6px 10px; background: var(--bg-card); border: 1px solid var(--border-color);
+      border-radius: 8px; color: var(--text-secondary); font-size: 0.75rem; font-family: inherit;
+      cursor: pointer; outline: none; transition: border-color 0.3s ease;
+      appearance: none; -webkit-appearance: none;
+    }
+    .lang-select:focus { border-color: var(--cyan); }
+    .lang-select option { background: var(--bg-secondary); color: var(--text-primary); }
+
+    .hero { min-height:60vh; display:flex; align-items:center; justify-content:center; padding:140px 0 80px; position:relative; overflow:hidden; }
+    .hero::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 30% 40%, rgba(6,182,212,0.08) 0%, transparent 60%), radial-gradient(ellipse at 70% 60%, rgba(6,182,212,0.05) 0%, transparent 50%); pointer-events:none; }
+    .hero-content { text-align:center; position:relative; z-index:1; max-width:800px; }
+    .hero-badge { display:inline-block; padding:6px 16px; background:rgba(6,182,212,0.1); border:1px solid rgba(6,182,212,0.2); border-radius:50px; color:var(--cyan); font-size:0.8rem; font-weight:500; margin-bottom:24px; animation:fadeInUp 0.6s ease; }
+    .hero h1 { font-size:clamp(2rem,5vw,3.5rem); font-weight:700; line-height:1.15; margin-bottom:16px; animation:fadeInUp 0.6s ease 0.1s both; }
+    .hero h1 span { color:var(--cyan); }
+    .hero p { font-size:clamp(1rem,2vw,1.2rem); color:var(--text-secondary); max-width:640px; margin:0 auto 32px; animation:fadeInUp 0.6s ease 0.2s both; }
+    .hero-tags { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; animation:fadeInUp 0.6s ease 0.3s both; }
+    .tag { padding:8px 20px; border-radius:50px; font-size:0.85rem; font-weight:500; background:rgba(6,182,212,0.08); border:1px solid rgba(6,182,212,0.15); color:var(--cyan); transition:all 0.3s ease; }
+    .tag:hover { background:rgba(6,182,212,0.15); box-shadow:0 0 20px var(--cyan-glow); transform:translateY(-2px); }
+
+    section { padding:80px 0; position:relative; }
+    .section-label { display:inline-block; padding:4px 14px; border-radius:50px; background:rgba(6,182,212,0.08); border:1px solid rgba(6,182,212,0.15); color:var(--cyan); font-size:0.8rem; font-weight:500; margin-bottom:16px; }
+    .section-title { font-size:clamp(1.75rem,3.5vw,2.5rem); font-weight:700; margin-bottom:16px; }
+    .section-title span { color:var(--cyan); }
+    .section-sub { color:var(--text-secondary); font-size:1.05rem; max-width:600px; margin-bottom:48px; }
+
+    .problem-card { padding:40px; display:flex; gap:24px; align-items:flex-start; max-width:800px; margin:0 auto; position:relative; overflow:hidden; }
+    .problem-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg, transparent, var(--cyan), transparent); }
+    .problem-icon { flex-shrink:0; width:56px; height:56px; display:flex; align-items:center; justify-content:center; background:rgba(6,182,212,0.1); border-radius:var(--radius-sm); }
+    .problem-icon svg { width:28px; height:28px; color:var(--cyan); }
+    .problem-card h3 { font-size:1.3rem; font-weight:600; margin-bottom:8px; }
+    .problem-card p { color:var(--text-secondary); font-size:0.95rem; line-height:1.7; }
+
+    .timeline { position:relative; max-width:800px; margin:0 auto; padding-left:40px; }
+    .timeline::before { content:''; position:absolute; left:15px; top:0; bottom:0; width:2px; background:linear-gradient(180deg, var(--cyan), transparent); }
+    .timeline-item { position:relative; margin-bottom:40px; opacity:0; transform:translateX(-20px); }
+    .timeline-item.visible { animation:slideInLeft 0.6s ease forwards; }
+    .timeline-dot { position:absolute; left:-33px; top:6px; width:14px; height:14px; background:var(--cyan); border-radius:50%; border:3px solid var(--bg-primary); box-shadow:0 0 12px var(--cyan-glow); }
+    .timeline-card { padding:24px 28px; }
+    .timeline-card .step-num { font-size:0.75rem; font-weight:600; color:var(--cyan); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
+    .timeline-card h4 { font-size:1.1rem; font-weight:600; margin-bottom:6px; }
+    .timeline-card p { color:var(--text-secondary); font-size:0.9rem; }
+
+    #demo { background:var(--bg-secondary); }
+
+    .sensor-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+    @media (max-width:1024px) { .sensor-grid { grid-template-columns:repeat(2,1fr); } }
+    @media (max-width:500px) { .sensor-grid { grid-template-columns:1fr; } }
+
+    .sensor-card { padding:20px; text-align:center; transition:all 0.3s ease; position:relative; overflow:hidden; }
+    .sensor-card:hover { transform:translateY(-4px); border-color:rgba(6,182,212,0.3); }
+    .sensor-card .s-icon { font-size:1.5rem; margin-bottom:8px; }
+    .sensor-card .s-label { font-size:0.8rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; }
+    .sensor-card .s-value { font-size:1.8rem; font-weight:700; color:var(--cyan); margin:4px 0; }
+    .sensor-card .s-unit { font-size:0.85rem; color:var(--text-secondary); }
+
+    .sensor-card .mini-bar { width:100%; height:4px; background:var(--alpha-6); border-radius:2px; margin-top:10px; overflow:hidden; }
+    .sensor-card .mini-bar-fill { height:100%; border-radius:2px; background:linear-gradient(90deg, var(--cyan), #22d3ee); transition:width 0.8s ease; }
+
+    .sensor-card .pulse-dot { width:8px; height:8px; background:var(--cyan); border-radius:50%; display:inline-block; margin-right:6px; animation:pulseDot 1.5s ease-in-out infinite; vertical-align:middle; }
+    @keyframes pulseDot { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.4; transform:scale(0.7); } }
+
+    .dashboard-row { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:24px; }
+    @media (max-width:768px) { .dashboard-row { grid-template-columns:1fr; } }
+
+    .irrigation-card { padding:24px; text-align:center; }
+    .irrigation-card .irr-status { font-size:1.2rem; font-weight:600; margin-bottom:12px; }
+    .irr-on { color:#22c55e; } .irr-off { color:#ef4444; }
+    .irrigation-card .irr-toggle { position:relative; width:64px; height:32px; margin:0 auto; background:var(--alpha-8); border-radius:16px; cursor:pointer; transition:all 0.3s ease; border:1px solid var(--border-color); }
+    .irrigation-card .irr-toggle.active { background:rgba(34,197,94,0.2); border-color:rgba(34,197,94,0.3); }
+    .irrigation-card .irr-toggle .knob { position:absolute; top:2px; left:2px; width:26px; height:26px; background:var(--text-muted); border-radius:50%; transition:all 0.3s ease; }
+    .irrigation-card .irr-toggle.active .knob { left:34px; background:#22c55e; box-shadow:0 0 12px rgba(34,197,94,0.4); }
+    .irrigation-card .irr-water { font-size:0.85rem; color:var(--text-secondary); margin-top:8px; }
+
+    .alert-box { display:none; align-items:center; gap:12px; padding:14px 20px; border-radius:var(--radius-sm); margin-top:16px; animation:slideInLeft 0.4s ease; }
+    .alert-box.visible { display:flex; }
+    .alert-warning { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.2); }
+    .alert-warning .alert-icon { color:#ef4444; }
+    .alert-box .alert-icon { font-size:1.2rem; flex-shrink:0; }
+    .alert-box .alert-text { font-size:0.9rem; color:var(--text-secondary); }
+
+    .forecast-section { padding:24px; }
+    .forecast-section .fc-title { font-size:1rem; font-weight:600; margin-bottom:16px; }
+    .fc-chart { display:grid; grid-template-columns:repeat(12,1fr); gap:6px; align-items:end; height:120px; border-bottom:1px solid var(--border-color); padding-bottom:16px; }
+    .fc-bar-wrap { display:flex; flex-direction:column; align-items:center; height:100%; justify-content:flex-end; }
+    .fc-bar { width:100%; border-radius:4px 4px 0 0; background:linear-gradient(180deg, #22d3ee, var(--cyan)); transition:height 1.5s cubic-bezier(0.34,1.56,0.64,1); height:0%; min-height:2px; }
+    .fc-label { font-size:0.6rem; color:var(--text-muted); margin-top:4px; text-transform:uppercase; }
+
+    .diagram-section { background:var(--bg-secondary); }
+    .arch-diagram { display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap; max-width:900px; margin:0 auto; padding:20px; }
+    .arch-node { padding:16px 20px; border-radius:var(--radius-sm); text-align:center; min-width:110px; transition:all 0.3s ease; background:var(--bg-card); border:1px solid var(--border-color); }
+    .arch-node:hover { border-color:var(--cyan); transform:translateY(-4px); box-shadow:0 0 20px var(--cyan-glow); }
+    .arch-node .an-icon { font-size:1.5rem; margin-bottom:6px; }
+    .arch-node .an-label { font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; }
+    .arch-node .an-name { font-size:0.85rem; font-weight:600; color:var(--text-primary); }
+    .arch-arrow { font-size:1.2rem; color:var(--cyan); flex-shrink:0; }
+
+    .api-section {  }
+    .api-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+    @media (max-width:768px) { .api-grid { grid-template-columns:1fr; } }
+    .api-card { padding:24px; }
+    .api-card .api-method { display:inline-block; padding:2px 10px; border-radius:4px; font-size:0.75rem; font-weight:600; font-family:'Fira Code',monospace; margin-bottom:10px; }
+    .api-get { background:rgba(6,182,212,0.15); color:var(--cyan); }
+    .api-post { background:rgba(34,197,94,0.15); color:#22c55e; }
+    .api-card .api-route { font-family:'Fira Code',monospace; font-size:0.9rem; color:var(--text-primary); margin-bottom:8px; }
+    .api-card .api-desc { font-size:0.85rem; color:var(--text-secondary); font-family:'Fira Code',monospace; }
+
+    .impact-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+    @media (max-width:768px) { .impact-grid { grid-template-columns:1fr; } }
+    .impact-card { padding:32px 24px; text-align:center; transition:all 0.4s ease; }
+    .impact-card:hover { transform:translateY(-8px); border-color:rgba(6,182,212,0.3); box-shadow:0 12px 40px rgba(6,182,212,0.1); }
+    .impact-card .icon { width:52px; height:52px; margin:0 auto 16px; display:flex; align-items:center; justify-content:center; background:rgba(6,182,212,0.1); border-radius:50%; }
+    .impact-card .icon svg { width:26px; height:26px; color:var(--cyan); }
+    .impact-card h4 { font-size:1.1rem; font-weight:600; margin-bottom:8px; }
+    .impact-card p { color:var(--text-secondary); font-size:0.9rem; line-height:1.6; }
+
+    .tech-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:24px; }
+    @media (max-width:768px) { .tech-grid { grid-template-columns:1fr; } }
+    .tech-card { padding:32px 24px; text-align:center; transition:all 0.4s ease; position:relative; overflow:hidden; }
+    .tech-card::after { content:''; position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:0; height:3px; background:var(--cyan); transition:width 0.4s ease; border-radius:2px; }
+    .tech-card:hover::after { width:80%; }
+    .tech-card:hover { transform:translateY(-6px); border-color:rgba(6,182,212,0.2); }
+    .tech-icon { width:64px; height:64px; margin:0 auto 16px; display:flex; align-items:center; justify-content:center; background:rgba(6,182,212,0.08); border-radius:16px; font-size:2rem; transition:all 0.3s ease; }
+    .tech-card:hover .tech-icon { background:rgba(6,182,212,0.15); box-shadow:0 0 30px var(--cyan-glow); }
+    .tech-card h4 { font-size:1.1rem; font-weight:600; margin-bottom:8px; }
+    .tech-card p { color:var(--text-secondary); font-size:0.9rem; line-height:1.6; }
+
+    footer { padding:48px 0; border-top:1px solid var(--border-color); text-align:center; }
+    .footer-links { display:flex; justify-content:center; gap:16px; flex-wrap:wrap; margin-bottom:16px; }
+    .footer-btn { display:inline-flex; align-items:center; gap:8px; padding:12px 28px; border-radius:50px; font-size:0.9rem; font-weight:500; text-decoration:none; transition:all 0.3s ease; font-family:inherit; }
+    .footer-btn.primary { background:linear-gradient(135deg,var(--cyan),var(--cyan-dark)); color:#000; }
+    .footer-btn.primary:hover { box-shadow:0 0 25px var(--cyan-glow); transform:translateY(-2px); }
+    .footer-btn.secondary { background:var(--bg-card); border:1px solid var(--border-color); color:var(--text-secondary); }
+    .footer-btn.secondary:hover { border-color:var(--cyan); color:var(--cyan); box-shadow:0 0 20px var(--cyan-glow); transform:translateY(-2px); }
+    footer p { color:var(--text-muted); font-size:0.85rem; }
+
+    @keyframes fadeInUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes slideInLeft { from { opacity:0; transform:translateX(-20px); } to { opacity:1; transform:translateX(0); } }
+    @keyframes pulseGlow { 0%,100% { box-shadow:0 0 8px var(--cyan-glow); } 50% { box-shadow:0 0 25px var(--cyan-glow); } }
+    .pulse-glow { animation:pulseGlow 2s ease-in-out infinite; }
+
+    .fade-in { opacity:0; transform:translateY(30px); transition:all 0.7s ease; }
+    .fade-in.visible { opacity:1; transform:translateY(0); }
+    .scroll-reveal { opacity:0; transform:translateY(30px); transition:all 0.7s ease; }
+    .scroll-reveal.visible { opacity:1; transform:translateY(0); }
+
+    .particles { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+    .particle { position:absolute; border-radius:50%; background:rgba(6,182,212,0.06); animation:float linear infinite; }
+    @keyframes float { 0% { transform:translateY(100vh) rotate(0deg); opacity:0; } 10% { opacity:1; } 90% { opacity:1; } 100% { transform:translateY(-10vh) rotate(720deg); opacity:0; } }
+    .particle:nth-child(1) { width:6px; height:6px; left:10%; animation-duration:18s; animation-delay:0s; }
+    .particle:nth-child(2) { width:4px; height:4px; left:25%; animation-duration:22s; animation-delay:2s; }
+    .particle:nth-child(3) { width:8px; height:8px; left:40%; animation-duration:20s; animation-delay:4s; }
+    .particle:nth-child(4) { width:5px; height:5px; left:55%; animation-duration:25s; animation-delay:1s; }
+    .particle:nth-child(5) { width:7px; height:7px; left:70%; animation-duration:19s; animation-delay:3s; }
+    .particle:nth-child(6) { width:4px; height:4px; left:85%; animation-duration:23s; animation-delay:5s; }
+    .particle:nth-child(7) { width:6px; height:6px; left:50%; animation-duration:21s; animation-delay:7s; }
+    .particle:nth-child(8) { width:3px; height:3px; left:15%; animation-duration:26s; animation-delay:2s; }
+
+    @media (max-width:768px) {
+      section { padding:48px 0; }
+      .hero { padding:120px 0 48px; min-height:auto; }
+      .nav-title { font-size:0.95rem; }
+      .problem-card { flex-direction:column; padding:24px; }
+      .timeline { padding-left:32px; }
+      .timeline-dot { left:-25px; width:12px; height:12px; }
+      .arch-diagram { gap:8px; }
+      .arch-node { min-width:80px; padding:12px 14px; }
+      .arch-arrow { font-size:0.9rem; }
+    }
+  </style>
+</head>
+<body style="background:#0a0a0f">
+  <div class="loader-bar"></div>
+  <div class="particles"><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div></div>
+
+  <nav><div class="container">
+    <div class="nav-title"><span>✦</span> <span data-i18n="nav.title">Soil Moisture Prediction</span></div>
+    <div class="nav-controls">
+      <button class="theme-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+      <select class="lang-select" id="lang-select" onchange="changeLang(this.value)">
+        <option value="en">EN</option>
+        <option value="bn">বাংলা</option>
+        <option value="zh">中文</option>
+        <option value="hi">हिन्दी</option>
+      </select>
+      <a href="/" class="nav-back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg> <span data-i18n="nav.back">Back to Portfolio</span></a>
+    </div>
+  </div></nav>
+
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <div class="hero-badge" data-i18n="hero.badge">🌊 IoT + AI Integration</div>
+      <h1><span data-i18n="hero.title">AI-Based </span><span data-i18n="hero.titleSpan">Soil Moisture</span> Prediction System</h1>
+      <p data-i18n="hero.desc">Forecasts soil moisture levels to automate and optimize irrigation schedules.</p>
+      <div class="hero-tags">
+        <span class="tag" data-i18n="hero.tag1">🐍 Python</span>
+        <span class="tag" data-i18n="hero.tag2">📡 IoT</span>
+        <span class="tag" data-i18n="hero.tag3">⚡ XGBoost</span>
+        <span class="tag" data-i18n="hero.tag4">⚙️ FastAPI</span>
+      </div>
+    </div>
+  </section>
+
+  <section><div class="container" style="text-align:center;">
+    <div class="section-label" data-i18n="problem.label">Problem Statement</div>
+    <div class="problem-card glass fade-in">
+      <div class="problem-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg></div>
+      <div><h3 data-i18n="problem.title">The Water Management Challenge</h3><p data-i18n="problem.desc">Inaccurate irrigation leads to water wastage or crop stress due to under-watering.</p></div>
+    </div>
+  </div></section>
+
+  <section style="background:var(--bg-secondary);"><div class="container"><div style="text-align:center;">
+    <div class="section-label" data-i18n="impl.label">Implementation</div>
+    <h2 class="section-title"><span data-i18n="impl.title">How It </span><span data-i18n="impl.titleSpan">Works</span></h2>
+    <p class="section-sub" style="margin:0 auto 48px;" data-i18n="impl.sub">From IoT sensor data to intelligent irrigation control.</p>
+  </div>
+  <div class="timeline">
+    <div class="timeline-item scroll-reveal"><div class="timeline-dot"></div><div class="timeline-card glass">            <div class="step-num" data-i18n="step1.num">Step 01</div><h4 data-i18n="step1.title">📡 IoT Sensor Integration</h4><p data-i18n="step1.desc">Integrated real-time sensor data from soil moisture, temperature, and humidity sensors via MQTT and Modbus IoT protocols.</p></div></div>
+    <div class="timeline-item scroll-reveal"><div class="timeline-dot"></div><div class="timeline-card glass">            <div class="step-num" data-i18n="step2.num">Step 02</div><h4 data-i18n="step2.title">🧠 XGBoost Forecasting</h4><p data-i18n="step2.desc">Developed a moisture forecasting model using XGBoost that learns from historical patterns and weather data for accurate predictions.</p></div></div>
+    <div class="timeline-item scroll-reveal"><div class="timeline-dot"></div><div class="timeline-card glass">            <div class="step-num" data-i18n="step3.num">Step 03</div><h4 data-i18n="step3.title">⚡ Automated Irrigation Trigger</h4><p data-i18n="step3.desc">Created an automated trigger system that activates irrigation when predicted moisture drops below configurable thresholds.</p></div></div>
+    <div class="timeline-item scroll-reveal"><div class="timeline-dot"></div><div class="timeline-card glass">            <div class="step-num" data-i18n="step4.num">Step 04</div><h4 data-i18n="step4.title">🔌 FastAPI Monitoring API</h4><p data-i18n="step4.desc">Built a FastAPI-based REST API for real-time monitoring, historical data access, and remote irrigation control.</p></div></div>
+  </div></div></section>
+
+  <section id="demo">
+    <div class="container"><div style="text-align:center;">
+      <div class="section-label" data-i18n="demo.label">Live Demo</div>
+      <h2 class="section-title"><span data-i18n="demo.title">IoT Dashboard </span><span data-i18n="demo.titleSpan">Simulation</span></h2>
+      <p class="section-sub" style="margin:0 auto 48px;" data-i18n="demo.sub">Real-time sensor data updating every 2 seconds. Watch the AI-powered system in action.</p>
+    </div>
+
+    <div class="sensor-grid" id="sensor-grid">
+      <div class="sensor-card glass"><div class="s-icon"><span class="pulse-dot"></span>💧</div><div class="s-label">Soil Moisture</div><div class="s-value" id="s-moisture">—</div><div class="s-unit">%</div><div class="mini-bar"><div class="mini-bar-fill" id="bar-moisture" style="width:0%"></div></div></div>
+      <div class="sensor-card glass"><div class="s-icon"><span class="pulse-dot"></span>🌡️</div><div class="s-label">Temperature</div><div class="s-value" id="s-temp">—</div><div class="s-unit">°C</div><div class="mini-bar"><div class="mini-bar-fill" id="bar-temp" style="width:0%"></div></div></div>
+      <div class="sensor-card glass"><div class="s-icon"><span class="pulse-dot"></span>💨</div><div class="s-label">Humidity</div><div class="s-value" id="s-hum">—</div><div class="s-unit">%</div><div class="mini-bar"><div class="mini-bar-fill" id="bar-hum" style="width:0%"></div></div></div>
+      <div class="sensor-card glass"><div class="s-icon"><span class="pulse-dot"></span>🧪</div><div class="s-label">Soil pH</div><div class="s-value" id="s-ph">—</div><div class="s-unit">pH</div><div class="mini-bar"><div class="mini-bar-fill" id="bar-ph" style="width:0%"></div></div></div>
+    </div>
+
+    <div class="dashboard-row">
+      <div class="glass irrigation-card">
+        <div class="irr-status" id="irr-status">⏳ Loading...</div>
+        <div class="irr-toggle" id="irr-toggle" onclick="toggleIrrigation()"><div class="knob"></div></div>
+        <div class="irr-water" id="irr-water">Flow Rate: — L/min</div>
+        <div class="alert-box" id="alert-box"><span class="alert-icon">⚠️</span><span class="alert-text" id="alert-text">Moisture critically low! Irrigation recommended.</span></div>
+      </div>
+
+      <div class="glass forecast-section">
+        <div class="fc-title">📊 24-Hour Moisture Forecast</div>
+        <div class="fc-chart" id="fc-chart">
+          <div class="fc-bar-wrap"><div class="fc-bar" id="fc0"></div><span class="fc-label">+0h</span></div>
+          <div class="fc-bar-wrap"><div class="fc-bar" id="fc1"></div><span class="fc-label">+2h</span></div>
+          <div class="fc-bar-wrap"><div class="fc-bar" id="fc2"></div><span class="fc-label">+4h</span></div>
+          <div class="fc-bar-wrap"><div class="fc-bar" id="fc3"></div><span class="fc-label">+6h</span></div>
+          <div class="fc-bar-wrap"><div class="fc-bar" id="fc4"></div><span class="fc-label">+8h</span></div>
+          <div class="fc-bar-wrap"><div class="fc-bar" id="fc5"></div><span class="fc-label">+10h</span></div>
+          <div class="fc-bar-wrap"><div class="fc-bar" id="fc6"></div><span class="fc-label">+12h</span></div>
+          <div class="fc-bar-wrap"><div class="fc-bar" id="fc7"></div><span class="fc-label">+14h</span></div>
+          <div class="fc-bar-wrap"><div class="fc-bar" id="fc8"></div><span class="fc-label">+16h</span></div>
+          <div class="fc-bar-wrap"><div class="fc-bar" id="fc9"></div><span class="fc-label">+18h</span></div>
+          <div class="fc-bar-wrap"><div class="fc-bar" id="fc10"></div><span class="fc-label">+20h</span></div>
+          <div class="fc-bar-wrap"><div class="fc-bar" id="fc11"></div><span class="fc-label">+22h</span></div>
+        </div>
+      </div>
+    </div>
+  </div></section>
+
+  <section class="diagram-section"><div class="container"><div style="text-align:center;">
+    <div class="section-label" data-i18n="arch.label">System Architecture</div>
+    <h2 class="section-title"><span data-i18n="arch.title">End-to-End </span><span data-i18n="arch.titleSpan">IoT Pipeline</span></h2>
+    <p class="section-sub" style="margin:0 auto 48px;" data-i18n="arch.sub">From field sensors to irrigation control — fully automated.</p>
+  </div>
+  <div class="arch-diagram">
+    <div class="arch-node pulse-glow"><div class="an-icon">📡</div><div class="an-label">Sensors</div><div class="an-name">Soil + Weather</div></div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-node"><div class="an-icon">📶</div><div class="an-label">Gateway</div><div class="an-name">MQTT Broker</div></div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-node"><div class="an-icon">🧠</div><div class="an-label">AI Model</div><div class="an-name">XGBoost</div></div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-node"><div class="an-icon">🖥️</div><div class="an-label">Dashboard</div><div class="an-name">FastAPI + UI</div></div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-node"><div class="an-icon">💧</div><div class="an-label">Irrigation</div><div class="an-name">Auto Control</div></div>
+  </div>
+  </div></section>
+
+  <section class="api-section"><div class="container"><div style="text-align:center;">
+    <div class="section-label" data-i18n="api.label">API Endpoints</div>
+    <h2 class="section-title"><span data-i18n="api.title">RESTful </span><span data-i18n="api.titleSpan">API</span></h2>
+    <p class="section-sub" style="margin:0 auto 48px;" data-i18n="api.sub">FastAPI-powered endpoints for data access and control.</p>
+  </div>
+  <div class="api-grid">
+    <div class="api-card glass"><div class="api-method api-get">GET</div><div class="api-route">/api/moisture</div><div class="api-desc">Returns current soil moisture readings from all sensors</div></div>
+    <div class="api-card glass"><div class="api-method api-post">POST</div><div class="api-route">/api/predict</div><div class="api-desc">Accepts sensor data, returns 24h moisture forecast</div></div>
+    <div class="api-card glass"><div class="api-method api-get">GET</div><div class="api-route">/api/schedule</div><div class="api-desc">Returns optimized irrigation schedule for next 7 days</div></div>
+  </div>
+  </div></section>
+
+  <section><div class="container"><div style="text-align:center;">
+    <div class="section-label" data-i18n="impact.label">Project Impact</div>
+    <h2 class="section-title"><span data-i18n="impact.title">Why It </span><span data-i18n="impact.titleSpan">Matters</span></h2>
+    <p class="section-sub" style="margin:0 auto 48px;" data-i18n="impact.sub">Conserving water while maximizing crop health through precision.</p>
+  </div>
+  <div class="impact-grid">
+    <div class="impact-card glass scroll-reveal"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><h4 data-i18n="impact1.title">Water Conservation</h4><p data-i18n="impact1.desc">Reduces water usage by up to 40% through AI-optimized irrigation scheduling based on real moisture data.</p></div>
+    <div class="impact-card glass scroll-reveal"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div><h4 data-i18n="impact2.title">Precision Irrigation</h4><p data-i18n="impact2.desc">Delivers exact water needed at the right time, preventing both over-watering and drought stress.</p></div>
+    <div class="impact-card glass scroll-reveal"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="2" y1="20" x2="22" y2="20"/></svg></div><h4 data-i18n="impact3.title">Real-time Monitoring</h4><p data-i18n="impact3.desc">Continuous visibility into field conditions enables proactive decision-making and anomaly detection.</p></div>
+  </div></div></section>
+
+  <section style="background:var(--bg-secondary);"><div class="container"><div style="text-align:center;">
+    <div class="section-label" data-i18n="tech.label">Tech Stack</div>
+    <h2 class="section-title"><span data-i18n="tech.title">Built </span><span data-i18n="tech.titleSpan">With</span></h2>
+    <p class="section-sub" style="margin:0 auto 48px;" data-i18n="tech.sub">Modern technologies powering the prediction and automation pipeline.</p>
+  </div>
+  <div class="tech-grid">
+    <div class="tech-card glass scroll-reveal"><div class="tech-icon">🐍</div><h4 data-i18n="tech1.title">Python</h4><p data-i18n="tech1.desc">Core language for data processing, model training, API development, and IoT integration.</p></div>
+    <div class="tech-card glass scroll-reveal"><div class="tech-icon">📡</div><h4 data-i18n="tech2.title">IoT</h4><p data-i18n="tech2.desc">MQTT and Modbus protocols for real-time sensor data acquisition from field devices.</p></div>
+    <div class="tech-card glass scroll-reveal"><div class="tech-icon">⚡</div><h4 data-i18n="tech3.title">XGBoost</h4><p data-i18n="tech3.desc">Gradient boosting framework for high-accuracy time-series moisture forecasting.</p></div>
+    <div class="tech-card glass scroll-reveal"><div class="tech-icon">⚙️</div><h4 data-i18n="tech4.title">FastAPI</h4><p data-i18n="tech4.desc">Modern Python web framework for building high-performance REST APIs with automatic docs.</p></div>
+  </div></div></section>
+
+  <footer><div class="container">
+    <div class="footer-links">
+      <a href="#" class="footer-btn primary" onclick="window.open('https://github.com','_blank')"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12 24 5.37 18.63 0 12 0z"/></svg> <span data-i18n="footer.github">GitHub</span></a>
+      <a href="/" class="footer-btn secondary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg> <span data-i18n="footer.back">Back to Portfolio</span></a>
+    </div>
+    <p data-i18n="footer.text">&copy; 2026 Ahamad Ullah — AI Engineer Portfolio</p>
+  </div></footer>
+
+  <script>
+    // ─── IoT Simulation ───
+    let moisture = 42 + Math.random() * 20;
+    let temp = 28 + Math.random() * 8;
+    let hum = 55 + Math.random() * 20;
+    let ph = 6.0 + Math.random() * 1.5;
+    let irrigationOn = false;
+    let intervalId = null;
+
+    const forecastBase = [42, 40, 38, 35, 33, 36, 40, 44, 47, 50, 48, 45];
+
+    function updateForecast(moistureBase) {
+      for (let i = 0; i < 12; i++) {
+        const val = Math.max(10, moistureBase + (forecastBase[i] - 42) * 1.2 + (Math.random() - 0.5) * 6);
+        const pct = (val / 70) * 100;
+        const bar = document.getElementById('fc' + i);
+        bar.style.transition = 'none';
+        bar.style.height = '0%';
+        void bar.offsetWidth;
+        bar.style.transition = 'height 1.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        requestAnimationFrame(() => { bar.style.height = Math.min(100, pct) + '%'; });
+      }
+    }
+
+    function updateSensors() {
+      const delta = (Math.random() - 0.5) * 3;
+      moisture = Math.max(10, Math.min(65, moisture + delta + (irrigationOn ? 0.4 : -0.15)));
+      temp = Math.max(15, Math.min(45, temp + (Math.random() - 0.5) * 1.2));
+      hum = Math.max(30, Math.min(95, hum + (Math.random() - 0.5) * 2));
+      ph = Math.max(4.5, Math.min(8.5, ph + (Math.random() - 0.5) * 0.15));
+
+      document.getElementById('s-moisture').textContent = moisture.toFixed(1);
+      document.getElementById('s-temp').textContent = temp.toFixed(1);
+      document.getElementById('s-hum').textContent = hum.toFixed(0);
+      document.getElementById('s-ph').textContent = ph.toFixed(1);
+
+      document.getElementById('bar-moisture').style.width = (moisture / 65 * 100) + '%';
+      document.getElementById('bar-temp').style.width = ((temp - 15) / 30 * 100) + '%';
+      document.getElementById('bar-hum').style.width = (hum) + '%';
+      document.getElementById('bar-ph').style.width = ((ph - 4) / 4.5 * 100) + '%';
+
+      const statusEl = document.getElementById('irr-status');
+      const toggleEl = document.getElementById('irr-toggle');
+      const waterEl = document.getElementById('irr-water');
+      const alertBox = document.getElementById('alert-box');
+
+      if (moisture < 25) {
+        if (!irrigationOn) {
+          toggleEl.classList.add('active');
+          irrigationOn = true;
+        }
+        statusEl.textContent = '💧 Irrigation ACTIVE';
+        statusEl.className = 'irr-status irr-on';
+        waterEl.textContent = 'Flow Rate: 8.2 L/min';
+        alertBox.classList.add('visible');
+        alertBox.className = 'alert-box visible alert-warning';
+      } else if (moisture > 45 && irrigationOn) {
+        toggleEl.classList.remove('active');
+        irrigationOn = false;
+        statusEl.textContent = '⏸️ Irrigation OFF';
+        statusEl.className = 'irr-status irr-off';
+        waterEl.textContent = 'Flow Rate: 0.0 L/min';
+        alertBox.classList.remove('visible');
+      } else if (irrigationOn) {
+        statusEl.textContent = '💧 Irrigation ACTIVE';
+        statusEl.className = 'irr-status irr-on';
+        waterEl.textContent = 'Flow Rate: 8.2 L/min';
+        if (moisture < 25) { alertBox.classList.add('visible'); alertBox.className = 'alert-box visible alert-warning'; }
+        else { alertBox.classList.remove('visible'); }
+      } else {
+        statusEl.textContent = '⏸️ Irrigation OFF';
+        statusEl.className = 'irr-status irr-off';
+        waterEl.textContent = 'Flow Rate: 0.0 L/min';
+        if (moisture < 25) { alertBox.classList.add('visible'); alertBox.className = 'alert-box visible alert-warning'; }
+        else { alertBox.classList.remove('visible'); }
+      }
+
+      updateForecast(moisture);
+    }
+
+    function toggleIrrigation() {
+      const toggle = document.getElementById('irr-toggle');
+      irrigationOn = !irrigationOn;
+      toggle.classList.toggle('active', irrigationOn);
+    }
+
+    function startSimulation() {
+      updateSensors();
+      intervalId = setInterval(updateSensors, 2000);
+    }
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.scroll-reveal, .fade-in').forEach(el => revealObserver.observe(el));
+      startSimulation();
+    });
+
+    // ─── Theme Toggle ───
+    function toggleTheme() {
+      const html = document.documentElement;
+      const isLight = html.getAttribute('data-theme') === 'light';
+      html.setAttribute('data-theme', isLight ? '' : 'light');
+      document.getElementById('theme-btn').textContent = isLight ? '🌙' : '☀️';
+      localStorage.setItem('theme', isLight ? 'dark' : 'light');
+    }
+
+    // ─── Load saved theme ───
+    (function() {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        const btn = document.getElementById('theme-btn');
+        if (btn) btn.textContent = '☀️';
+      }
+    })();
+
+    // ─── Translations ───
+    const i18nData = {
+      en: {
+        'nav.title': 'Soil Moisture Prediction',
+        'nav.back': 'Back to Portfolio',
+        'hero.badge': '🌊 IoT + AI Integration',
+        'hero.title': 'AI-Based ',
+        'hero.titleSpan': 'Soil Moisture',
+        'hero.desc': 'Forecasts soil moisture levels to automate and optimize irrigation schedules.',
+        'hero.tag1': '🐍 Python',
+        'hero.tag2': '📡 IoT',
+        'hero.tag3': '⚡ XGBoost',
+        'hero.tag4': '⚙️ FastAPI',
+        'problem.label': 'Problem Statement',
+        'problem.title': 'The Water Management Challenge',
+        'problem.desc': 'Inaccurate irrigation leads to water wastage or crop stress due to under-watering.',
+        'impl.label': 'Implementation',
+        'impl.title': 'How It ',
+        'impl.titleSpan': 'Works',
+        'impl.sub': 'From IoT sensor data to intelligent irrigation control.',
+        'step1.num': 'Step 01',
+        'step1.title': '📡 IoT Sensor Integration',
+        'step1.desc': 'Integrated real-time sensor data from soil moisture, temperature, and humidity sensors via MQTT and Modbus IoT protocols.',
+        'step2.num': 'Step 02',
+        'step2.title': '🧠 XGBoost Forecasting',
+        'step2.desc': 'Developed a moisture forecasting model using XGBoost that learns from historical patterns and weather data for accurate predictions.',
+        'step3.num': 'Step 03',
+        'step3.title': '⚡ Automated Irrigation Trigger',
+        'step3.desc': 'Created an automated trigger system that activates irrigation when predicted moisture drops below configurable thresholds.',
+        'step4.num': 'Step 04',
+        'step4.title': '🔌 FastAPI Monitoring API',
+        'step4.desc': 'Built a FastAPI-based REST API for real-time monitoring, historical data access, and remote irrigation control.',
+        'demo.label': 'Live Demo',
+        'demo.title': 'IoT Dashboard ',
+        'demo.titleSpan': 'Simulation',
+        'demo.sub': 'Real-time sensor data updating every 2 seconds. Watch the AI-powered system in action.',
+        'arch.label': 'System Architecture',
+        'arch.title': 'End-to-End ',
+        'arch.titleSpan': 'IoT Pipeline',
+        'arch.sub': 'From field sensors to irrigation control — fully automated.',
+        'api.label': 'API Endpoints',
+        'api.title': 'RESTful ',
+        'api.titleSpan': 'API',
+        'api.sub': 'FastAPI-powered endpoints for data access and control.',
+        'impact.label': 'Project Impact',
+        'impact.title': 'Why It ',
+        'impact.titleSpan': 'Matters',
+        'impact.sub': 'Conserving water while maximizing crop health through precision.',
+        'impact1.title': 'Water Conservation',
+        'impact1.desc': 'Reduces water usage by up to 40% through AI-optimized irrigation scheduling based on real moisture data.',
+        'impact2.title': 'Precision Irrigation',
+        'impact2.desc': 'Delivers exact water needed at the right time, preventing both over-watering and drought stress.',
+        'impact3.title': 'Real-time Monitoring',
+        'impact3.desc': 'Continuous visibility into field conditions enables proactive decision-making and anomaly detection.',
+        'tech.label': 'Tech Stack',
+        'tech.title': 'Built ',
+        'tech.titleSpan': 'With',
+        'tech.sub': 'Modern technologies powering the prediction and automation pipeline.',
+        'tech1.title': 'Python',
+        'tech1.desc': 'Core language for data processing, model training, API development, and IoT integration.',
+        'tech2.title': 'IoT',
+        'tech2.desc': 'MQTT and Modbus protocols for real-time sensor data acquisition from field devices.',
+        'tech3.title': 'XGBoost',
+        'tech3.desc': 'Gradient boosting framework for high-accuracy time-series moisture forecasting.',
+        'tech4.title': 'FastAPI',
+        'tech4.desc': 'Modern Python web framework for building high-performance REST APIs with automatic docs.',
+        'footer.github': 'GitHub',
+        'footer.back': 'Back to Portfolio',
+        'footer.text': '© 2026 Ahamad Ullah — AI Engineer Portfolio'
+      },
+      bn: {
+        'nav.title': 'মাটির আর্দ্রতা পূর্বাভাস',
+        'nav.back': 'পোর্টফোলিওতে ফিরুন',
+        'hero.badge': '🌊 আইওটি + এআই ইন্টিগ্রেশন',
+        'hero.title': 'এআই-ভিত্তিক ',
+        'hero.titleSpan': 'মাটির আর্দ্রতা',
+        'hero.desc': 'সেচের সময়সূচী স্বয়ংক্রিয় এবং অপ্টিমাইজ করতে মাটির আর্দ্রতার মাত্রা পূর্বাভাস দেয়।',
+        'hero.tag1': '🐍 পাইথন',
+        'hero.tag2': '📡 আইওটি',
+        'hero.tag3': '⚡ এক্সজিবুস্ট',
+        'hero.tag4': '⚙️ ফাস্টএপিআই',
+        'problem.label': 'সমস্যার বিবৃতি',
+        'problem.title': 'পানি ব্যবস্থাপনা চ্যালেঞ্জ',
+        'problem.desc': 'ভুল সেচের কারণে পানি অপচয় বা কম পানি দেওয়ার কারণে ফসলের চাপ সৃষ্টি হয়।',
+        'impl.label': 'বাস্তবায়ন',
+        'impl.title': 'এটি কীভাবে ',
+        'impl.titleSpan': 'কাজ করে',
+        'impl.sub': 'আইওটি সেন্সর ডেটা থেকে বুদ্ধিমান সেচ নিয়ন্ত্রণ পর্যন্ত।',
+        'step1.num': 'ধাপ ০১',
+        'step1.title': '📡 আইওটি সেন্সর ইন্টিগ্রেশন',
+        'step1.desc': 'এমকিউটিটি এবং মডবাস আইওটি প্রোটোকলের মাধ্যমে মাটির আর্দ্রতা, তাপমাত্রা এবং আর্দ্রতা সেন্সর থেকে রিয়েল-টাইম সেন্সর ডেটা সংহত করা হয়েছে।',
+        'step2.num': 'ধাপ ০২',
+        'step2.title': '🧠 এক্সজিবুস্ট পূর্বাভাস',
+        'step2.desc': 'সঠিক পূর্বাভাসের জন্য ঐতিহাসিক প্যাটার্ন এবং আবহাওয়া ডেটা থেকে শেখে এমন একটি আর্দ্রতা পূর্বাভাস মডেল এক্সজিবুস্ট ব্যবহার করে তৈরি করা হয়েছে।',
+        'step3.num': 'ধাপ ০৩',
+        'step3.title': '⚡ স্বয়ংক্রিয় সেচ ট্রিগার',
+        'step3.desc': 'একটি স্বয়ংক্রিয় ট্রিগার সিস্টেম তৈরি করা হয়েছে যা পূর্বাভাসিত আর্দ্রতা কনফিগারযোগ্য থ্রেশহোল্ডের নিচে নেমে গেলে সেচ সক্রিয় করে।',
+        'step4.num': 'ধাপ ০৪',
+        'step4.title': '🔌 ফাস্টএপিআই মনিটরিং এপিআই',
+        'step4.desc': 'রিয়েল-টাইম মনিটরিং, ঐতিহাসিক ডেটা অ্যাক্সেস এবং রিমোট সেচ নিয়ন্ত্রণের জন্য একটি ফাস্টএপিআই-ভিত্তিক আরইএসটি এপিআই তৈরি করা হয়েছে।',
+        'demo.label': 'লাইভ ডেমো',
+        'demo.title': 'আইওটি ড্যাশবোর্ড ',
+        'demo.titleSpan': 'সিমুলেশন',
+        'demo.sub': 'প্রতি ২ সেকেন্ডে রিয়েল-টাইম সেন্সর ডেটা আপডেট হচ্ছে। এআই-চালিত সিস্টেমকে কর্মে দেখুন।',
+        'arch.label': 'সিস্টেম আর্কিটেকচার',
+        'arch.title': 'এন্ড-টু-এন্ড ',
+        'arch.titleSpan': 'আইওটি পাইপলাইন',
+        'arch.sub': 'ফিল্ড সেন্সর থেকে সেচ নিয়ন্ত্রণ — সম্পূর্ণ স্বয়ংক্রিয়।',
+        'api.label': 'এপিআই এন্ডপয়েন্ট',
+        'api.title': 'আরইএসটিফুল ',
+        'api.titleSpan': 'এপিআই',
+        'api.sub': 'ডেটা অ্যাক্সেস এবং নিয়ন্ত্রণের জন্য ফাস্টএপিআই-চালিত এন্ডপয়েন্ট।',
+        'impact.label': 'প্রকল্পের প্রভাব',
+        'impact.title': 'কেন এটি ',
+        'impact.titleSpan': 'গুরুত্বপূর্ণ',
+        'impact.sub': 'নির্ভুলতার মাধ্যমে ফসলের স্বাস্থ্য সর্বাধিক করার পাশাপাশি পানি সংরক্ষণ।',
+        'impact1.title': 'পানি সংরক্ষণ',
+        'impact1.desc': 'প্রকৃত আর্দ্রতা ডেটার উপর ভিত্তি করে এআই-অপ্টিমাইজড সেচ সময়সূচীর মাধ্যমে পানি ব্যবহার ৪০% পর্যন্ত হ্রাস করে।',
+        'impact2.title': 'নির্ভুল সেচ',
+        'impact2.desc': 'সঠিক সময়ে প্রয়োজনীয় পানি সরবরাহ করে, অতিরিক্ত পানি দেওয়া এবং খরা চাপ উভয়ই প্রতিরোধ করে।',
+        'impact3.title': 'রিয়েল-টাইম মনিটরিং',
+        'impact3.desc': 'ক্ষেত্রের অবস্থার ক্রমাগত দৃশ্যমানতা সক্রিয় সিদ্ধান্ত গ্রহণ এবং অসঙ্গতি সনাক্তকরণ সক্ষম করে।',
+        'tech.label': 'প্রযুক্তি স্ট্যাক',
+        'tech.title': 'নির্মিত ',
+        'tech.titleSpan': 'সাথে',
+        'tech.sub': 'আধুনিক প্রযুক্তি যা পূর্বাভাস এবং অটোমেশন পাইপলাইনকে শক্তি দেয়।',
+        'tech1.title': 'পাইথন',
+        'tech1.desc': 'ডেটা প্রক্রিয়াকরণ, মডেল প্রশিক্ষণ, এপিআই উন্নয়ন এবং আইওটি ইন্টিগ্রেশনের জন্য মূল ভাষা।',
+        'tech2.title': 'আইওটি',
+        'tech2.desc': 'ফিল্ড ডিভাইস থেকে রিয়েল-টাইম সেন্সর ডেটা অর্জনের জন্য এমকিউটিটি এবং মডবাস প্রোটোকল।',
+        'tech3.title': 'এক্সজিবুস্ট',
+        'tech3.desc': 'উচ্চ-নির্ভুলতা টাইম-সিরিজ আর্দ্রতা পূর্বাভাসের জন্য গ্রেডিয়েন্ট বুস্টিং ফ্রেমওয়ার্ক।',
+        'tech4.title': 'ফাস্টএপিআই',
+        'tech4.desc': 'স্বয়ংক্রিয় ডক্স সহ উচ্চ-কার্যক্ষমতা সম্পন্ন আরইএসটি এপিআই তৈরির জন্য আধুনিক পাইথন ওয়েব ফ্রেমওয়ার্ক।',
+        'footer.github': 'গিটহাব',
+        'footer.back': 'পোর্টফোলিওতে ফিরুন',
+        'footer.text': '© ২০২৬ আহামাদ উল্লাহ — এআই ইঞ্জিনিয়ার পোর্টফোলিও'
+      },
+      zh: {
+        'nav.title': '土壤湿度预测',
+        'nav.back': '返回作品集',
+        'hero.badge': '🌊 IoT + AI 集成',
+        'hero.title': '基于AI的',
+        'hero.titleSpan': '土壤湿度',
+        'hero.desc': '预测土壤湿度水平，实现灌溉计划的自动化和优化。',
+        'hero.tag1': '🐍 Python',
+        'hero.tag2': '📡 IoT',
+        'hero.tag3': '⚡ XGBoost',
+        'hero.tag4': '⚙️ FastAPI',
+        'problem.label': '问题陈述',
+        'problem.title': '水资源管理挑战',
+        'problem.desc': '不准确的灌溉会导致水资源浪费或由于浇水不足而导致作物胁迫。',
+        'impl.label': '实现方式',
+        'impl.title': '它是如何',
+        'impl.titleSpan': '工作的',
+        'impl.sub': '从IoT传感器数据到智能灌溉控制。',
+        'step1.num': '步骤 01',
+        'step1.title': '📡 IoT传感器集成',
+        'step1.desc': '通过MQTT和Modbus IoT协议集成了土壤湿度、温度和湿度传感器的实时传感器数据。',
+        'step2.num': '步骤 02',
+        'step2.title': '🧠 XGBoost预测',
+        'step2.desc': '使用XGBoost开发了湿度预测模型，该模型从历史模式和天气数据中学习以进行准确预测。',
+        'step3.num': '步骤 03',
+        'step3.title': '⚡ 自动灌溉触发器',
+        'step3.desc': '创建了一个自动触发系统，当预测湿度低于可配置阈值时启动灌溉。',
+        'step4.num': '步骤 04',
+        'step4.title': '🔌 FastAPI监控API',
+        'step4.desc': '构建了基于FastAPI的REST API，用于实时监控、历史数据访问和远程灌溉控制。',
+        'demo.label': '在线演示',
+        'demo.title': 'IoT仪表板',
+        'demo.titleSpan': '模拟',
+        'demo.sub': '每2秒更新一次实时传感器数据。观看AI驱动的系统运行。',
+        'arch.label': '系统架构',
+        'arch.title': '端到端',
+        'arch.titleSpan': 'IoT管道',
+        'arch.sub': '从田间传感器到灌溉控制——完全自动化。',
+        'api.label': 'API端点',
+        'api.title': 'RESTful',
+        'api.titleSpan': 'API',
+        'api.sub': '基于FastAPI的数据访问和控制端点。',
+        'impact.label': '项目影响',
+        'impact.title': '为什么它',
+        'impact.titleSpan': '重要',
+        'impact.sub': '在通过精准灌溉最大化作物健康的同时节约用水。',
+        'impact1.title': '节水',
+        'impact1.desc': '通过基于实时湿度数据的AI优化灌溉调度，减少高达40%的用水量。',
+        'impact2.title': '精准灌溉',
+        'impact2.desc': '在正确的时间提供精确所需的水量，防止过度浇水和干旱胁迫。',
+        'impact3.title': '实时监控',
+        'impact3.desc': '对田间状况的持续可见性支持主动决策和异常检测。',
+        'tech.label': '技术栈',
+        'tech.title': '构建于',
+        'tech.titleSpan': '',
+        'tech.sub': '驱动预测和自动化管道的现代技术。',
+        'tech1.title': 'Python',
+        'tech1.desc': '用于数据处理、模型训练、API开发和IoT集成的核心语言。',
+        'tech2.title': 'IoT',
+        'tech2.desc': '用于从现场设备实时获取传感器数据的MQTT和Modbus协议。',
+        'tech3.title': 'XGBoost',
+        'tech3.desc': '用于高精度时间序列湿度预测的梯度提升框架。',
+        'tech4.title': 'FastAPI',
+        'tech4.desc': '用于构建具有自动文档的高性能REST API的现代Python Web框架。',
+        'footer.github': 'GitHub',
+        'footer.back': '返回作品集',
+        'footer.text': '© 2026 Ahamad Ullah — AI工程师作品集'
+      },
+      hi: {
+        'nav.title': 'मिट्टी की नमी की भविष्यवाणी',
+        'nav.back': 'पोर्टफोलियो पर वापस जाएं',
+        'hero.badge': '🌊 IoT + AI एकीकरण',
+        'hero.title': 'एआई-आधारित ',
+        'hero.titleSpan': 'मिट्टी की नमी',
+        'hero.desc': 'सिंचाई कार्यक्रमों को स्वचालित और अनुकूलित करने के लिए मिट्टी की नमी के स्तर का पूर्वानुमान लगाता है।',
+        'hero.tag1': '🐍 पायथन',
+        'hero.tag2': '📡 IoT',
+        'hero.tag3': '⚡ XGBoost',
+        'hero.tag4': '⚙️ FastAPI',
+        'problem.label': 'समस्या विवरण',
+        'problem.title': 'जल प्रबंधन चुनौती',
+        'problem.desc': 'गलत सिंचाई से पानी की बर्बादी या कम पानी देने के कारण फसल पर दबाव पड़ता है।',
+        'impl.label': 'कार्यान्वयन',
+        'impl.title': 'यह कैसे ',
+        'impl.titleSpan': 'काम करता है',
+        'impl.sub': 'IoT सेंसर डेटा से बुद्धिमान सिंचाई नियंत्रण तक।',
+        'step1.num': 'चरण 01',
+        'step1.title': '📡 IoT सेंसर एकीकरण',
+        'step1.desc': 'MQTT और मॉडबस IoT प्रोटोकॉल के माध्यम से मिट्टी की नमी, तापमान और आर्द्रता सेंसर से रीयल-टाइम सेंसर डेटा एकीकृत किया गया।',
+        'step2.num': 'चरण 02',
+        'step2.title': '🧠 XGBoost पूर्वानुमान',
+        'step2.desc': 'XGBoost का उपयोग करके एक नमी पूर्वानुमान मॉडल विकसित किया गया जो सटीक भविष्यवाणियों के लिए ऐतिहासिक पैटर्न और मौसम डेटा से सीखता है।',
+        'step3.num': 'चरण 03',
+        'step3.title': '⚡ स्वचालित सिंचाई ट्रिगर',
+        'step3.desc': 'एक स्वचालित ट्रिगर सिस्टम बनाया गया जो पूर्वानुमानित नमी कॉन्फ़िगर करने योग्य सीमा से नीचे गिरने पर सिंचाई को सक्रिय करता है।',
+        'step4.num': 'चरण 04',
+        'step4.title': '🔌 FastAPI मॉनिटरिंग API',
+        'step4.desc': 'रीयल-टाइम मॉनिटरिंग, ऐतिहासिक डेटा एक्सेस और रिमोट सिंचाई नियंत्रण के लिए FastAPI-आधारित REST API बनाया गया।',
+        'demo.label': 'लाइव डेमो',
+        'demo.title': 'IoT डैशबोर्ड ',
+        'demo.titleSpan': 'सिमुलेशन',
+        'demo.sub': 'हर 2 सेकंड में रीयल-टाइम सेंसर डेटा अपडेट हो रहा है। AI-संचालित सिस्टम को क्रियाशील देखें।',
+        'arch.label': 'सिस्टम आर्किटेक्चर',
+        'arch.title': 'एंड-टू-एंड ',
+        'arch.titleSpan': 'IoT पाइपलाइन',
+        'arch.sub': 'फील्ड सेंसर से सिंचाई नियंत्रण तक — पूरी तरह से स्वचालित।',
+        'api.label': 'API एंडपॉइंट',
+        'api.title': 'RESTful ',
+        'api.titleSpan': 'API',
+        'api.sub': 'डेटा एक्सेस और नियंत्रण के लिए FastAPI-संचालित एंडपॉइंट।',
+        'impact.label': 'परियोजना प्रभाव',
+        'impact.title': 'यह क्यों ',
+        'impact.titleSpan': 'मायने रखता है',
+        'impact.sub': 'सटीकता के माध्यम से फसल स्वास्थ्य को अधिकतम करते हुए पानी का संरक्षण।',
+        'impact1.title': 'जल संरक्षण',
+        'impact1.desc': 'वास्तविक नमी डेटा के आधार पर AI-अनुकूलित सिंचाई शेड्यूलिंग के माध्यम से पानी के उपयोग को 40% तक कम करता है।',
+        'impact2.title': 'सटीक सिंचाई',
+        'impact2.desc': 'सही समय पर आवश्यक सटीक पानी पहुंचाता है, अत्यधिक पानी और सूखे के तनाव दोनों को रोकता है।',
+        'impact3.title': 'रीयल-टाइम मॉनिटरिंग',
+        'impact3.desc': 'क्षेत्र की स्थितियों में निरंतर दृश्यता सक्रिय निर्णय लेने और विसंगति का पता लगाने में सक्षम बनाती है।',
+        'tech.label': 'टेक स्टैक',
+        'tech.title': 'निर्मित ',
+        'tech.titleSpan': 'साथ',
+        'tech.sub': 'आधुनिक प्रौद्योगिकियां जो भविष्यवाणी और ऑटोमेशन पाइपलाइन को शक्ति प्रदान करती हैं।',
+        'tech1.title': 'पायथन',
+        'tech1.desc': 'डेटा प्रोसेसिंग, मॉडल प्रशिक्षण, API विकास और IoT एकीकरण के लिए मुख्य भाषा।',
+        'tech2.title': 'IoT',
+        'tech2.desc': 'फील्ड डिवाइसों से रीयल-टाइम सेंसर डेटा अधिग्रहण के लिए MQTT और मॉडबस प्रोटोकॉल।',
+        'tech3.title': 'XGBoost',
+        'tech3.desc': 'उच्च-सटीकता टाइम-सीरीज़ नमी पूर्वानुमान के लिए ग्रेडिएंट बूस्टिंग फ्रेमवर्क।',
+        'tech4.title': 'FastAPI',
+        'tech4.desc': 'स्वचालित डॉक्स के साथ उच्च-प्रदर्शन REST API बनाने के लिए आधुनिक पायथन वेब फ्रेमवर्क।',
+        'footer.github': 'गिटहब',
+        'footer.back': 'पोर्टफोलियो पर वापस जाएं',
+        'footer.text': '© 2026 अहमद उल्लाह — एआई इंजीनियर पोर्टफोलियो'
+      }
+    };
+
+    function changeLang(lang) {
+      const data = i18nData[lang];
+      if (!data) return;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (data[key] !== undefined) {
+          el.innerHTML = data[key];
+        }
+      });
+      localStorage.setItem('lang', lang);
+    }
+
+    (function() {
+      const savedLang = localStorage.getItem('lang') || 'en';
+      document.getElementById('lang-select').value = savedLang;
+      changeLang(savedLang);
+    })();
+  </script>
+</body>
+</html>
