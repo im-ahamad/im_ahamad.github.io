@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI-based Protein Structure Prediction | Ahamad Ullah</title>
+  <meta name="description" content="Exploring AI-driven protein structure prediction, AlphaFold, and structural bioinformatics" />
+  <style>body{background:#0a0a0f}.loader-bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:99999;pointer-events:none;background:linear-gradient(90deg,transparent,#8b5cf6,#3b82f6,transparent);animation:loaderBar .45s ease forwards}@keyframes loaderBar{0%{transform:scaleX(0);transform-origin:left}40%{transform:scaleX(.55)}100%{transform:scaleX(1);opacity:0}}
+    /* ─── Premium Upgrade Styles ─── */
+    .glass {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px) saturate(1.4);
+      -webkit-backdrop-filter: blur(20px) saturate(1.4);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+    }
+
+    .shimmer-btn {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shimmer-btn::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+      background-size: 200% 200%;
+      animation: shimmerBtn 3s ease-in-out infinite;
+      transform: rotate(25deg);
+    }
+
+    @keyframes shimmerBtn {
+      0% { background-position: 200% 50%; }
+      100% { background-position: -200% 50%; }
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--primary), var(--purple), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      background-size: 200% 200%;
+      animation: gradientShift 6s ease infinite;
+    }
+
+    .gradient-divider {
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--primary), var(--purple), var(--accent), transparent);
+      border-radius: 2px;
+      margin: 0 20px;
+    }
+
+    .card-hover-effect {
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .card-hover-effect:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+
+    .fade-zoom {
+      opacity: 0;
+      transform: scale(0.95);
+      transition: all 0.7s ease;
+    }
+
+    .fade-zoom.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    #custom-cursor {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999999;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(var(--primary-rgb, 59,130,246), 0.3), transparent);
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, opacity 0.2s;
+      opacity: 0;
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      #custom-cursor { display: none; }
+    }
+
+    @keyframes countUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    @media (max-width: 600px) {
+      .stat-number { font-size: 2rem; }
+    }
+
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --primary:#8b5cf6;--primary-dark:#7c3aed;--primary-glow:rgba(139,92,246,0.3);
+      --accent:#3b82f6;--accent-glow:rgba(59,130,246,0.3);
+      --purple:#a78bfa;--purple-glow:rgba(167,139,250,0.3);
+      --bg-primary:#0a0a0f;--bg-secondary:#111118;--bg-card:rgba(17,17,24,0.8);
+      --text-primary:#f1f7f5;--text-secondary:#94a3b8;--text-muted:#64748b;
+      --border-color:rgba(139,92,246,0.12);--nav-bg:rgba(10,10,15,0.85);
+      --alpha-3:rgba(255,255,255,0.03);--alpha-4:rgba(255,255,255,0.04);
+      --alpha-6:rgba(255,255,255,0.06);--alpha-8:rgba(255,255,255,0.08);
+      --radius:16px;--radius-sm:10px;
+    }
+    [data-theme="light"]{
+      --bg-primary:#f8fafc;--bg-secondary:#f1f5f9;--bg-card:rgba(255,255,255,0.85);
+      --text-primary:#0f172a;--text-secondary:#475569;--text-muted:#94a3b8;
+      --border-color:rgba(0,0,0,0.08);--nav-bg:rgba(255,255,255,0.85);
+      --alpha-3:rgba(0,0,0,0.03);--alpha-4:rgba(0,0,0,0.04);
+      --alpha-6:rgba(0,0,0,0.06);--alpha-8:rgba(0,0,0,0.08);
+    }
+    html{scroll-behavior:smooth}
+    body{
+      font-family:'Space Grotesk',sans-serif;background:var(--bg-primary);
+      color:var(--text-primary);line-height:1.6;overflow-x:hidden;
+    }
+    ::-webkit-scrollbar{width:8px}
+    ::-webkit-scrollbar-track{background:var(--bg-secondary)}
+    ::-webkit-scrollbar-thumb{background:var(--primary);border-radius:4px}
+    ::selection{background:var(--primary);color:#fff}
+
+    nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--nav-bg);backdrop-filter:blur(16px);border-bottom:1px solid var(--border-color);height:56px}
+    .nav-inner{max-width:1200px;margin:0 auto;padding:0 20px;height:100%;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-weight:700;font-size:18px;text-decoration:none}
+    .logo .g{background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .nav-right{display:flex;align-items:center;gap:8px}
+    .nav-btn{width:36px;height:36px;border-radius:10px;border:1px solid var(--border-color);background:var(--alpha-4);color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s ease;font-size:16px}
+    .nav-btn:hover{background:var(--alpha-8);color:var(--text-primary);border-color:var(--primary)}
+    .lang-select{padding:6px 10px;border-radius:10px;border:1px solid var(--border-color);background:var(--alpha-4);color:var(--text-secondary);font-size:13px;cursor:pointer;font-family:inherit;transition:all .25s ease}
+    .lang-select:hover{border-color:var(--primary);color:var(--text-primary);background:var(--alpha-8)}
+    .lang-select option{background:var(--bg-secondary);color:var(--text-primary)}
+
+    .progress-bar{position:fixed;top:56px;left:0;right:0;height:3px;z-index:999;background:linear-gradient(90deg,var(--primary),var(--accent),var(--purple));transform-origin:left;transform:scaleX(0);transition:transform .1s linear}
+
+    section{padding:100px 20px;position:relative}
+    .container{max-width:1100px;margin:0 auto;position:relative;z-index:2}
+
+    .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding-top:80px;overflow:hidden}
+    #molecule-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+    .hero-content{position:relative;z-index:2;max-width:800px}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:999px;background:var(--alpha-6);border:1px solid var(--border-color);font-size:13px;color:var(--text-secondary);margin-bottom:24px;animation:fadeUp .8s ease}
+    .hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--primary);animation:pulse 2s infinite}
+    .hero-title{font-size:clamp(28px,5.5vw,60px);font-weight:700;line-height:1.1;margin-bottom:16px;animation:fadeUp .8s ease .1s both}
+    .hero-title .g{background:linear-gradient(135deg,var(--primary),var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% 200%;animation:gradientShift 6s ease infinite}
+    .hero-sub{font-size:clamp(16px,2.2vw,22px);color:var(--text-secondary);margin-bottom:32px;animation:fadeUp .8s ease .2s both}
+    .hero-typed{color:var(--primary);font-weight:600}
+    .hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:fadeUp .8s ease .3s both}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:12px;font-size:15px;font-weight:500;text-decoration:none;cursor:pointer;font-family:inherit;transition:all .3s ease;border:none}
+    .btn-primary{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;box-shadow:0 4px 20px var(--primary-glow)}
+    .btn-primary:hover{transform:translateY(-3px);box-shadow:0 8px 30px var(--primary-glow)}
+    .btn-outline{background:transparent;border:1px solid var(--border-color);color:var(--text-secondary)}
+    .btn-outline:hover{background:var(--alpha-6);border-color:var(--primary);color:var(--text-primary);transform:translateY(-3px)}
+    .btn-sm{padding:8px 18px;font-size:13px}
+    .scroll-indicator{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:12px;animation:fadeUp .8s ease .5s both}
+    .scroll-mouse{width:22px;height:34px;border:2px solid var(--text-muted);border-radius:999px;position:relative}
+    .scroll-dot{position:absolute;top:6px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--primary);animation:scrollDot 2s infinite}
+
+    .section-label{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;background:var(--alpha-6);border:1px solid var(--border-color);font-size:12px;font-weight:500;color:var(--primary);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+    .section-title{font-size:clamp(24px,3.5vw,40px);font-weight:700;margin-bottom:8px}
+    .section-title .g{background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .section-desc{color:var(--text-secondary);font-size:16px;max-width:600px;margin-bottom:40px}
+
+    .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:32px}
+    .about-card,.topic-card,.project-card,.research-card,.app-card{background:var(--bg-card);backdrop-filter:blur(12px);border:1px solid var(--border-color);border-radius:var(--radius);padding:28px;transition:all .35s ease}
+    .about-card:hover,.topic-card:hover,.project-card:hover,.research-card:hover,.app-card:hover{transform:translateY(-6px);border-color:var(--primary);box-shadow:0 20px 60px rgba(0,0,0,0.2)}
+    .about-card p{color:var(--text-secondary);font-size:15px;line-height:1.7}
+    .about-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px;background:linear-gradient(135deg,var(--primary),var(--accent))}
+    .about-card h3{margin-bottom:8px;font-size:18px}
+
+    .topics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .topic-card{text-align:center;padding:32px 24px}
+    .topic-icon{width:52px;height:52px;border-radius:14px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:24px;transition:all .35s ease}
+    .topic-card:hover .topic-icon{transform:scale(1.15) rotate(-6deg);border-radius:50%}
+    .topic-icon-purple{background:linear-gradient(135deg,#8b5cf6,#7c3aed);box-shadow:0 4px 15px rgba(139,92,246,0.3)}
+    .topic-icon-blue{background:linear-gradient(135deg,#3b82f6,#2563eb);box-shadow:0 4px 15px rgba(59,130,246,0.3)}
+    .topic-icon-cyan{background:linear-gradient(135deg,#06b6d4,#0891b2);box-shadow:0 4px 15px rgba(6,182,212,0.3)}
+    .topic-icon-emerald{background:linear-gradient(135deg,#10b981,#059669);box-shadow:0 4px 15px rgba(16,185,129,0.3)}
+    .topic-icon-amber{background:linear-gradient(135deg,#f59e0b,#d97706);box-shadow:0 4px 15px rgba(245,158,11,0.3)}
+    .topic-icon-rose{background:linear-gradient(135deg,#f43f5e,#e11d48);box-shadow:0 4px 15px rgba(244,63,94,0.3)}
+    .topic-card h3{font-size:16px;font-weight:600;margin-bottom:8px}
+    .topic-card p{color:var(--text-secondary);font-size:13px;line-height:1.6}
+
+    .tech-section{text-align:center}
+    .tech-grid{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:24px}
+    .tech-badge{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:12px;background:var(--alpha-6);border:1px solid var(--border-color);font-size:14px;font-weight:500;transition:all .3s ease;cursor:default}
+    .tech-badge:hover{transform:translateY(-4px);background:var(--alpha-8);border-color:var(--primary);box-shadow:0 8px 25px var(--primary-glow)}
+    .tech-badge .icon{font-size:20px}
+
+    /* Flow Diagram */
+    .flow-section{text-align:center}
+    .flow-diagram{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;margin-top:40px;padding:20px}
+    .flow-step{display:flex;flex-direction:column;align-items:center;gap:10px;min-width:100px;position:relative}
+    .flow-icon{width:64px;height:64px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;background:var(--bg-card);border:2px solid var(--border-color);transition:all .35s ease;position:relative;z-index:2}
+    .flow-step:hover .flow-icon{transform:scale(1.12);border-color:var(--primary);box-shadow:0 0 30px var(--primary-glow)}
+    .flow-label{font-size:13px;font-weight:500;color:var(--text-secondary);max-width:120px;text-align:center;line-height:1.3}
+    .flow-arrow{font-size:24px;color:var(--primary);margin:0 8px;opacity:0.6;align-self:center;padding-top:30px;animation:flowArrow 1.5s ease infinite}
+    @keyframes flowArrow{0%,100%{transform:translateX(0);opacity:0.6}50%{transform:translateX(6px);opacity:1}}
+    .flow-step .step-num{position:absolute;top:-8px;right:-8px;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;z-index:3}
+
+    /* Apps grid */
+    .apps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .app-card{text-align:center;padding:32px 24px}
+    .app-card .app-icon{font-size:36px;margin-bottom:12px}
+    .app-card h3{font-size:17px;font-weight:600;margin-bottom:8px}
+    .app-card p{color:var(--text-secondary);font-size:13px;line-height:1.6}
+
+    /* Research cards */
+    .research-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .research-card h3{font-size:17px;font-weight:600;margin-bottom:8px}
+    .research-card p{color:var(--text-secondary);font-size:13px;line-height:1.6;margin-bottom:12px}
+    .research-card .r-tag{display:inline-block;padding:2px 10px;border-radius:6px;background:var(--alpha-6);font-size:11px;color:var(--text-secondary);margin:2px}
+    .research-card .r-link{display:inline-flex;align-items:center;gap:4px;color:var(--primary);font-size:13px;text-decoration:none;margin-top:12px;font-weight:500;transition:all .2s}
+    .research-card .r-link:hover{gap:8px}
+
+    .goals-list{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:24px}
+    .goal-item{display:flex;align-items:flex-start;gap:12px;padding:16px;border-radius:var(--radius-sm);background:var(--alpha-4);border:1px solid var(--border-color);transition:all .3s}
+    .goal-item:hover{background:var(--alpha-6);border-color:var(--primary);transform:translateX(4px)}
+    .goal-item .check{width:24px;height:24px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0}
+    .goal-item div{flex:1}
+    .goal-item h4{font-size:15px;font-weight:600;margin-bottom:2px}
+    .goal-item p{color:var(--text-secondary);font-size:13px}
+
+    .cta-section{text-align:center;padding:80px 20px}
+    .cta-section h2{font-size:clamp(24px,4vw,42px);margin-bottom:12px}
+    .cta-section p{color:var(--text-secondary);margin-bottom:28px;font-size:16px}
+    .cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+    .footer-bar{text-align:center;padding:24px;border-top:1px solid var(--border-color);color:var(--text-muted);font-size:13px}
+    .footer-bar a{color:var(--primary);text-decoration:none}
+
+    [data-anim]{opacity:0;transform:translateY(30px);transition:all .7s ease}
+    [data-anim].visible{opacity:1;transform:translateY(0)}
+
+    /* SVG molecule animation */
+    .molecule-svg{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;overflow:hidden}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes gradientShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+    @keyframes scrollDot{0%{top:6px;opacity:1}100%{top:20px;opacity:0}}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+    @keyframes rotate3d{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+    @keyframes orbit{0%{transform:rotate(0deg) translateX(80px) rotate(0deg)}100%{transform:rotate(360deg) translateX(80px) rotate(-360deg)}}
+
+    .hidden{display:none!important}
+
+    @media(max-width:900px){
+      .about-grid,.goals-list{grid-template-columns:1fr}
+      .topics-grid,.apps-grid,.research-grid{grid-template-columns:repeat(2,1fr)}
+      .flow-arrow{display:none}
+      .flow-diagram{flex-direction:column;gap:16px}
+      .flow-step{flex-direction:row;gap:12px;width:100%}
+      .flow-icon{width:48px;height:48px;font-size:20px;flex-shrink:0}
+      .flow-label{text-align:left}
+    }
+    @media(max-width:600px){
+      .topics-grid,.apps-grid,.research-grid{grid-template-columns:1fr}
+      section{padding:60px 16px}
+      .hero{padding-top:60px}
+      .nav-inner{padding:0 12px}
+      .btn{padding:10px 20px;font-size:14px}
+    }
+  </style>
+</head>
+<body>
+  <div class="loader-bar"></div>
+  <div id="custom-cursor"></div>
+  <div class="progress-bar" id="progressBar"></div>
+
+  <canvas id="molecule-canvas"></canvas>
+
+  <!-- SVG Molecule Background -->
+  <svg class="molecule-svg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="molGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.08"/>
+        <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.02"/>
+      </linearGradient>
+      <filter id="glowMol"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <!-- Large rotating molecule cluster -->
+    <g transform="translate(720,450)" style="animation:rotate3d 40s linear infinite">
+      <circle cx="0" cy="0" r="6" fill="#8b5cf6" opacity="0.25" filter="url(#glowMol)"/>
+      <circle cx="80" cy="0" r="4" fill="#3b82f6" opacity="0.2" filter="url(#glowMol)"/>
+      <circle cx="-80" cy="0" r="4" fill="#a78bfa" opacity="0.2" filter="url(#glowMol)"/>
+      <circle cx="0" cy="80" r="4" fill="#06b6d4" opacity="0.2" filter="url(#glowMol)"/>
+      <circle cx="0" cy="-80" r="4" fill="#8b5cf6" opacity="0.2" filter="url(#glowMol)"/>
+      <circle cx="56" cy="56" r="3" fill="#3b82f6" opacity="0.15" filter="url(#glowMol)"/>
+      <circle cx="-56" cy="56" r="3" fill="#a78bfa" opacity="0.15" filter="url(#glowMol)"/>
+      <circle cx="56" cy="-56" r="3" fill="#06b6d4" opacity="0.15" filter="url(#glowMol)"/>
+      <circle cx="-56" cy="-56" r="3" fill="#8b5cf6" opacity="0.15" filter="url(#glowMol)"/>
+      <line x1="0" y1="0" x2="80" y2="0" stroke="#8b5cf6" stroke-width="0.5" opacity="0.1"/>
+      <line x1="0" y1="0" x2="-80" y2="0" stroke="#3b82f6" stroke-width="0.5" opacity="0.1"/>
+      <line x1="0" y1="0" x2="0" y2="80" stroke="#a78bfa" stroke-width="0.5" opacity="0.1"/>
+      <line x1="0" y1="0" x2="0" y2="-80" stroke="#06b6d4" stroke-width="0.5" opacity="0.1"/>
+      <line x1="0" y1="0" x2="56" y2="56" stroke="#8b5cf6" stroke-width="0.5" opacity="0.08"/>
+      <line x1="0" y1="0" x2="-56" y2="56" stroke="#3b82f6" stroke-width="0.5" opacity="0.08"/>
+      <line x1="0" y1="0" x2="56" y2="-56" stroke="#a78bfa" stroke-width="0.5" opacity="0.08"/>
+      <line x1="0" y1="0" x2="-56" y2="-56" stroke="#06b6d4" stroke-width="0.5" opacity="0.08"/>
+    </g>
+    <!-- Outer orbiting atoms -->
+    <g transform="translate(720,450)" style="animation:orbit 25s linear infinite">
+      <circle cx="0" cy="0" r="4" fill="#8b5cf6" opacity="0.15" filter="url(#glowMol)"/>
+      <circle cx="0" cy="0" r="3" fill="#3b82f6" opacity="0.12" filter="url(#glowMol)"/>
+    </g>
+    <g transform="translate(720,450)" style="animation:orbit 35s linear infinite reverse">
+      <circle cx="0" cy="0" r="3" fill="#a78bfa" opacity="0.12" filter="url(#glowMol)"/>
+      <circle cx="0" cy="0" r="2" fill="#06b6d4" opacity="0.1" filter="url(#glowMol)"/>
+    </g>
+    <!-- Secondary cluster top-left -->
+    <g transform="translate(200,200)" style="animation:rotate3d 30s linear infinite reverse">
+      <circle cx="0" cy="0" r="4" fill="#8b5cf6" opacity="0.1" filter="url(#glowMol)"/>
+      <circle cx="50" cy="0" r="3" fill="#3b82f6" opacity="0.08" filter="url(#glowMol)"/>
+      <circle cx="-50" cy="0" r="3" fill="#a78bfa" opacity="0.08" filter="url(#glowMol)"/>
+      <circle cx="0" cy="50" r="3" fill="#06b6d4" opacity="0.08" filter="url(#glowMol)"/>
+      <circle cx="0" cy="-50" r="3" fill="#8b5cf6" opacity="0.08" filter="url(#glowMol)"/>
+      <line x1="0" y1="0" x2="50" y2="0" stroke="#8b5cf6" stroke-width="0.5" opacity="0.06"/>
+      <line x1="0" y1="0" x2="-50" y2="0" stroke="#3b82f6" stroke-width="0.5" opacity="0.06"/>
+      <line x1="0" y1="0" x2="0" y2="50" stroke="#a78bfa" stroke-width="0.5" opacity="0.06"/>
+      <line x1="0" y1="0" x2="0" y2="-50" stroke="#06b6d4" stroke-width="0.5" opacity="0.06"/>
+    </g>
+    <!-- Secondary cluster bottom-right -->
+    <g transform="translate(1240,700)" style="animation:rotate3d 35s linear infinite">
+      <circle cx="0" cy="0" r="5" fill="#8b5cf6" opacity="0.1" filter="url(#glowMol)"/>
+      <circle cx="60" cy="0" r="3" fill="#3b82f6" opacity="0.08" filter="url(#glowMol)"/>
+      <circle cx="-60" cy="0" r="3" fill="#a78bfa" opacity="0.08" filter="url(#glowMol)"/>
+      <circle cx="35" cy="35" r="2" fill="#06b6d4" opacity="0.06" filter="url(#glowMol)"/>
+      <circle cx="-35" cy="-35" r="2" fill="#8b5cf6" opacity="0.06" filter="url(#glowMol)"/>
+      <circle cx="35" cy="-35" r="2" fill="#3b82f6" opacity="0.06" filter="url(#glowMol)"/>
+      <circle cx="-35" cy="35" r="2" fill="#a78bfa" opacity="0.06" filter="url(#glowMol)"/>
+      <line x1="0" y1="0" x2="60" y2="0" stroke="#8b5cf6" stroke-width="0.5" opacity="0.06"/>
+      <line x1="0" y1="0" x2="-60" y2="0" stroke="#3b82f6" stroke-width="0.5" opacity="0.06"/>
+      <line x1="0" y1="0" x2="35" y2="35" stroke="#a78bfa" stroke-width="0.5" opacity="0.05"/>
+      <line x1="0" y1="0" x2="-35" y2="-35" stroke="#06b6d4" stroke-width="0.5" opacity="0.05"/>
+    </g>
+  </svg>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="../../" class="logo"><span class="g">Ahamad</span></a>
+      <div class="nav-right">
+        <button class="nav-btn" id="themeToggle" title="Toggle theme">🌙</button>
+        <select class="lang-select" id="langSelect">
+          <option value="en">English</option>
+          <option value="bn">বাংলা</option>
+          <option value="zh">中文</option>
+          <option value="hi">हिन्दी</option>
+        </select>
+        <a href="../../" class="nav-btn" title="Back to Portfolio">←</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <div class="hero-badge"><span class="hero-badge-dot"></span><span data-i18n="badge">Research Interest</span></div>
+      <h1 class="hero-title"><span class="g" data-i18n="heroTitle">AI-based Protein<br/>Structure Prediction</span></h1>
+      <p class="hero-sub"><span data-i18n="heroSub">Exploring how artificial intelligence </span><span class="hero-typed" id="typedText"></span></p>
+      <div class="hero-btns">
+        <a href="#about" class="btn btn-primary shimmer-btn" data-i18n="exploreBtn">Explore Interest</a>
+        <a href="#topics" class="btn btn-outline" data-i18n="keyTopics">Key Topics</a>
+        <a href="../../" class="btn btn-outline" data-i18n="backPortfolio">← Back to Portfolio</a>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <div class="scroll-mouse"><div class="scroll-dot"></div></div>
+      <span data-i18n="scroll">Scroll to explore</span>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="container">
+      <div data-anim>
+        <div class="section-label" data-i18n="aboutLabel">About This Interest</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="aboutTitle">Why Protein Structure Prediction?</span></h2>
+        <p class="section-desc" data-i18n="aboutDesc">The protein folding problem — predicting a protein's 3D structure from its amino acid sequence — is one of biology's greatest challenges, and AI is solving it.</p>
+      </div>
+      <div class="about-grid">
+        <div class="about-card" data-anim>
+          <div class="about-icon">🧬</div>
+          <h3 data-i18n="aboutCard1Title">The Protein Folding Problem</h3>
+          <p data-i18n="aboutCard1Text">For decades, determining a protein's three-dimensional structure required expensive and time-consuming experimental methods like X-ray crystallography and cryo-EM. The protein folding problem asks: can we predict the 3D structure solely from the amino acid sequence? What once seemed impossible is now being revolutionized by deep learning.</p>
+        </div>
+        <div class="about-card" data-anim>
+          <div class="about-icon">🤖</div>
+          <h3 data-i18n="aboutCard2Title">AlphaFold &amp; The AI Revolution</h3>
+          <p data-i18n="aboutCard2Text">DeepMind's AlphaFold2 achieved what was considered a "grand challenge" in biology — predicting protein structures with atomic-level accuracy. This breakthrough has opened new frontiers in drug discovery, disease understanding, and personalized medicine. I'm fascinated by how transformer architectures and geometric deep learning are transforming structural biology.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="topics" style="background:var(--alpha-3)">
+    <div class="container">
+      <div data-anim style="text-align:center;margin-bottom:40px">
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="topicsLabel">Knowledge Areas</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="topicsTitle">Key Topics I Explore</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="topicsDesc">Core domains in AI-driven structural biology and protein science</p>
+      </div>
+      <div class="topics-grid">
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-purple">🧩</div>
+          <h3 data-i18n="topic1Title">The Protein Folding Problem</h3>
+          <p data-i18n="topic1Desc">Understanding how amino acid sequences fold into unique 3D structures — the fundamental challenge that has puzzled biologists for over 50 years.</p>
+        </div>
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-blue">🧠</div>
+          <h3 data-i18n="topic2Title">AlphaFold &amp; ESMFold</h3>
+          <p data-i18n="topic2Desc">State-of-the-art deep learning models that predict protein structures with remarkable accuracy using attention mechanisms and evolutionary information.</p>
+        </div>
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-cyan">📊</div>
+          <h3 data-i18n="topic3Title">Sequence-to-Structure Prediction</h3>
+          <p data-i18n="topic3Desc">Mapping the relationship between primary sequence and tertiary structure using multiple sequence alignments and deep neural networks.</p>
+        </div>
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-emerald">⚛️</div>
+          <h3 data-i18n="topic4Title">Molecular Dynamics Simulation</h3>
+          <p data-i18n="topic4Desc">Simulating atomic-level protein motion and interactions over time to understand folding pathways, stability, and ligand binding.</p>
+        </div>
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-amber">🎯</div>
+          <h3 data-i18n="topic5Title">Drug Target Identification</h3>
+          <p data-i18n="topic5Desc">Using predicted protein structures to identify druggable binding sites and accelerate structure-based drug discovery pipelines.</p>
+        </div>
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-rose">🔬</div>
+          <h3 data-i18n="topic6Title">Structural Bioinformatics</h3>
+          <p data-i18n="topic6Desc">Computational analysis of protein structures, fold classification, and evolutionary relationships at the structural level.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="technologies">
+    <div class="container tech-section">
+      <div data-anim>
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="techLabel">Technologies</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="techTitle">Tools &amp; Frameworks</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="techDesc">Software and libraries driving protein structure prediction research</p>
+      </div>
+      <div class="tech-grid">
+        <div class="tech-badge" data-anim><span class="icon">🐍</span> Python</div>
+        <div class="tech-badge" data-anim><span class="icon">🧬</span> BioPython</div>
+        <div class="tech-badge" data-anim><span class="icon">🔬</span> PyMOL</div>
+        <div class="tech-badge" data-anim><span class="icon">🧠</span> AlphaFold</div>
+        <div class="tech-badge" data-anim><span class="icon">⚡</span> TensorFlow</div>
+        <div class="tech-badge" data-anim><span class="icon">🔢</span> NumPy</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="flow" style="background:var(--alpha-3)">
+    <div class="container flow-section">
+      <div data-anim>
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="flowLabel">The Process</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="flowTitle">From DNA to 3D Structure</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="flowDesc">How genetic information becomes a functional protein structure</p>
+      </div>
+      <div class="flow-diagram" data-anim>
+        <div class="flow-step">
+          <span class="step-num">1</span>
+          <div class="flow-icon">🧬</div>
+          <span class="flow-label" data-i18n="flow1">DNA</span>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">
+          <span class="step-num">2</span>
+          <div class="flow-icon">📝</div>
+          <span class="flow-label" data-i18n="flow2">RNA Transcription</span>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">
+          <span class="step-num">3</span>
+          <div class="flow-icon">🧵</div>
+          <span class="flow-label" data-i18n="flow3">Amino Acid Sequence</span>
+        </div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step">
+          <span class="step-num">4</span>
+          <div class="flow-icon">🏗️</div>
+          <span class="flow-label" data-i18n="flow4">3D Protein Structure</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="applications">
+    <div class="container">
+      <div data-anim style="text-align:center;margin-bottom:40px">
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="appsLabel">Real World Impact</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="appsTitle">Applications</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="appsDesc">How protein structure prediction is transforming medicine and biology</p>
+      </div>
+      <div class="apps-grid">
+        <div class="app-card" data-anim>
+          <div class="app-icon">💊</div>
+          <h3 data-i18n="app1Title">Disease Treatment</h3>
+          <p data-i18n="app1Desc">Understanding protein structures linked to diseases enables targeted drug design and the development of therapies for conditions like cancer, Alzheimer's, and genetic disorders.</p>
+        </div>
+        <div class="app-card" data-anim>
+          <div class="app-icon">💉</div>
+          <h3 data-i18n="app2Title">Vaccine Development</h3>
+          <p data-i18n="app2Desc">Accurate protein structure prediction accelerates vaccine design by revealing viral protein conformations and identifying neutralizing antibody targets.</p>
+        </div>
+        <div class="app-card" data-anim>
+          <div class="app-icon">🧑‍⚕️</div>
+          <h3 data-i18n="app3Title">Personalized Medicine</h3>
+          <p data-i18n="app3Desc">Predicting how genetic variations affect protein structure enables tailored treatments based on an individual's unique molecular profile.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="research" style="background:var(--alpha-3)">
+    <div class="container">
+      <div data-anim style="text-align:center;margin-bottom:40px">
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="researchLabel">Research</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="researchTitle">Research I Follow</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="researchDesc">Cutting-edge models and breakthroughs in protein structure prediction</p>
+      </div>
+      <div class="research-grid">
+        <div class="research-card" data-anim>
+          <div class="topic-icon topic-icon-purple" style="margin:0 0 12px">🧠</div>
+          <h3 data-i18n="res1Title">AlphaFold2</h3>
+          <p data-i18n="res1Desc">DeepMind's revolutionary model that achieved near-experimental accuracy in protein structure prediction. Uses Evoformer blocks and structure module to iteratively refine 3D coordinates from MSA and pair representations.</p>
+          <div><span class="r-tag">DeepMind</span><span class="r-tag">2021</span><span class="r-tag">CASP14</span></div>
+          <a href="https://deepmind.google/technologies/alphafold/" target="_blank" class="r-link" data-i18n="learnMore">Learn More →</a>
+        </div>
+        <div class="research-card" data-anim>
+          <div class="topic-icon topic-icon-blue" style="margin:0 0 12px">🔬</div>
+          <h3 data-i18n="res2Title">RoseTTAFold</h3>
+          <p data-i18n="res2Desc">A three-track neural network from the Baker lab that simultaneously processes sequence, distance, and coordinate information using a unique architecture that enables confident protein structure prediction.</p>
+          <div><span class="r-tag">Baker Lab</span><span class="r-tag">2021</span><span class="r-tag">Science</span></div>
+          <a href="https://www.ipd.uw.edu/2021/07/rosettafold-accurate-protein-structure-prediction-accessible-to-all/" target="_blank" class="r-link" data-i18n="learnMore">Learn More →</a>
+        </div>
+        <div class="research-card" data-anim>
+          <div class="topic-icon topic-icon-cyan" style="margin:0 0 12px">⚡</div>
+          <h3 data-i18n="res3Title">ESMFold</h3>
+          <p data-i18n="res3Desc">Meta's evolutionarily scaled language model that predicts protein structures directly from single sequences without MSA. Demonstrates that language models can learn protein folding from evolutionary patterns alone.</p>
+          <div><span class="r-tag">Meta AI</span><span class="r-tag">2022</span><span class="r-tag">ESM</span></div>
+          <a href="https://esmatlas.com/about" target="_blank" class="r-link" data-i18n="learnMore">Learn More →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="goals">
+    <div class="container">
+      <div data-anim style="text-align:center;margin-bottom:40px">
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="goalsLabel">Future</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="goalsTitle">Future Goals &amp; Vision</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="goalsDesc">What I aim to contribute to the field of structural bioinformatics</p>
+      </div>
+      <div class="goals-list">
+        <div class="goal-item" data-anim><div class="check">✓</div><div><h4 data-i18n="goal1Title">Open Source Prediction Tools</h4><p data-i18n="goal1Desc">Build accessible, open-source protein structure prediction tools that researchers in low-resource settings can use without expensive computational infrastructure.</p></div></div>
+        <div class="goal-item" data-anim><div class="check">✓</div><div><h4 data-i18n="goal2Title">Structural Bioinformatics Research</h4><p data-i18n="goal2Desc">Contribute to research on protein-ligand interactions, folding pathway prediction, and integrating structural data with AI models for drug discovery.</p></div></div>
+        <div class="goal-item" data-anim><div class="check">✓</div><div><h4 data-i18n="goal3Title">AI-Driven Drug Discovery</h4><p data-i18n="goal3Desc">Apply protein structure prediction to identify novel drug targets and accelerate the development of treatments for neglected tropical diseases.</p></div></div>
+        <div class="goal-item" data-anim><div class="check">✓</div><div><h4 data-i18n="goal4Title">Educational Resources</h4><p data-i18n="goal4Desc">Create learning materials and tutorials that make structural bioinformatics and AI-based protein prediction accessible to students worldwide.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section" id="cta" style="background:var(--alpha-3)">
+    <div class="container" data-anim>
+      <h2><span class="g" data-i18n="ctaTitle">Let's Explore Protein Structures Together</span></h2>
+      <p data-i18n="ctaDesc">Interested in structural bioinformatics, drug discovery, or AI for biology? I'd love to connect and collaborate.</p>
+      <div class="cta-btns">
+        <a href="mailto:anmdahamadullah@gmail.com" class="btn btn-primary shimmer-btn" data-i18n="ctaCollaborate">Collaborate with Me</a>
+        <a href="https://github.com/im-ahamad" target="_blank" class="btn btn-outline" data-i18n="ctaGithub">View GitHub</a>
+        <a href="../../" class="btn btn-outline" data-i18n="ctaBack">← Back to Portfolio</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-bar">
+    <p>© 2024 <a href="../../">Md Ahamad Ullah</a> — <span data-i18n="footerTag">Advancing structural biology with artificial intelligence</span></p>
+  </div>
+
+  <script>
+    // ===== THEME =====
+    const themeToggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    const savedTheme = localStorage.getItem('protein-theme') || 'light';
+    html.setAttribute('data-theme', savedTheme);
+    themeToggle.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+
+    themeToggle.addEventListener('click', () => {
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('protein-theme', next);
+      themeToggle.textContent = next === 'dark' ? '🌙' : '☀️';
+    });
+
+    // ===== PARTICLES =====
+    const canvas = document.getElementById('molecule-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let mouseX = -1000, mouseY = -1000;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = document.documentElement.scrollHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2.5 + 0.5;
+        this.speedX = (Math.random() - 0.5) * 0.4;
+        this.speedY = (Math.random() - 0.5) * 0.4;
+        this.opacity = Math.random() * 0.4 + 0.08;
+        this.color = ['139,92,246','59,130,246','6,182,212','167,139,250'][Math.floor(Math.random()*4)];
+        this.angle = Math.random() * Math.PI * 2;
+        this.orbitSpeed = (Math.random() - 0.5) * 0.02;
+        this.orbitRadius = Math.random() * 30 + 10;
+      }
+      update() {
+        this.angle += this.orbitSpeed;
+        this.x += Math.cos(this.angle) * 0.2;
+        this.y += Math.sin(this.angle) * 0.2;
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+        const dx = this.x - mouseX, dy = this.y - mouseY, dist = Math.sqrt(dx*dx+dy*dy);
+        if (dist < 120) {
+          this.x += dx/dist * 0.6;
+          this.y += dy/dist * 0.6;
+        }
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${this.color},${this.opacity})`;
+        ctx.fill();
+        // glow
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * 3, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${this.color},${this.opacity * 0.2})`;
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < 70; i++) particles.push(new Particle());
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const isDark = html.getAttribute('data-theme') === 'dark';
+      const connOpacity = isDark ? 0.06 : 0.03;
+      particles.forEach(p => { p.update(); p.draw(); });
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y, dist = Math.sqrt(dx*dx+dy*dy);
+          if (dist < 140) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(139,92,246,${connOpacity * (1 - dist/140)})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY + window.scrollY; });
+    document.addEventListener('scroll', () => { canvas.height = document.documentElement.scrollHeight; });
+
+    // ===== TYPED TEXT =====
+    const typedEl = document.getElementById('typedText');
+    const phrases = [
+      'folds proteins in silico',
+      'predicts 3D structures',
+      'solves the folding problem',
+      'designs new proteins',
+      'discovers drug targets',
+      'decodes the proteome'
+    ];
+    let phraseIdx = 0, charIdx = 0, isDeleting = false;
+
+    function typeEffect() {
+      const current = phrases[phraseIdx];
+      if (!isDeleting) {
+        typedEl.textContent = current.substring(0, charIdx + 1);
+        charIdx++;
+        if (charIdx === current.length) { isDeleting = true; setTimeout(typeEffect, 2000); return; }
+        setTimeout(typeEffect, 80);
+      } else {
+        typedEl.textContent = current.substring(0, charIdx - 1);
+        charIdx--;
+        if (charIdx === 0) { isDeleting = false; phraseIdx = (phraseIdx + 1) % phrases.length; setTimeout(typeEffect, 300); return; }
+        setTimeout(typeEffect, 40);
+      }
+    }
+    typeEffect();
+
+    // ===== SCROLL ANIMATIONS =====
+    const animEls = document.querySelectorAll('[data-anim]');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    animEls.forEach(el => observer.observe(el));
+
+    // ===== PROGRESS BAR =====
+    const progressBar = document.getElementById('progressBar');
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? scrollTop / docHeight : 0;
+      progressBar.style.transform = `scaleX(${progress})`;
+    });
+
+    // ===== LANGUAGE =====
+    const translations = {
+      en: {
+        badge: 'Research Interest',
+        heroTitle: 'AI-based Protein<br/>Structure Prediction',
+        heroSub: 'Exploring how artificial intelligence ',
+        exploreBtn: 'Explore Interest',
+        keyTopics: 'Key Topics',
+        backPortfolio: '← Back to Portfolio',
+        scroll: 'Scroll to explore',
+        aboutLabel: 'About This Interest',
+        aboutTitle: 'Why Protein Structure Prediction?',
+        aboutDesc: 'The protein folding problem — predicting a protein\'s 3D structure from its amino acid sequence — is one of biology\'s greatest challenges, and AI is solving it.',
+        aboutCard1Title: 'The Protein Folding Problem',
+        aboutCard1Text: 'For decades, determining a protein\'s three-dimensional structure required expensive and time-consuming experimental methods like X-ray crystallography and cryo-EM. The protein folding problem asks: can we predict the 3D structure solely from the amino acid sequence? What once seemed impossible is now being revolutionized by deep learning.',
+        aboutCard2Title: 'AlphaFold &amp; The AI Revolution',
+        aboutCard2Text: 'DeepMind\'s AlphaFold2 achieved what was considered a "grand challenge" in biology — predicting protein structures with atomic-level accuracy. This breakthrough has opened new frontiers in drug discovery, disease understanding, and personalized medicine. I\'m fascinated by how transformer architectures and geometric deep learning are transforming structural biology.',
+        topicsLabel: 'Knowledge Areas',
+        topicsTitle: 'Key Topics I Explore',
+        topicsDesc: 'Core domains in AI-driven structural biology and protein science',
+        topic1Title: 'The Protein Folding Problem',
+        topic1Desc: 'Understanding how amino acid sequences fold into unique 3D structures — the fundamental challenge that has puzzled biologists for over 50 years.',
+        topic2Title: 'AlphaFold &amp; ESMFold',
+        topic2Desc: 'State-of-the-art deep learning models that predict protein structures with remarkable accuracy using attention mechanisms and evolutionary information.',
+        topic3Title: 'Sequence-to-Structure Prediction',
+        topic3Desc: 'Mapping the relationship between primary sequence and tertiary structure using multiple sequence alignments and deep neural networks.',
+        topic4Title: 'Molecular Dynamics Simulation',
+        topic4Desc: 'Simulating atomic-level protein motion and interactions over time to understand folding pathways, stability, and ligand binding.',
+        topic5Title: 'Drug Target Identification',
+        topic5Desc: 'Using predicted protein structures to identify druggable binding sites and accelerate structure-based drug discovery pipelines.',
+        topic6Title: 'Structural Bioinformatics',
+        topic6Desc: 'Computational analysis of protein structures, fold classification, and evolutionary relationships at the structural level.',
+        techLabel: 'Technologies',
+        techTitle: 'Tools &amp; Frameworks',
+        techDesc: 'Software and libraries driving protein structure prediction research',
+        flowLabel: 'The Process',
+        flowTitle: 'From DNA to 3D Structure',
+        flowDesc: 'How genetic information becomes a functional protein structure',
+        flow1: 'DNA',
+        flow2: 'RNA Transcription',
+        flow3: 'Amino Acid Sequence',
+        flow4: '3D Protein Structure',
+        appsLabel: 'Real World Impact',
+        appsTitle: 'Applications',
+        appsDesc: 'How protein structure prediction is transforming medicine and biology',
+        app1Title: 'Disease Treatment',
+        app1Desc: 'Understanding protein structures linked to diseases enables targeted drug design and the development of therapies for conditions like cancer, Alzheimer\'s, and genetic disorders.',
+        app2Title: 'Vaccine Development',
+        app2Desc: 'Accurate protein structure prediction accelerates vaccine design by revealing viral protein conformations and identifying neutralizing antibody targets.',
+        app3Title: 'Personalized Medicine',
+        app3Desc: 'Predicting how genetic variations affect protein structure enables tailored treatments based on an individual\'s unique molecular profile.',
+        researchLabel: 'Research',
+        researchTitle: 'Research I Follow',
+        researchDesc: 'Cutting-edge models and breakthroughs in protein structure prediction',
+        res1Title: 'AlphaFold2',
+        res1Desc: 'DeepMind\'s revolutionary model that achieved near-experimental accuracy in protein structure prediction. Uses Evoformer blocks and structure module to iteratively refine 3D coordinates from MSA and pair representations.',
+        res2Title: 'RoseTTAFold',
+        res2Desc: 'A three-track neural network from the Baker lab that simultaneously processes sequence, distance, and coordinate information using a unique architecture that enables confident protein structure prediction.',
+        res3Title: 'ESMFold',
+        res3Desc: 'Meta\'s evolutionarily scaled language model that predicts protein structures directly from single sequences without MSA. Demonstrates that language models can learn protein folding from evolutionary patterns alone.',
+        learnMore: 'Learn More →',
+        goalsLabel: 'Future',
+        goalsTitle: 'Future Goals &amp; Vision',
+        goalsDesc: 'What I aim to contribute to the field of structural bioinformatics',
+        goal1Title: 'Open Source Prediction Tools',
+        goal1Desc: 'Build accessible, open-source protein structure prediction tools that researchers in low-resource settings can use without expensive computational infrastructure.',
+        goal2Title: 'Structural Bioinformatics Research',
+        goal2Desc: 'Contribute to research on protein-ligand interactions, folding pathway prediction, and integrating structural data with AI models for drug discovery.',
+        goal3Title: 'AI-Driven Drug Discovery',
+        goal3Desc: 'Apply protein structure prediction to identify novel drug targets and accelerate the development of treatments for neglected tropical diseases.',
+        goal4Title: 'Educational Resources',
+        goal4Desc: 'Create learning materials and tutorials that make structural bioinformatics and AI-based protein prediction accessible to students worldwide.',
+        ctaTitle: 'Let\'s Explore Protein Structures Together',
+        ctaDesc: 'Interested in structural bioinformatics, drug discovery, or AI for biology? I\'d love to connect and collaborate.',
+        ctaCollaborate: 'Collaborate with Me',
+        ctaGithub: 'View GitHub',
+        ctaBack: '← Back to Portfolio',
+        footerTag: 'Advancing structural biology with artificial intelligence',
+      },
+      bn: {
+        badge: 'গবেষণার আগ্রহ',
+        heroTitle: 'AI-ভিত্তিক প্রোটিন<br/>গঠন পূর্বাভাস',
+        heroSub: 'অন্বেষণ কীভাবে কৃত্রিম বুদ্ধিমত্তা ',
+        exploreBtn: 'আগ্রহ অন্বেষণ',
+        keyTopics: 'মূল বিষয়',
+        backPortfolio: '← পোর্টফোলিওতে ফিরুন',
+        scroll: 'অন্বেষণ করতে স্ক্রোল করুন',
+        aboutLabel: 'এই আগ্রহ সম্পর্কে',
+        aboutTitle: 'কেন প্রোটিন গঠন পূর্বাভাস?',
+        aboutDesc: 'প্রোটিন ফোল্ডিং সমস্যা — অ্যামিনো অ্যাসিড ক্রম থেকে প্রোটিনের ত্রিমাত্রিক গঠন পূর্বাভাস — জীববিজ্ঞানের সবচেয়ে বড় চ্যালেঞ্জগুলির একটি, এবং AI এটি সমাধান করছে।',
+        aboutCard1Title: 'প্রোটিন ফোল্ডিং সমস্যা',
+        aboutCard1Text: 'দশকের পর দশক ধরে, প্রোটিনের ত্রিমাত্রিক গঠন নির্ধারণের জন্য এক্স-রে ক্রিস্টালোগ্রাফি এবং ক্রায়ো-ইএম-এর মতো ব্যয়বহুল এবং সময়সাপেক্ষ পরীক্ষামূলক পদ্ধতি প্রয়োজন ছিল। প্রোটিন ফোল্ডিং সমস্যা জিজ্ঞাসা করে: আমরা কি শুধুমাত্র অ্যামিনো অ্যাসিড ক্রম থেকে 3D গঠন পূর্বাভাস দিতে পারি? যা একসময় অসম্ভব বলে মনে হতো, এখন ডিপ লার্নিং দ্বারা বিপ্লব ঘটছে।',
+        aboutCard2Title: 'AlphaFold ও AI বিপ্লব',
+        aboutCard2Text: 'DeepMind-এর AlphaFold2 জীববিজ্ঞানে যা একটি "গ্র্যান্ড চ্যালেঞ্জ" হিসেবে বিবেচিত ছিল তা অর্জন করেছে — পারমাণবিক-স্তরের নির্ভুলতার সাথে প্রোটিন গঠন পূর্বাভাস। এই অগ্রগতি ওষুধ আবিষ্কার, রোগ বোঝার এবং ব্যক্তিগতকৃত ওষুধে নতুন সীমানা খুলে দিয়েছে। ট্রান্সফরমার আর্কিটেকচার এবং জ্যামিতিক ডিপ লার্নিং কীভাবে স্ট্রাকচারাল বায়োলজিকে রূপান্তরিত করছে তা দেখে আমি মুগ্ধ।',
+        topicsLabel: 'জ্ঞানের ক্ষেত্র',
+        topicsTitle: 'আমি যে মূল বিষয়গুলি অন্বেষণ করি',
+        topicsDesc: 'AI-চালিত স্ট্রাকচারাল বায়োলজি এবং প্রোটিন বিজ্ঞানের মূল ডোমেন',
+        topic1Title: 'প্রোটিন ফোল্ডিং সমস্যা',
+        topic1Desc: 'কীভাবে অ্যামিনো অ্যাসিড ক্রমগুলি অনন্য 3D গঠনে ভাঁজ হয় তা বোঝা — মৌলিক চ্যালেঞ্জ যা ৫০ বছরেরও বেশি সময় ধরে জীববিজ্ঞানীদের বিভ্রান্ত করেছে।',
+        topic2Title: 'AlphaFold ও ESMFold',
+        topic2Desc: 'অত্যাধুনিক ডিপ লার্নিং মডেল যা অ্যাটেনশন মেকানিজম এবং বিবর্তনীয় তথ্য ব্যবহার করে উল্লেখযোগ্য নির্ভুলতার সাথে প্রোটিন গঠন পূর্বাভাস দেয়।',
+        topic3Title: 'সিকোয়েন্স-টু-স্ট্রাকচার পূর্বাভাস',
+        topic3Desc: 'একাধিক সিকোয়েন্স অ্যালাইনমেন্ট এবং ডিপ নিউরাল নেটওয়ার্ক ব্যবহার করে প্রাথমিক ক্রম এবং তৃতীয় স্তরের গঠনের মধ্যে সম্পর্ক নির্ধারণ।',
+        topic4Title: 'আণবিক ডায়নামিক্স সিমুলেশন',
+        topic4Desc: 'ফোল্ডিং পাথওয়ে, স্থিতিশীলতা এবং লিগ্যান্ড বাঁধাই বোঝার জন্য সময়ের সাথে প্রোটিন গতি এবং মিথস্ক্রিয়া অনুকরণ।',
+        topic5Title: 'ড্রাগ টার্গেট শনাক্তকরণ',
+        topic5Desc: 'ড্রাগেবল বাইন্ডিং সাইট শনাক্ত করতে এবং স্ট্রাকচার-ভিত্তিক ওষুধ আবিষ্কার ত্বরান্বিত করতে পূর্বাভাসিত প্রোটিন গঠন ব্যবহার করা।',
+        topic6Title: 'স্ট্রাকচারাল বায়োইনফরমেটিক্স',
+        topic6Desc: 'প্রোটিন গঠনের গণনামূলক বিশ্লেষণ, ফোল্ড শ্রেণীবিভাগ এবং কাঠামোগত স্তরে বিবর্তনীয় সম্পর্ক।',
+        techLabel: 'প্রযুক্তি',
+        techTitle: 'টুলস ও ফ্রেমওয়ার্ক',
+        techDesc: 'প্রোটিন গঠন পূর্বাভাস গবেষণা চালিত সফটওয়্যার এবং লাইব্রেরি',
+        flowLabel: 'প্রক্রিয়া',
+        flowTitle: 'DNA থেকে 3D গঠন',
+        flowDesc: 'কীভাবে জেনেটিক তথ্য একটি কার্যকরী প্রোটিন গঠনে পরিণত হয়',
+        flow1: 'DNA',
+        flow2: 'RNA প্রতিলিপি',
+        flow3: 'অ্যামিনো অ্যাসিড ক্রম',
+        flow4: '3D প্রোটিন গঠন',
+        appsLabel: 'বাস্তব বিশ্বের প্রভাব',
+        appsTitle: 'প্রয়োগ',
+        appsDesc: 'কীভাবে প্রোটিন গঠন পূর্বাভাস ওষুধ এবং জীববিজ্ঞানকে রূপান্তরিত করছে',
+        app1Title: 'রোগের চিকিৎসা',
+        app1Desc: 'রোগের সাথে যুক্ত প্রোটিন গঠন বোঝা লক্ষ্যবস্তু ওষুধ ডিজাইন এবং ক্যান্সার, আলঝাইমার এবং জেনেটিক ব্যাধির মতো অবস্থার জন্য থেরাপি তৈরি সক্ষম করে।',
+        app2Title: 'ভ্যাকসিন উন্নয়ন',
+        app2Desc: 'সঠিক প্রোটিন গঠন পূর্বাভাস ভাইরাল প্রোটিন কনফরমেশন প্রকাশ করে এবং নিউট্রালাইজিং অ্যান্টিবডি লক্ষ্য শনাক্ত করে ভ্যাকসিন ডিজাইন ত্বরান্বিত করে।',
+        app3Title: 'ব্যক্তিগতকৃত ওষুধ',
+        app3Desc: 'কীভাবে জেনেটিক বৈচিত্র প্রোটিন গঠনকে প্রভাবিত করে তা পূর্বাভাস একজন ব্যক্তির অনন্য আণবিক প্রোফাইলের উপর ভিত্তি করে উপযোগী চিকিৎসা সক্ষম করে।',
+        researchLabel: 'গবেষণা',
+        researchTitle: 'আমি যে গবেষণা অনুসরণ করি',
+        researchDesc: 'প্রোটিন গঠন পূর্বাভাসে অত্যাধুনিক মডেল এবং অগ্রগতি',
+        res1Title: 'AlphaFold2',
+        res1Desc: 'DeepMind-এর বিপ্লবী মডেল যা প্রোটিন গঠন পূর্বাভাসে প্রায়-পরীক্ষামূলক নির্ভুলতা অর্জন করেছে। MSA এবং পেয়ার রিপ্রেজেন্টেশন থেকে 3D কোঅর্ডিনেট পুনর্বিন্যস্ত করতে Evoformer ব্লক এবং স্ট্রাকচার মডিউল ব্যবহার করে।',
+        res2Title: 'RoseTTAFold',
+        res2Desc: 'বেকার ল্যাবের একটি তিন-ট্র্যাক নিউরাল নেটওয়ার্ক যা একটি অনন্য আর্কিটেকচার ব্যবহার করে একসঙ্গে সিকোয়েন্স, দূরত্ব এবং কোঅর্ডিনেট তথ্য প্রক্রিয়া করে যা আত্মবিশ্বাসী প্রোটিন গঠন পূর্বাভাস সক্ষম করে।',
+        res3Title: 'ESMFold',
+        res3Desc: 'মেটার বিবর্তনীয়ভাবে স্কেল করা ভাষা মডেল যা MSA ছাড়াই একক সিকোয়েন্স থেকে সরাসরি প্রোটিন গঠন পূর্বাভাস দেয়। প্রমাণ করে যে ভাষা মডেলগুলি একা বিবর্তনীয় প্যাটার্ন থেকে প্রোটিন ফোল্ডিং শিখতে পারে।',
+        learnMore: 'আরও জানুন →',
+        goalsLabel: 'ভবিষ্যৎ',
+        goalsTitle: 'ভবিষ্যৎ লক্ষ্য ও দৃষ্টি',
+        goalsDesc: 'স্ট্রাকচারাল বায়োইনফরমেটিক্সের ক্ষেত্রে আমি কী অবদান রাখতে চাই',
+        goal1Title: 'ওপেন সোর্স পূর্বাভাস টুলস',
+        goal1Desc: 'সুলভ, ওপেন-সোর্স প্রোটিন গঠন পূর্বাভাস টুল তৈরি করুন যা স্বল্প-সম্পদ সেটিংসের গবেষকরা ব্যয়বহুল কম্পিউটেশনাল অবকাঠামো ছাড়াই ব্যবহার করতে পারেন।',
+        goal2Title: 'স্ট্রাকচারাল বায়োইনফরমেটিক্স গবেষণা',
+        goal2Desc: 'প্রোটিন-লিগ্যান্ড মিথস্ক্রিয়া, ফোল্ডিং পাথওয়ে পূর্বাভাস এবং ওষুধ আবিষ্কারের জন্য AI মডেলের সাথে স্ট্রাকচারাল ডেটা একীভূত করার গবেষণায় অবদান রাখুন।',
+        goal3Title: 'AI-চালিত ওষুধ আবিষ্কার',
+        goal3Desc: 'নতুন ড্রাগ টার্গেট শনাক্ত করতে এবং অবহেলিত গ্রীষ্মমণ্ডলীয় রোগের চিকিৎসার উন্নয়ন ত্বরান্বিত করতে প্রোটিন গঠন পূর্বাভাস প্রয়োগ করুন।',
+        goal4Title: 'শিক্ষামূলক সংস্থান',
+        goal4Desc: 'শেখার উপকরণ এবং টিউটোরিয়াল তৈরি করুন যা স্ট্রাকচারাল বায়োইনফরমেটিক্স এবং AI-ভিত্তিক প্রোটিন পূর্বাভাসকে সারা বিশ্বের শিক্ষার্থীদের জন্য অ্যাক্সেসযোগ্য করে তোলে।',
+        ctaTitle: 'একসাথে প্রোটিন গঠন অন্বেষণ করি',
+        ctaDesc: 'স্ট্রাকচারাল বায়োইনফরমেটিক্স, ওষুধ আবিষ্কার বা জীববিজ্ঞানের জন্য AI-তে আগ্রহী? আমি সংযোগ এবং সহযোগিতা করতে চাই।',
+        ctaCollaborate: 'আমার সাথে সহযোগিতা করুন',
+        ctaGithub: 'GitHub দেখুন',
+        ctaBack: '← পোর্টফোলিওতে ফিরুন',
+        footerTag: 'কৃত্রিম বুদ্ধিমত্তার সাথে স্ট্রাকচারাল বায়োলজি এগিয়ে নেওয়া',
+      },
+      zh: {
+        badge: '研究兴趣',
+        heroTitle: '基于AI的蛋白质<br/>结构预测',
+        heroSub: '探索人工智能如何 ',
+        exploreBtn: '探索兴趣',
+        keyTopics: '关键主题',
+        backPortfolio: '← 返回作品集',
+        scroll: '滚动探索',
+        aboutLabel: '关于此兴趣',
+        aboutTitle: '为什么是蛋白质结构预测？',
+        aboutDesc: '蛋白质折叠问题——从氨基酸序列预测蛋白质的三维结构——是生物学最大的挑战之一，而AI正在解决它。',
+        aboutCard1Title: '蛋白质折叠问题',
+        aboutCard1Text: '几十年来，确定蛋白质的三维结构需要昂贵且耗时的实验方法，如X射线晶体学和冷冻电镜。蛋白质折叠问题问：我们能仅从氨基酸序列预测三维结构吗？曾经看似不可能的事情，现在正被深度学习革命化。',
+        aboutCard2Title: 'AlphaFold与AI革命',
+        aboutCard2Text: 'DeepMind的AlphaFold2实现了被认为是生物学"重大挑战"的目标——以原子级精度预测蛋白质结构。这一突破为药物发现、疾病理解和个性化医疗开辟了新前沿。我对Transformer架构和几何深度学习如何改变结构生物学感到着迷。',
+        topicsLabel: '知识领域',
+        topicsTitle: '我探索的关键主题',
+        topicsDesc: 'AI驱动的结构生物学和蛋白质科学的核心领域',
+        topic1Title: '蛋白质折叠问题',
+        topic1Desc: '理解氨基酸序列如何折叠成独特的三维结构——困扰生物学家50多年的基本挑战。',
+        topic2Title: 'AlphaFold与ESMFold',
+        topic2Desc: '最先进的深度学习模型，利用注意力机制和进化信息以卓越的准确性预测蛋白质结构。',
+        topic3Title: '序列到结构预测',
+        topic3Desc: '使用多序列比对和深度神经网络绘制一级序列与三级结构之间的关系。',
+        topic4Title: '分子动力学模拟',
+        topic4Desc: '模拟原子级蛋白质运动和随时间的相互作用，以了解折叠路径、稳定性和配体结合。',
+        topic5Title: '药物靶点识别',
+        topic5Desc: '利用预测的蛋白质结构识别可药物结合位点，加速基于结构的药物发现流程。',
+        topic6Title: '结构生物信息学',
+        topic6Desc: '蛋白质结构的计算分析、折叠分类以及结构层面的进化关系。',
+        techLabel: '技术',
+        techTitle: '工具与框架',
+        techDesc: '推动蛋白质结构预测研究的软件和库',
+        flowLabel: '过程',
+        flowTitle: '从DNA到三维结构',
+        flowDesc: '遗传信息如何成为功能性的蛋白质结构',
+        flow1: 'DNA',
+        flow2: 'RNA转录',
+        flow3: '氨基酸序列',
+        flow4: '3D蛋白质结构',
+        appsLabel: '现实世界影响',
+        appsTitle: '应用',
+        appsDesc: '蛋白质结构预测如何改变医学和生物学',
+        app1Title: '疾病治疗',
+        app1Desc: '理解与疾病相关的蛋白质结构能够实现靶向药物设计，并开发针对癌症、阿尔茨海默病和遗传疾病等疾病的疗法。',
+        app2Title: '疫苗开发',
+        app2Desc: '准确的蛋白质结构预测通过揭示病毒蛋白构象和识别中和抗体靶点来加速疫苗设计。',
+        app3Title: '个性化医疗',
+        app3Desc: '预测遗传变异如何影响蛋白质结构，能够根据个人的独特分子特征制定定制化治疗方案。',
+        researchLabel: '研究',
+        researchTitle: '我关注的研究',
+        researchDesc: '蛋白质结构预测领域的前沿模型和突破',
+        res1Title: 'AlphaFold2',
+        res1Desc: 'DeepMind的革命性模型，在蛋白质结构预测中达到了接近实验级的精度。使用Evoformer块和结构模块从MSA和配对表示中迭代优化3D坐标。',
+        res2Title: 'RoseTTAFold',
+        res2Desc: 'Baker实验室的三轨神经网络，使用独特的架构同时处理序列、距离和坐标信息，实现可靠的蛋白质结构预测。',
+        res3Title: 'ESMFold',
+        res3Desc: 'Meta的进化规模化语言模型，无需MSA即可直接从单序列预测蛋白质结构。证明语言模型可以仅从进化模式学习蛋白质折叠。',
+        learnMore: '了解更多 →',
+        goalsLabel: '未来',
+        goalsTitle: '未来目标与愿景',
+        goalsDesc: '我旨在为结构生物信息学领域做出的贡献',
+        goal1Title: '开源预测工具',
+        goal1Desc: '构建可访问的开源蛋白质结构预测工具，让资源匮乏环境中的研究人员无需昂贵的计算基础设施即可使用。',
+        goal2Title: '结构生物信息学研究',
+        goal2Desc: '为蛋白质-配体相互作用、折叠路径预测以及将结构数据与AI模型整合用于药物发现的研究做出贡献。',
+        goal3Title: 'AI驱动的药物发现',
+        goal3Desc: '应用蛋白质结构预测来识别新的药物靶点，加速开发被忽视的热带疾病的治疗方法。',
+        goal4Title: '教育资源',
+        goal4Desc: '创建学习材料和教程，使结构生物信息学和基于AI的蛋白质预测对全球学生变得可及。',
+        ctaTitle: '一起探索蛋白质结构',
+        ctaDesc: '对结构生物信息学、药物发现或生物学AI感兴趣？我很乐意联系和合作。',
+        ctaCollaborate: '与我合作',
+        ctaGithub: '查看GitHub',
+        ctaBack: '← 返回作品集',
+        footerTag: '用人工智能推进结构生物学',
+      },
+      hi: {
+        badge: 'अनुसंधान रुचि',
+        heroTitle: 'AI-आधारित प्रोटीन<br/>संरचना भविष्यवाणी',
+        heroSub: 'खोज रहे हैं कि कैसे कृत्रिम बुद्धिमत्ता ',
+        exploreBtn: 'रुचि का अन्वेषण करें',
+        keyTopics: 'मुख्य विषय',
+        backPortfolio: '← पोर्टफोलियो पर वापस जाएं',
+        scroll: 'अन्वेषण करने के लिए स्क्रॉल करें',
+        aboutLabel: 'इस रुचि के बारे में',
+        aboutTitle: 'प्रोटीन संरचना भविष्यवाणी क्यों?',
+        aboutDesc: 'प्रोटीन फोल्डिंग समस्या — अमीनो एसिड अनुक्रम से प्रोटीन की 3D संरचना की भविष्यवाणी करना — जीव विज्ञान की सबसे बड़ी चुनौतियों में से एक है, और AI इसे हल कर रहा है।',
+        aboutCard1Title: 'प्रोटीन फोल्डिंग समस्या',
+        aboutCard1Text: 'दशकों तक, प्रोटीन की त्रि-आयामी संरचना निर्धारित करने के लिए एक्स-रे क्रिस्टलोग्राफी और क्रायो-ईएम जैसी महंगी और समय लेने वाली प्रायोगिक विधियों की आवश्यकता थी। प्रोटीन फोल्डिंग समस्या पूछती है: क्या हम केवल अमीनो एसिड अनुक्रम से 3D संरचना की भविष्यवाणी कर सकते हैं? जो कभी असंभव लगता था, अब डीप लर्निंग द्वारा क्रांतिकारी बदलाव हो रहा है।',
+        aboutCard2Title: 'AlphaFold और AI क्रांति',
+        aboutCard2Text: 'DeepMind के AlphaFold2 ने जीव विज्ञान में जिसे "भव्य चुनौती" माना जाता था उसे हासिल किया — परमाणु-स्तर की सटीकता के साथ प्रोटीन संरचनाओं की भविष्यवाणी। इस सफलता ने दवा खोज, रोग समझ और व्यक्तिगत चिकित्सा में नए मोर्चे खोल दिए हैं। ट्रांसफॉर्मर आर्किटेक्चर और ज्यामितीय डीप लर्निंग कैसे संरचनात्मक जीव विज्ञान को बदल रहे हैं, इससे मैं मोहित हूं।',
+        topicsLabel: 'ज्ञान क्षेत्र',
+        topicsTitle: 'मुख्य विषय जिनका मैं अन्वेषण करता हूं',
+        topicsDesc: 'AI-संचालित संरचनात्मक जीव विज्ञान और प्रोटीन विज्ञान में मुख्य डोमेन',
+        topic1Title: 'प्रोटीन फोल्डिंग समस्या',
+        topic1Desc: 'अमीनो एसिड अनुक्रम कैसे अद्वितीय 3D संरचनाओं में बदल जाते हैं, यह समझना — मौलिक चुनौती जिसने 50 से अधिक वर्षों से जीवविज्ञानियों को हैरान किया है।',
+        topic2Title: 'AlphaFold और ESMFold',
+        topic2Desc: 'अत्याधुनिक डीप लर्निंग मॉडल जो अटेंशन मैकेनिज्म और विकासवादी जानकारी का उपयोग करके उल्लेखनीय सटीकता के साथ प्रोटीन संरचनाओं की भविष्यवाणी करते हैं।',
+        topic3Title: 'अनुक्रम-से-संरचना भविष्यवाणी',
+        topic3Desc: 'एकाधिक अनुक्रम संरेखण और डीप न्यूरल नेटवर्क का उपयोग करके प्राथमिक अनुक्रम और तृतीयक संरचना के बीच संबंध का मानचित्रण।',
+        topic4Title: 'आणविक गतिशीलता सिमुलेशन',
+        topic4Desc: 'फोल्डिंग पाथवे, स्थिरता और लिगैंड बाइंडिंग को समझने के लिए समय के साथ परमाणु-स्तरीय प्रोटीन गति और अंतःक्रियाओं का अनुकरण।',
+        topic5Title: 'दवा लक्ष्य पहचान',
+        topic5Desc: 'दवा-योग्य बाइंडिंग साइटों की पहचान करने और संरचना-आधारित दवा खोज पाइपलाइनों को तेज करने के लिए पूर्वानुमानित प्रोटीन संरचनाओं का उपयोग।',
+        topic6Title: 'संरचनात्मक जैवसूचना विज्ञान',
+        topic6Desc: 'प्रोटीन संरचनाओं का कम्प्यूटेशनल विश्लेषण, फोल्ड वर्गीकरण, और संरचनात्मक स्तर पर विकासवादी संबंध।',
+        techLabel: 'प्रौद्योगिकियां',
+        techTitle: 'उपकरण और फ्रेमवर्क',
+        techDesc: 'प्रोटीन संरचना भविष्यवाणी अनुसंधान को संचालित करने वाला सॉफ्टवेयर और लाइब्रेरी',
+        flowLabel: 'प्रक्रिया',
+        flowTitle: 'DNA से 3D संरचना तक',
+        flowDesc: 'आनुवंशिक जानकारी एक कार्यात्मक प्रोटीन संरचना कैसे बनती है',
+        flow1: 'DNA',
+        flow2: 'RNA प्रतिलेखन',
+        flow3: 'अमीनो एसिड अनुक्रम',
+        flow4: '3D प्रोटीन संरचना',
+        appsLabel: 'वास्तविक दुनिया प्रभाव',
+        appsTitle: 'अनुप्रयोग',
+        appsDesc: 'प्रोटीन संरचना भविष्यवाणी कैसे चिकित्सा और जीव विज्ञान को बदल रही है',
+        app1Title: 'रोग उपचार',
+        app1Desc: 'रोगों से जुड़ी प्रोटीन संरचनाओं को समझना लक्षित दवा डिजाइन और कैंसर, अल्जाइमर और आनुवंशिक विकारों जैसी स्थितियों के लिए उपचार के विकास को सक्षम बनाता है।',
+        app2Title: 'वैक्सीन विकास',
+        app2Desc: 'सटीक प्रोटीन संरचना भविष्यवाणी वायरल प्रोटीन कन्फर्मेशन प्रकट करके और न्यूट्रलाइजिंग एंटीबॉडी लक्ष्यों की पहचान करके वैक्सीन डिजाइन को तेज करती है।',
+        app3Title: 'व्यक्तिगत चिकित्सा',
+        app3Desc: 'प्रोटीन संरचना को कैसे आनुवंशिक विविधताएं प्रभावित करती हैं, इसकी भविष्यवाणी एक व्यक्ति के अद्वितीय आणविक प्रोफाइल के आधार पर अनुकूलित उपचार सक्षम बनाती है।',
+        researchLabel: 'अनुसंधान',
+        researchTitle: 'मैं जिन अनुसंधानों का अनुसरण करता हूं',
+        researchDesc: 'प्रोटीन संरचना भविष्यवाणी में अत्याधुनिक मॉडल और सफलताएं',
+        res1Title: 'AlphaFold2',
+        res1Desc: 'DeepMind का क्रांतिकारी मॉडल जिसने प्रोटीन संरचना भविष्यवाणी में लगभग-प्रायोगिक सटीकता प्राप्त की। MSA और पेयर प्रतिनिधित्व से 3D निर्देशांक को पुनरावृत्त रूप से परिष्कृत करने के लिए Evoformer ब्लॉक और स्ट्रक्चर मॉड्यूल का उपयोग करता है।',
+        res2Title: 'RoseTTAFold',
+        res2Desc: 'बेकर लैब का तीन-ट्रैक न्यूरल नेटवर्क जो एक अद्वितीय आर्किटेक्चर का उपयोग करके एक साथ अनुक्रम, दूरी और निर्देशांक जानकारी संसाधित करता है जो आत्मविश्वासपूर्ण प्रोटीन संरचना भविष्यवाणी सक्षम बनाता है।',
+        res3Title: 'ESMFold',
+        res3Desc: 'Meta का विकासवादी रूप से स्केल किया गया भाषा मॉडल जो MSA के बिना एकल अनुक्रमों से सीधे प्रोटीन संरचनाओं की भविष्यवाणी करता है। दर्शाता है कि भाषा मॉडल अकेले विकासवादी पैटर्न से प्रोटीन फोल्डिंग सीख सकते हैं।',
+        learnMore: 'और जानें →',
+        goalsLabel: 'भविष्य',
+        goalsTitle: 'भविष्य के लक्ष्य और दृष्टि',
+        goalsDesc: 'मैं संरचनात्मक जैवसूचना विज्ञान के क्षेत्र में क्या योगदान देना चाहता हूं',
+        goal1Title: 'ओपन सोर्स भविष्यवाणी उपकरण',
+        goal1Desc: 'सुलभ, ओपन-सोर्स प्रोटीन संरचना भविष्यवाणी उपकरण बनाएं जो कम-संसाधन सेटिंग्स के शोधकर्ता महंगे कम्प्यूटेशनल बुनियादी ढांचे के बिना उपयोग कर सकें।',
+        goal2Title: 'संरचनात्मक जैवसूचना अनुसंधान',
+        goal2Desc: 'प्रोटीन-लिगैंड अंतःक्रियाओं, फोल्डिंग पाथवे भविष्यवाणी, और दवा खोज के लिए AI मॉडल के साथ संरचनात्मक डेटा के एकीकरण पर अनुसंधान में योगदान दें।',
+        goal3Title: 'AI-संचालित दवा खोज',
+        goal3Desc: 'नए दवा लक्ष्यों की पहचान करने और उपेक्षित उष्णकटिबंधीय रोगों के उपचार के विकास में तेजी लाने के लिए प्रोटीन संरचना भविष्यवाणी लागू करें।',
+        goal4Title: 'शैक्षिक संसाधन',
+        goal4Desc: 'सीखने की सामग्री और ट्यूटोरियल बनाएं जो संरचनात्मक जैवसूचना विज्ञान और AI-आधारित प्रोटीन भविष्यवाणी को दुनिया भर के छात्रों के लिए सुलभ बनाएं।',
+        ctaTitle: 'आइए एक साथ प्रोटीन संरचनाओं का अन्वेषण करें',
+        ctaDesc: 'संरचनात्मक जैवसूचना विज्ञान, दवा खोज, या जीव विज्ञान के लिए AI में रुचि है? मुझे जुड़ने और सहयोग करने में खुशी होगी।',
+        ctaCollaborate: 'मेरे साथ सहयोग करें',
+        ctaGithub: 'GitHub देखें',
+        ctaBack: '← पोर्टफोलियो पर वापस जाएं',
+        footerTag: 'कृत्रिम बुद्धिमत्ता के साथ संरचनात्मक जीव विज्ञान को आगे बढ़ाना',
+      },
+    };
+
+    function applyLanguage(lang) {
+      const t = translations[lang] || translations.en;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key] !== undefined) {
+          if (key === 'heroTitle') {
+            el.innerHTML = t[key];
+          } else {
+            el.textContent = t[key];
+          }
+        }
+      });
+    }
+
+    const langSelect = document.getElementById('langSelect');
+    const savedLang = localStorage.getItem('protein-lang') || 'en';
+    langSelect.value = savedLang;
+    applyLanguage(savedLang);
+
+    langSelect.addEventListener('change', () => {
+      const lang = langSelect.value;
+      localStorage.setItem('protein-lang', lang);
+      applyLanguage(lang);
+    });
+  </script>
+
+  <script id="custom-cursor-js">
+    (function() {
+      var cursor = document.getElementById('custom-cursor');
+      if (!cursor) return;
+      var isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      if (!isTouch) {
+        document.addEventListener('mousemove', function(e) {
+          cursor.style.opacity = '1';
+          cursor.style.left = e.clientX + 'px';
+          cursor.style.top = e.clientY + 'px';
+        });
+        document.addEventListener('mouseleave', function() { cursor.style.opacity = '0'; });
+        document.addEventListener('mouseenter', function() { cursor.style.opacity = '1'; });
+        document.querySelectorAll('a, button, [role="button"]').forEach(function(el) {
+          el.addEventListener('mouseenter', function() {
+            cursor.style.width = '40px'; cursor.style.height = '40px';
+            cursor.style.background = 'radial-gradient(circle, rgba(139,92,246,0.4), transparent)';
+          });
+          el.addEventListener('mouseleave', function() {
+            cursor.style.width = '20px'; cursor.style.height = '20px';
+            cursor.style.background = 'radial-gradient(circle, rgba(59,130,246,0.3), transparent)';
+          });
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
