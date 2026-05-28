@@ -2,6 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { motion, Variants, useAnimation } from "framer-motion";
 
+function isTouchDevice(): boolean {
+  if (typeof window === "undefined") return true;
+  return "ontouchstart" in window || navigator.maxTouchPoints > 0;
+}
+
+const isTouch = isTouchDevice();
+
 const containerVariants: Variants = {
   hidden: { opacity: 0, y: 60 },
   visible: {
@@ -23,6 +30,15 @@ const childVariants: Variants = {
 export function withScrollMotion<T extends object>(
   WrappedComponent: React.ComponentType<T>
 ) {
+  if (isTouch) {
+    const StaticSection = (props: T) => (
+      <section>
+        <WrappedComponent {...props} />
+      </section>
+    );
+    return StaticSection;
+  }
+
   return (props: T) => {
     const controls = useAnimation();
     const [ref, inView] = useInView({
