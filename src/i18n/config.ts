@@ -17,7 +17,9 @@ const resources = {
         description: "Passionate about Artificial Intelligence, Bioinformatics, and Software Development. Dedicated to developing intelligent systems that advance personalized healthcare, education, and human well-being.",
         email: "Email Me",
         github: "GitHub",
-        linkedin: "LinkedIn"
+        linkedin: "LinkedIn",
+        wechat: "WeChat",
+        whatsapp: "WhatsApp"
       },
       education: {
         title: "Education",
@@ -71,7 +73,9 @@ const resources = {
         description: "কৃত্রিম বুদ্ধিমত্তা, বায়োইনফরমেটিক্স এবং সফটওয়্যার ডেভেলপমেন্ট সম্পর্কে উৎসাহী। ব্যক্তিগত স্বাস্থ্যসেবা, শিক্ষা এবং মানব কল্যাণ অগ্রসর করতে বুদ্ধিমান সিস্টেম তৈরিতে নিবেদিত।",
         email: "ইমেইল করুন",
         github: "গিটহাব",
-        linkedin: "লিংকডইন"
+        linkedin: "লিংকডইন",
+        wechat: "ওয়েচ্যাট",
+        whatsapp: "হোয়াটসঅ্যাপ"
       },
       education: {
         title: "শিক্ষা",
@@ -110,6 +114,62 @@ const resources = {
       }
     }
   },
+  hi: {
+    translation: {
+      nav: {
+        education: "शिक्षा",
+        skills: "कौशल",
+        certifications: "प्रमाणपत्र",
+        interests: "शैक्षणिक रुचियां",
+        projects: "परियोजनाएं"
+      },
+      hero: {
+        title: "अबू नईम मोहम्मद अहमद उल्लाह",
+        subtitle: "महत्वाकांक्षी AI इंजीनियर | सॉफ्टवेयर डेवलपर | बायोइन्फॉरमैटिक्स उत्साही",
+        description: "कृत्रिम बुद्धिमत्ता, बायोइन्फॉरमैटिक्स और सॉफ्टवेयर विकास के प्रति जुनूनी। व्यक्तिगत स्वास्थ्य देखभाल, शिक्षा और मानव कल्याण को आगे बढ़ाने वाली बुद्धिमान प्रणालियों के विकास के लिए समर्पित।",
+        email: "ईमेल करें",
+        github: "गिटहब",
+        linkedin: "लिंक्डइन",
+        wechat: "वीचैट",
+        whatsapp: "व्हाट्सएप"
+      },
+      education: {
+        title: "शिक्षा",
+        subtitle: "शैक्षणिक यात्रा",
+        session: "सत्र"
+      },
+      skills: {
+        title: "कौशल",
+        subtitle: "तकनीकी विशेषज्ञता",
+        programming: "प्रोग्रामिंग भाषाएं",
+        libraries: "लाइब्रेरी और फ्रेमवर्क",
+        databases: "डेटाबेस और उपकरण",
+        soft: "सॉफ्ट स्किल्स"
+      },
+      certifications: {
+        title: "प्रमाणपत्र",
+        subtitle: "पेशेवर प्रशिक्षण",
+        duration: "अवधि",
+        reference: "संदर्भ"
+      },
+      interests: {
+        title: "शैक्षणिक रुचियां",
+        subtitle: "अनुसंधान जुनून"
+      },
+      projects: {
+        title: "परियोजनाएं",
+        subtitle: "व्यावहारिक कार्यान्वयन",
+        overview: "अवलोकन",
+        problem: "समस्या समाधान",
+        implementation: "कार्यान्वयन",
+        impact: "प्रभाव"
+      },
+      footer: {
+        languages: "भाषाएं",
+        copyright: "सर्वाधिकार सुरक्षित"
+      }
+    }
+  },
   zh: {
     translation: {
       nav: {
@@ -125,7 +185,9 @@ const resources = {
         description: "热衷于人工智能、生物信息学和软件开发。致力于开发智能系统，促进个性化医疗保健、教育和人类福祉。",
         email: "发邮件",
         github: "GitHub",
-        linkedin: "LinkedIn"
+        linkedin: "LinkedIn",
+        wechat: "微信",
+        whatsapp: "WhatsApp"
       },
       education: {
         title: "教育",

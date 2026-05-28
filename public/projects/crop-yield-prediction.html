@@ -5,7 +5,116 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Crop Yield Prediction using ML | Ahamad Ullah</title>
   <meta name="description" content="Predicts expected crop yield using rainfall, fertilizer usage, and cultivation area data." />
-  <style>body{background:#0a0a0f}.loader-bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:99999;pointer-events:none;background:linear-gradient(90deg,transparent,#3b82f6,transparent);animation:loaderBar .45s ease forwards}@keyframes loaderBar{0%{transform:scaleX(0);transform-origin:left}40%{transform:scaleX(.55)}100%{transform:scaleX(1);opacity:0}}</style>
+  <style>body{background:#0a0a0f}.loader-bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:99999;pointer-events:none;background:linear-gradient(90deg,transparent,#3b82f6,transparent);animation:loaderBar .45s ease forwards}@keyframes loaderBar{0%{transform:scaleX(0);transform-origin:left}40%{transform:scaleX(.55)}100%{transform:scaleX(1);opacity:0}}
+    /* ─── Premium Upgrade Styles ─── */
+    .glass {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px) saturate(1.4);
+      -webkit-backdrop-filter: blur(20px) saturate(1.4);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+    }
+
+    .shimmer-btn {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shimmer-btn::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+      background-size: 200% 200%;
+      animation: shimmerBtn 3s ease-in-out infinite;
+      transform: rotate(25deg);
+    }
+
+    @keyframes shimmerBtn {
+      0% { background-position: 200% 50%; }
+      100% { background-position: -200% 50%; }
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--primary), var(--purple), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      background-size: 200% 200%;
+      animation: gradientShift 6s ease infinite;
+    }
+
+    .gradient-divider {
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--primary), var(--purple), var(--accent), transparent);
+      border-radius: 2px;
+      margin: 0 20px;
+    }
+
+    .card-hover-effect {
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .card-hover-effect:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+
+    .fade-zoom {
+      opacity: 0;
+      transform: scale(0.95);
+      transition: all 0.7s ease;
+    }
+
+    .fade-zoom.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    #custom-cursor {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999999;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(var(--primary-rgb, 59,130,246), 0.3), transparent);
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, opacity 0.2s;
+      opacity: 0;
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      #custom-cursor { display: none; }
+    }
+
+    @keyframes countUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    @media (max-width: 600px) {
+      .stat-number { font-size: 2rem; }
+    }
+
+  </style>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
@@ -501,6 +610,7 @@
 </head>
 <body style="background:#0a0a0f">
   <div class="loader-bar"></div>
+  <div id="custom-cursor"></div>
 
   <div class="particles">
     <div class="particle"></div><div class="particle"></div><div class="particle"></div>
@@ -564,7 +674,7 @@
     <div class="container">
       <div style="text-align:center;">
         <div class="section-label" data-i18n="impl.label">Implementation</div>
-        <h2 class="section-title"><span data-i18n="impl.title">How It </span><span data-i18n="impl.titleSpan">Works</span></h2>
+        <h2 class="section-title"><span class="gradient-text"<span data-i18n="impl.title">How It </span><span data-i18n="impl.titleSpan">Works</span></h2>
         <p class="section-sub" style="margin:0 auto 48px;" data-i18n="impl.sub">From raw agricultural data to accurate yield forecasts.</p>
       </div>
       <div class="timeline">
@@ -608,7 +718,7 @@
     <div class="container">
       <div style="text-align:center;">
         <div class="section-label" data-i18n="demo.label">Live Demo</div>
-        <h2 class="section-title"><span data-i18n="demo.title">Predict </span><span data-i18n="demo.titleSpan">Crop Yield</span></h2>
+        <h2 class="section-title"><span class="gradient-text"<span data-i18n="demo.title">Predict </span><span data-i18n="demo.titleSpan">Crop Yield</span></h2>
         <p class="section-sub" style="margin:0 auto 48px;" data-i18n="demo.sub">Enter your agricultural parameters to estimate expected yield and visualize the breakdown.</p>
       </div>
       <div class="demo-grid">
@@ -678,7 +788,7 @@
     <div class="container">
       <div style="text-align:center;">
         <div class="section-label" data-i18n="impact.label">Project Impact</div>
-        <h2 class="section-title"><span data-i18n="impact.title">Why It </span><span data-i18n="impact.titleSpan">Matters</span></h2>
+        <h2 class="section-title"><span class="gradient-text"<span data-i18n="impact.title">Why It </span><span data-i18n="impact.titleSpan">Matters</span></h2>
         <p class="section-sub" style="margin:0 auto 48px;" data-i18n="impact.sub">Empowering agricultural planning with data science.</p>
       </div>
       <div class="impact-grid">
@@ -717,7 +827,7 @@
     <div class="container">
       <div style="text-align:center;">
         <div class="section-label" data-i18n="tech.label">Tech Stack</div>
-        <h2 class="section-title"><span data-i18n="tech.title">Built </span><span data-i18n="tech.titleSpan">With</span></h2>
+        <h2 class="section-title"><span class="gradient-text"<span data-i18n="tech.title">Built </span><span data-i18n="tech.titleSpan">With</span></h2>
         <p class="section-sub" style="margin:0 auto 48px;" data-i18n="tech.sub">Modern tools powering the yield prediction engine.</p>
       </div>
       <div class="tech-grid">
@@ -890,7 +1000,11 @@
     // ─── Load saved theme ───
     (function() {
       const saved = localStorage.getItem('theme');
-      if (saved === 'light') {
+      if (saved === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        const btn = document.getElementById('theme-btn');
+        if (btn) btn.textContent = '🌙';
+      } else {
         document.documentElement.setAttribute('data-theme', 'light');
         const btn = document.getElementById('theme-btn');
         if (btn) btn.textContent = '☀️';
@@ -1157,6 +1271,33 @@
       const savedLang = localStorage.getItem('lang') || 'en';
       document.getElementById('lang-select').value = savedLang;
       changeLang(savedLang);
+    })();
+  </script>
+
+  <script id="custom-cursor-js">
+    (function() {
+      var cursor = document.getElementById('custom-cursor');
+      if (!cursor) return;
+      var isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      if (!isTouch) {
+        document.addEventListener('mousemove', function(e) {
+          cursor.style.opacity = '1';
+          cursor.style.left = e.clientX + 'px';
+          cursor.style.top = e.clientY + 'px';
+        });
+        document.addEventListener('mouseleave', function() { cursor.style.opacity = '0'; });
+        document.addEventListener('mouseenter', function() { cursor.style.opacity = '1'; });
+        document.querySelectorAll('a, button, [role="button"]').forEach(function(el) {
+          el.addEventListener('mouseenter', function() {
+            cursor.style.width = '40px'; cursor.style.height = '40px';
+            cursor.style.background = 'radial-gradient(circle, rgba(139,92,246,0.4), transparent)';
+          });
+          el.addEventListener('mouseleave', function() {
+            cursor.style.width = '20px'; cursor.style.height = '20px';
+            cursor.style.background = 'radial-gradient(circle, rgba(59,130,246,0.3), transparent)';
+          });
+        });
+      }
     })();
   </script>
 </body>

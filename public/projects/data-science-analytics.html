@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Science &amp; Big Data Analytics | Ahamad Ullah</title>
+  <meta name="description" content="Exploring Data Science, Big Data Analytics, and data-driven decision making" />
+  <style>body{background:#0a0a0f}.loader-bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:99999;pointer-events:none;background:linear-gradient(90deg,transparent,#3b82f6,#06b6d4,transparent);animation:loaderBar .45s ease forwards}@keyframes loaderBar{0%{transform:scaleX(0);transform-origin:left}40%{transform:scaleX(.55)}100%{transform:scaleX(1);opacity:0}}
+    /* ─── Premium Upgrade Styles ─── */
+    .glass {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px) saturate(1.4);
+      -webkit-backdrop-filter: blur(20px) saturate(1.4);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+    }
+
+    .shimmer-btn {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shimmer-btn::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+      background-size: 200% 200%;
+      animation: shimmerBtn 3s ease-in-out infinite;
+      transform: rotate(25deg);
+    }
+
+    @keyframes shimmerBtn {
+      0% { background-position: 200% 50%; }
+      100% { background-position: -200% 50%; }
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--primary), var(--purple), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      background-size: 200% 200%;
+      animation: gradientShift 6s ease infinite;
+    }
+
+    .gradient-divider {
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--primary), var(--purple), var(--accent), transparent);
+      border-radius: 2px;
+      margin: 0 20px;
+    }
+
+    .card-hover-effect {
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .card-hover-effect:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+
+    .fade-zoom {
+      opacity: 0;
+      transform: scale(0.95);
+      transition: all 0.7s ease;
+    }
+
+    .fade-zoom.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    #custom-cursor {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999999;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(var(--primary-rgb, 59,130,246), 0.3), transparent);
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, opacity 0.2s;
+      opacity: 0;
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      #custom-cursor { display: none; }
+    }
+
+    @keyframes countUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    @media (max-width: 600px) {
+      .stat-number { font-size: 2rem; }
+    }
+
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --primary:#3b82f6;--primary-dark:#2563eb;--primary-glow:rgba(59,130,246,0.3);
+      --accent:#06b6d4;--accent-glow:rgba(6,182,212,0.3);
+      --purple:#8b5cf6;--purple-glow:rgba(139,92,246,0.3);
+      --bg-primary:#0a0a0f;--bg-secondary:#111118;--bg-card:rgba(17,17,24,0.8);
+      --text-primary:#f1f7f5;--text-secondary:#94a3b8;--text-muted:#64748b;
+      --border-color:rgba(59,130,246,0.12);--nav-bg:rgba(10,10,15,0.85);
+      --alpha-3:rgba(255,255,255,0.03);--alpha-4:rgba(255,255,255,0.04);
+      --alpha-6:rgba(255,255,255,0.06);--alpha-8:rgba(255,255,255,0.08);
+      --radius:16px;--radius-sm:10px;
+    }
+    [data-theme="light"]{
+      --bg-primary:#f8fafc;--bg-secondary:#f1f5f9;--bg-card:rgba(255,255,255,0.85);
+      --text-primary:#0f172a;--text-secondary:#475569;--text-muted:#94a3b8;
+      --border-color:rgba(0,0,0,0.08);--nav-bg:rgba(255,255,255,0.85);
+      --alpha-3:rgba(0,0,0,0.03);--alpha-4:rgba(0,0,0,0.04);
+      --alpha-6:rgba(0,0,0,0.06);--alpha-8:rgba(0,0,0,0.08);
+    }
+    html{scroll-behavior:smooth}
+    body{
+      font-family:'Space Grotesk',sans-serif;background:var(--bg-primary);
+      color:var(--text-primary);line-height:1.6;overflow-x:hidden;
+    }
+    ::-webkit-scrollbar{width:8px}
+    ::-webkit-scrollbar-track{background:var(--bg-secondary)}
+    ::-webkit-scrollbar-thumb{background:var(--primary);border-radius:4px}
+    ::selection{background:var(--primary);color:#fff}
+
+    nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--nav-bg);backdrop-filter:blur(16px);border-bottom:1px solid var(--border-color);height:56px}
+    .nav-inner{max-width:1200px;margin:0 auto;padding:0 20px;height:100%;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-weight:700;font-size:18px;text-decoration:none}
+    .logo .g{background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .nav-right{display:flex;align-items:center;gap:8px}
+    .nav-btn{width:36px;height:36px;border-radius:10px;border:1px solid var(--border-color);background:var(--alpha-4);color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s ease;font-size:16px}
+    .nav-btn:hover{background:var(--alpha-8);color:var(--text-primary);border-color:var(--primary)}
+    .lang-select{padding:6px 10px;border-radius:10px;border:1px solid var(--border-color);background:var(--alpha-4);color:var(--text-secondary);font-size:13px;cursor:pointer;font-family:inherit;transition:all .25s ease}
+    .lang-select:hover{border-color:var(--primary);color:var(--text-primary);background:var(--alpha-8)}
+    .lang-select option{background:var(--bg-secondary);color:var(--text-primary)}
+
+    .progress-bar{position:fixed;top:56px;left:0;right:0;height:3px;z-index:999;background:linear-gradient(90deg,var(--primary),var(--accent),var(--purple));transform-origin:left;transform:scaleX(0);transition:transform .1s linear}
+
+    section{padding:100px 20px;position:relative}
+    .container{max-width:1100px;margin:0 auto;position:relative;z-index:2}
+
+    .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding-top:80px;overflow:hidden}
+    #data-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+    .hero-content{position:relative;z-index:2;max-width:800px}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:999px;background:var(--alpha-6);border:1px solid var(--border-color);font-size:13px;color:var(--text-secondary);margin-bottom:24px;animation:fadeUp .8s ease}
+    .hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--primary);animation:pulse 2s infinite}
+    .hero-title{font-size:clamp(28px,5.5vw,60px);font-weight:700;line-height:1.1;margin-bottom:16px;animation:fadeUp .8s ease .1s both}
+    .hero-title .g{background:linear-gradient(135deg,var(--primary),var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% 200%;animation:gradientShift 6s ease infinite}
+    .hero-sub{font-size:clamp(16px,2.2vw,22px);color:var(--text-secondary);margin-bottom:32px;animation:fadeUp .8s ease .2s both}
+    .hero-typed{color:var(--primary);font-weight:600}
+    .hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:fadeUp .8s ease .3s both}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:12px;font-size:15px;font-weight:500;text-decoration:none;cursor:pointer;font-family:inherit;transition:all .3s ease;border:none}
+    .btn-primary{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;box-shadow:0 4px 20px var(--primary-glow)}
+    .btn-primary:hover{transform:translateY(-3px);box-shadow:0 8px 30px var(--primary-glow)}
+    .btn-outline{background:transparent;border:1px solid var(--border-color);color:var(--text-secondary)}
+    .btn-outline:hover{background:var(--alpha-6);border-color:var(--primary);color:var(--text-primary);transform:translateY(-3px)}
+    .btn-sm{padding:8px 18px;font-size:13px}
+    .scroll-indicator{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:12px;animation:fadeUp .8s ease .5s both}
+    .scroll-mouse{width:22px;height:34px;border:2px solid var(--text-muted);border-radius:999px;position:relative}
+    .scroll-dot{position:absolute;top:6px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--primary);animation:scrollDot 2s infinite}
+
+    .section-label{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;background:var(--alpha-6);border:1px solid var(--border-color);font-size:12px;font-weight:500;color:var(--primary);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+    .section-title{font-size:clamp(24px,3.5vw,40px);font-weight:700;margin-bottom:8px}
+    .section-title .g{background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .section-desc{color:var(--text-secondary);font-size:16px;max-width:600px;margin-bottom:40px}
+
+    .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:32px}
+    .about-card,.topic-card,.resource-card{background:var(--bg-card);backdrop-filter:blur(12px);border:1px solid var(--border-color);border-radius:var(--radius);padding:28px;transition:all .35s ease}
+    .about-card:hover,.topic-card:hover,.resource-card:hover{transform:translateY(-6px);border-color:var(--primary);box-shadow:0 20px 60px rgba(0,0,0,0.2)}
+    .about-card p{color:var(--text-secondary);font-size:15px;line-height:1.7}
+    .about-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px;background:linear-gradient(135deg,var(--primary),var(--accent))}
+    .about-card h3{margin-bottom:8px;font-size:18px}
+
+    .topics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .topic-card{text-align:center;padding:32px 24px}
+    .topic-icon{width:52px;height:52px;border-radius:14px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:24px;transition:all .35s ease}
+    .topic-card:hover .topic-icon{transform:scale(1.15) rotate(-6deg);border-radius:50%}
+    .topic-icon-blue{background:linear-gradient(135deg,#3b82f6,#2563eb);box-shadow:0 4px 15px rgba(59,130,246,0.3)}
+    .topic-icon-cyan{background:linear-gradient(135deg,#06b6d4,#0891b2);box-shadow:0 4px 15px rgba(6,182,212,0.3)}
+    .topic-icon-purple{background:linear-gradient(135deg,#8b5cf6,#7c3aed);box-shadow:0 4px 15px rgba(139,92,246,0.3)}
+    .topic-icon-emerald{background:linear-gradient(135deg,#10b981,#059669);box-shadow:0 4px 15px rgba(16,185,129,0.3)}
+    .topic-icon-amber{background:linear-gradient(135deg,#f59e0b,#d97706);box-shadow:0 4px 15px rgba(245,158,11,0.3)}
+    .topic-icon-rose{background:linear-gradient(135deg,#f43f5e,#e11d48);box-shadow:0 4px 15px rgba(244,63,94,0.3)}
+    .topic-card h3{font-size:16px;font-weight:600;margin-bottom:8px}
+    .topic-card p{color:var(--text-secondary);font-size:13px;line-height:1.6}
+
+    .tech-section{text-align:center}
+    .tech-grid{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:24px}
+    .tech-badge{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:12px;background:var(--alpha-6);border:1px solid var(--border-color);font-size:14px;font-weight:500;transition:all .3s ease;cursor:default}
+    .tech-badge:hover{transform:translateY(-4px);background:var(--alpha-8);border-color:var(--primary);box-shadow:0 8px 25px var(--primary-glow)}
+    .tech-badge .icon{font-size:20px}
+
+    /* Flow Diagram */
+    .flow-section{text-align:center}
+    .flow-diagram{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;margin-top:40px;padding:20px}
+    .flow-step{display:flex;flex-direction:column;align-items:center;gap:10px;min-width:90px;position:relative}
+    .flow-icon{width:60px;height:60px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;background:var(--bg-card);border:2px solid var(--border-color);transition:all .35s ease;position:relative;z-index:2}
+    .flow-step:hover .flow-icon{transform:scale(1.12);border-color:var(--primary);box-shadow:0 0 30px var(--primary-glow)}
+    .flow-label{font-size:11px;font-weight:500;color:var(--text-secondary);max-width:90px;text-align:center;line-height:1.2}
+    .flow-arrow{font-size:20px;color:var(--primary);margin:0 4px;opacity:0.6;align-self:center;padding-top:28px;animation:flowArrow 1.5s ease infinite;flex-shrink:0}
+    @keyframes flowArrow{0%,100%{transform:translateX(0);opacity:0.6}50%{transform:translateX(5px);opacity:1}}
+    .flow-step .step-num{position:absolute;top:-8px;right:-8px;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;z-index:3}
+
+    /* Chart */
+    .chart-section{text-align:center}
+    .chart-container{background:var(--bg-card);backdrop-filter:blur(12px);border:1px solid var(--border-color);border-radius:var(--radius);padding:32px;margin-top:32px;position:relative}
+    .chart-container canvas{width:100%;max-width:700px;height:320px;margin:0 auto;display:block}
+
+    /* Resources */
+    .resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .resource-card{text-align:left;padding:24px}
+    .resource-card .r-icon{font-size:28px;margin-bottom:10px}
+    .resource-card h3{font-size:15px;font-weight:600;margin-bottom:6px}
+    .resource-card p{color:var(--text-secondary);font-size:13px;line-height:1.6}
+    .resource-card .r-link{display:inline-flex;align-items:center;gap:4px;color:var(--primary);font-size:13px;text-decoration:none;margin-top:10px;font-weight:500;transition:all .2s}
+    .resource-card .r-link:hover{gap:8px}
+
+    .goals-list{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:24px}
+    .goal-item{display:flex;align-items:flex-start;gap:12px;padding:16px;border-radius:var(--radius-sm);background:var(--alpha-4);border:1px solid var(--border-color);transition:all .3s}
+    .goal-item:hover{background:var(--alpha-6);border-color:var(--primary);transform:translateX(4px)}
+    .goal-item .check{width:24px;height:24px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0}
+    .goal-item div{flex:1}
+    .goal-item h4{font-size:15px;font-weight:600;margin-bottom:2px}
+    .goal-item p{color:var(--text-secondary);font-size:13px}
+
+    .cta-section{text-align:center;padding:80px 20px}
+    .cta-section h2{font-size:clamp(24px,4vw,42px);margin-bottom:12px}
+    .cta-section p{color:var(--text-secondary);margin-bottom:28px;font-size:16px}
+    .cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+    .footer-bar{text-align:center;padding:24px;border-top:1px solid var(--border-color);color:var(--text-muted);font-size:13px}
+    .footer-bar a{color:var(--primary);text-decoration:none}
+
+    [data-anim]{opacity:0;transform:translateY(30px);transition:all .7s ease}
+    [data-anim].visible{opacity:1;transform:translateY(0)}
+
+    /* Data stream SVG */
+    .data-svg{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;overflow:hidden}
+
+    .hidden{display:none!important}
+
+    @media(max-width:900px){
+      .about-grid,.goals-list{grid-template-columns:1fr}
+      .topics-grid,.resources-grid{grid-template-columns:repeat(2,1fr)}
+      .flow-arrow{display:none}
+      .flow-diagram{flex-direction:column;gap:12px}
+      .flow-step{flex-direction:row;gap:10px;width:100%}
+      .flow-icon{width:44px;height:44px;font-size:18px;flex-shrink:0}
+      .flow-label{text-align:left}
+      .chart-container canvas{height:240px}
+    }
+    @media(max-width:600px){
+      .topics-grid,.resources-grid{grid-template-columns:1fr}
+      section{padding:60px 16px}
+      .hero{padding-top:60px}
+      .nav-inner{padding:0 12px}
+      .btn{padding:10px 20px;font-size:14px}
+      .chart-container canvas{height:200px}
+    }
+  </style>
+</head>
+<body>
+  <div class="loader-bar"></div>
+  <div id="custom-cursor"></div>
+  <div class="progress-bar" id="progressBar"></div>
+
+  <canvas id="data-canvas"></canvas>
+
+  <!-- SVG Data Flow Background -->
+  <svg class="data-svg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="dataGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.04"/>
+        <stop offset="50%" stop-color="#06b6d4" stop-opacity="0.02"/>
+        <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.04"/>
+      </linearGradient>
+      <filter id="glowData"><feGaussianBlur stdDeviation="2"/></filter>
+    </defs>
+    <rect width="1440" height="900" fill="url(#dataGrad)"/>
+    <!-- Data stream lines -->
+    <g opacity="0.06">
+      <line x1="0" y1="200" x2="1440" y2="200" stroke="#3b82f6" stroke-width="1" stroke-dasharray="8 12" style="animation:flowArrow 3s linear infinite"/>
+      <line x1="0" y1="400" x2="1440" y2="400" stroke="#06b6d4" stroke-width="0.8" stroke-dasharray="12 16" style="animation:flowArrow 4s linear infinite"/>
+      <line x1="0" y1="600" x2="1440" y2="600" stroke="#8b5cf6" stroke-width="1" stroke-dasharray="6 14" style="animation:flowArrow 3.5s linear infinite"/>
+      <line x1="0" y1="800" x2="1440" y2="800" stroke="#3b82f6" stroke-width="0.6" stroke-dasharray="10 15" style="animation:flowArrow 2.8s linear infinite"/>
+    </g>
+    <!-- Data nodes -->
+    <g opacity="0.08">
+      <circle cx="200" cy="300" r="3" fill="#3b82f6" filter="url(#glowData)" style="animation:float 3s ease-in-out infinite"/>
+      <circle cx="500" cy="150" r="4" fill="#06b6d4" filter="url(#glowData)" style="animation:float 4s ease-in-out infinite .5s"/>
+      <circle cx="850" cy="350" r="3" fill="#8b5cf6" filter="url(#glowData)" style="animation:float 3.5s ease-in-out infinite 1s"/>
+      <circle cx="1100" cy="200" r="4" fill="#3b82f6" filter="url(#glowData)" style="animation:float 4.5s ease-in-out infinite 1.5s"/>
+      <circle cx="350" cy="500" r="3" fill="#06b6d4" filter="url(#glowData)" style="animation:float 3.8s ease-in-out infinite .8s"/>
+      <circle cx="700" cy="650" r="4" fill="#8b5cf6" filter="url(#glowData)" style="animation:float 4.2s ease-in-out infinite 2s"/>
+      <circle cx="1200" cy="500" r="3" fill="#3b82f6" filter="url(#glowData)" style="animation:float 3.6s ease-in-out infinite .3s"/>
+    </g>
+  </svg>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="../../" class="logo"><span class="g">Ahamad</span></a>
+      <div class="nav-right">
+        <button class="nav-btn" id="themeToggle" title="Toggle theme">🌙</button>
+        <select class="lang-select" id="langSelect">
+          <option value="en">English</option>
+          <option value="bn">বাংলা</option>
+          <option value="zh">中文</option>
+          <option value="hi">हिन्दी</option>
+        </select>
+        <a href="../../" class="nav-btn" title="Back to Portfolio">←</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <div class="hero-badge"><span class="hero-badge-dot"></span><span data-i18n="badge">Field of Data Science</span></div>
+      <h1 class="hero-title"><span class="g" data-i18n="heroTitle">Data Science &amp;<br/>Big Data Analytics</span></h1>
+      <p class="hero-sub"><span data-i18n="heroSub">Turning data into </span><span class="hero-typed" id="typedText"></span></p>
+      <div class="hero-btns">
+        <a href="#about" class="btn btn-primary shimmer-btn" data-i18n="exploreBtn">Explore Interest</a>
+        <a href="#chart" class="btn btn-outline" data-i18n="viewChart">View Chart Demo</a>
+        <a href="../../" class="btn btn-outline" data-i18n="backPortfolio">← Back to Portfolio</a>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <div class="scroll-mouse"><div class="scroll-dot"></div></div>
+      <span data-i18n="scroll">Scroll to explore</span>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="container">
+      <div data-anim>
+        <div class="section-label" data-i18n="aboutLabel">About This Interest</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="aboutTitle">Why Data Science &amp; Big Data?</span></h2>
+        <p class="section-desc" data-i18n="aboutDesc">Data is the foundation of every intelligent system. My passion lies in uncovering hidden patterns, building robust data pipelines, and transforming raw information into actionable insights that drive decision-making.</p>
+      </div>
+      <div class="about-grid">
+        <div class="about-card" data-anim>
+          <div class="about-icon">🔍</div>
+          <h3 data-i18n="aboutCard1Title">Finding Patterns in Chaos</h3>
+          <p data-i18n="aboutCard1Text">Every dataset tells a story — but it takes the right tools and techniques to uncover it. I'm fascinated by the process of exploratory data analysis, where visualization and statistics reveal hidden trends, anomalies, and correlations that inform everything from business strategy to scientific discovery.</p>
+        </div>
+        <div class="about-card" data-anim>
+          <div class="about-icon">⚙️</div>
+          <h3 data-i18n="aboutCard2Title">Building Data Infrastructure</h3>
+          <p data-i18n="aboutCard2Text">Behind every AI model is a robust data pipeline. I'm passionate about designing scalable data architectures — from collection and cleaning to storage and processing — using modern big data technologies that can handle terabytes of information efficiently and reliably.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="topics" style="background:var(--alpha-3)">
+    <div class="container">
+      <div data-anim style="text-align:center;margin-bottom:40px">
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="topicsLabel">Knowledge Areas</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="topicsTitle">Key Topics I Explore</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="topicsDesc">Core domains in data science, analytics, and big data engineering</p>
+      </div>
+      <div class="topics-grid">
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-blue">📊</div>
+          <h3 data-i18n="topic1Title">Exploratory Data Analysis (EDA)</h3>
+          <p data-i18n="topic1Desc">Systematic investigation of datasets using statistical summaries and visualizations to understand distributions, detect anomalies, and generate hypotheses.</p>
+        </div>
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-purple">📐</div>
+          <h3 data-i18n="topic2Title">Statistical Modeling</h3>
+          <p data-i18n="topic2Desc">Applying statistical methods — regression, hypothesis testing, Bayesian inference — to quantify relationships and make data-driven predictions.</p>
+        </div>
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-cyan">⚡</div>
+          <h3 data-i18n="topic3Title">Big Data Processing</h3>
+          <p data-i18n="topic3Desc">Distributed computing frameworks like Apache Spark and Hadoop for processing and analyzing massive datasets across clusters of machines.</p>
+        </div>
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-amber">🎨</div>
+          <h3 data-i18n="topic4Title">Data Visualization &amp; Storytelling</h3>
+          <p data-i18n="topic4Desc">Transforming complex data into compelling visual narratives using charts, dashboards, and interactive plots that communicate insights effectively.</p>
+        </div>
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-emerald">🔧</div>
+          <h3 data-i18n="topic5Title">Feature Engineering</h3>
+          <p data-i18n="topic5Desc">Crafting meaningful features from raw data through transformation, encoding, scaling, and selection to improve model performance and interpretability.</p>
+        </div>
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-rose">🌊</div>
+          <h3 data-i18n="topic6Title">Real-time Data Pipelines</h3>
+          <p data-i18n="topic6Desc">Architecting streaming data systems using Kafka, Flink, and Spark Streaming for real-time ingestion, processing, and analytics.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="technologies">
+    <div class="container tech-section">
+      <div data-anim>
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="techLabel">Technologies</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="techTitle">Tools &amp; Libraries</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="techDesc">Technologies I use for data science and big data analytics</p>
+      </div>
+      <div class="tech-grid">
+        <div class="tech-badge" data-anim><span class="icon">🐍</span> Python</div>
+        <div class="tech-badge" data-anim><span class="icon">📊</span> Pandas</div>
+        <div class="tech-badge" data-anim><span class="icon">🔢</span> NumPy</div>
+        <div class="tech-badge" data-anim><span class="icon">📈</span> Matplotlib</div>
+        <div class="tech-badge" data-anim><span class="icon">🎨</span> Seaborn</div>
+        <div class="tech-badge" data-anim><span class="icon">📉</span> Plotly</div>
+        <div class="tech-badge" data-anim><span class="icon">🗄️</span> SQL</div>
+        <div class="tech-badge" data-anim><span class="icon">⚡</span> Spark</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="flow" style="background:var(--alpha-3)">
+    <div class="container flow-section">
+      <div data-anim>
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="flowLabel">The Process</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="flowTitle">Data Science Lifecycle</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="flowDesc">The journey from raw data to actionable insights</p>
+      </div>
+      <div class="flow-diagram" data-anim>
+        <div class="flow-step"><span class="step-num">1</span><div class="flow-icon">📥</div><span class="flow-label" data-i18n="flow1">Data Collection</span></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><span class="step-num">2</span><div class="flow-icon">🧹</div><span class="flow-label" data-i18n="flow2">Data Cleaning</span></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><span class="step-num">3</span><div class="flow-icon">🔍</div><span class="flow-label" data-i18n="flow3">Exploratory Analysis</span></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><span class="step-num">4</span><div class="flow-icon">🧠</div><span class="flow-label" data-i18n="flow4">Modeling</span></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><span class="step-num">5</span><div class="flow-icon">📊</div><span class="flow-label" data-i18n="flow5">Visualization</span></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><span class="step-num">6</span><div class="flow-icon">💡</div><span class="flow-label" data-i18n="flow6">Insights</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="chart">
+    <div class="container chart-section">
+      <div data-anim>
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="chartLabel">Interactive Visualization</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="chartTitle">Live Chart Demo</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="chartDesc">Pure JavaScript bar chart showing sample data analysis — hover over bars for details</p>
+      </div>
+      <div class="chart-container" data-anim>
+        <canvas id="chartCanvas"></canvas>
+        <div id="chartTooltip" style="position:absolute;background:var(--bg-card);border:1px solid var(--primary);border-radius:8px;padding:8px 14px;font-size:13px;pointer-events:none;opacity:0;transition:opacity .2s;z-index:10;color:var(--text-primary)"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="resources" style="background:var(--alpha-3)">
+    <div class="container">
+      <div data-anim style="text-align:center;margin-bottom:40px">
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="resourcesLabel">Learning</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="resourcesTitle">Learning Path &amp; Resources</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="resourcesDesc">Courses, books, and platforms that shaped my data science journey</p>
+      </div>
+      <div class="resources-grid">
+        <div class="resource-card" data-anim>
+          <div class="r-icon">📘</div>
+          <h3 data-i18n="res1Title">Data Science Specialization</h3>
+          <p data-i18n="res1Desc">Johns Hopkins University's comprehensive Data Science Specialization on Coursera covering R, statistics, and machine learning fundamentals.</p>
+          <a href="https://www.coursera.org/specializations/jhu-data-science" target="_blank" class="r-link" data-i18n="visit">Visit →</a>
+        </div>
+        <div class="resource-card" data-anim>
+          <div class="r-icon">📕</div>
+          <h3 data-i18n="res2Title">Python for Data Science</h3>
+          <p data-i18n="res2Desc">Jake VanderPlas' "Python Data Science Handbook" — an essential reference for Pandas, NumPy, Matplotlib, and Scikit-Learn.</p>
+          <a href="https://jakevdp.github.io/PythonDataScienceHandbook/" target="_blank" class="r-link" data-i18n="visit">Visit →</a>
+        </div>
+        <div class="resource-card" data-anim>
+          <div class="r-icon">🎓</div>
+          <h3 data-i18n="res3Title">Kaggle</h3>
+          <p data-i18n="res3Desc">Learning by doing — Kaggle's competitions, datasets, and notebooks have been instrumental in honing my practical data science skills.</p>
+          <a href="https://www.kaggle.com/" target="_blank" class="r-link" data-i18n="visit">Visit →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="goals">
+    <div class="container">
+      <div data-anim style="text-align:center;margin-bottom:40px">
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="goalsLabel">Future</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="goalsTitle">Future Goals</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="goalsDesc">Where I'm heading next in data science and big data analytics</p>
+      </div>
+      <div class="goals-list">
+        <div class="goal-item" data-anim><div class="check">✓</div><div><h4 data-i18n="goal1Title">Real-Time Analytics Systems</h4><p data-i18n="goal1Desc">Build streaming analytics platforms that process millions of events per second for real-time business intelligence and operational dashboards.</p></div></div>
+        <div class="goal-item" data-anim><div class="check">✓</div><div><h4 data-i18n="goal2Title">Big Data Infrastructure for AI</h4><p data-i18n="goal2Desc">Design and deploy scalable data lakes and warehouses that feed AI/ML pipelines with clean, reliable, and well-governed data at petabyte scale.</p></div></div>
+        <div class="goal-item" data-anim><div class="check">✓</div><div><h4 data-i18n="goal3Title">Open Source Data Tools</h4><p data-i18n="goal3Desc">Contribute to and build open-source libraries that make data processing, visualization, and analysis more accessible to the community.</p></div></div>
+        <div class="goal-item" data-anim><div class="check">✓</div><div><h4 data-i18n="goal4Title">Data Education &amp; Mentorship</h4><p data-i18n="goal4Desc">Create tutorials, workshops, and courses to help aspiring data scientists build the skills they need to succeed in the field.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section" id="cta" style="background:var(--alpha-3)">
+    <div class="container" data-anim>
+      <h2><span class="g" data-i18n="ctaTitle">Let's Uncover Insights Together</span></h2>
+      <p data-i18n="ctaDesc">Have a data challenge, analytics project, or just want to discuss data science? I'd love to connect.</p>
+      <div class="cta-btns">
+        <a href="mailto:anmdahamadullah@gmail.com" class="btn btn-primary shimmer-btn" data-i18n="ctaCollaborate">Let's Collaborate</a>
+        <a href="https://github.com/im-ahamad" target="_blank" class="btn btn-outline" data-i18n="ctaGithub">View GitHub</a>
+        <a href="../../" class="btn btn-outline" data-i18n="ctaBack">← Back to Portfolio</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-bar">
+    <p>© 2024 <a href="../../">Md Ahamad Ullah</a> — <span data-i18n="footerTag">Turning data into decisions with analytics and AI</span></p>
+  </div>
+
+  <script>
+    // ===== THEME =====
+    const themeToggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    const savedTheme = localStorage.getItem('ds-theme') || 'light';
+    html.setAttribute('data-theme', savedTheme);
+    themeToggle.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+
+    themeToggle.addEventListener('click', () => {
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('ds-theme', next);
+      themeToggle.textContent = next === 'dark' ? '🌙' : '☀️';
+    });
+
+    // ===== PARTICLES =====
+    const canvas = document.getElementById('data-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let mouseX = -1000, mouseY = -1000;
+
+    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = document.documentElement.scrollHeight; }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    class Particle {
+      constructor() {
+        this.reset();
+        this.baseX = this.x;
+        this.baseY = this.y;
+      }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 3 + 1;
+        this.speedX = (Math.random() - 0.5) * 0.6;
+        this.speedY = (Math.random() - 0.5) * 0.6;
+        this.opacity = Math.random() * 0.35 + 0.05;
+        this.color = ['59,130,246','6,182,212','139,92,246'][Math.floor(Math.random()*3)];
+        this.baseX = this.x;
+        this.baseY = this.y;
+        this.wave = Math.random() * Math.PI * 2;
+        this.waveSpeed = Math.random() * 0.02 + 0.01;
+      }
+      update() {
+        this.wave += this.waveSpeed;
+        this.x += Math.sin(this.wave) * 0.3;
+        this.y += Math.cos(this.wave) * 0.3;
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+        const dx = this.x - mouseX, dy = this.y - mouseY, dist = Math.sqrt(dx*dx+dy*dy);
+        if (dist < 100) { this.x += dx/dist * 0.8; this.y += dy/dist * 0.8; }
+      }
+      draw() {
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${this.color},${this.opacity})`; ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < 80; i++) particles.push(new Particle());
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const isDark = html.getAttribute('data-theme') === 'dark';
+      const connOpacity = isDark ? 0.05 : 0.025;
+      particles.forEach(p => { p.update(); p.draw(); });
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y, dist = Math.sqrt(dx*dx+dy*dy);
+          if (dist < 140) {
+            ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(59,130,246,${connOpacity * (1 - dist/140)})`; ctx.lineWidth = 0.5; ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY + window.scrollY; });
+    document.addEventListener('scroll', () => { canvas.height = document.documentElement.scrollHeight; });
+
+    // ===== TYPED TEXT =====
+    const typedEl = document.getElementById('typedText');
+    const phrases = [
+      'actionable insights', 'beautiful visualizations',
+      'predictive models', 'data-driven decisions',
+      'scalable pipelines', 'meaningful stories'
+    ];
+    let phraseIdx = 0, charIdx = 0, isDeleting = false;
+
+    function typeEffect() {
+      const current = phrases[phraseIdx];
+      if (!isDeleting) {
+        typedEl.textContent = current.substring(0, charIdx + 1); charIdx++;
+        if (charIdx === current.length) { isDeleting = true; setTimeout(typeEffect, 2000); return; }
+        setTimeout(typeEffect, 80);
+      } else {
+        typedEl.textContent = current.substring(0, charIdx - 1); charIdx--;
+        if (charIdx === 0) { isDeleting = false; phraseIdx = (phraseIdx + 1) % phrases.length; setTimeout(typeEffect, 300); return; }
+        setTimeout(typeEffect, 40);
+      }
+    }
+    typeEffect();
+
+    // ===== SCROLL ANIMATIONS =====
+    const animEls = document.querySelectorAll('[data-anim]');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    animEls.forEach(el => observer.observe(el));
+
+    // ===== PROGRESS BAR =====
+    const progressBar = document.getElementById('progressBar');
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      progressBar.style.transform = `scaleX(${docHeight > 0 ? scrollTop / docHeight : 0})`;
+    });
+
+    // ===== INTERACTIVE CHART =====
+    const chartCanvas = document.getElementById('chartCanvas');
+    const cctx = chartCanvas.getContext('2d');
+    const tooltip = document.getElementById('chartTooltip');
+
+    const chartData = {
+      labels: ['EDA', 'Cleaning', 'Modeling', 'Visualization', 'Deployment', 'Monitoring'],
+      values: [85, 75, 92, 70, 60, 55],
+      colors: ['#3b82f6', '#06b6d4', '#8b5cf6', '#10b981', '#f59e0b', '#f43f5e'],
+    };
+
+    function resizeChart() {
+      const rect = chartCanvas.parentElement.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      const w = Math.min(rect.width - 64, 700);
+      const h = 320;
+      chartCanvas.style.width = w + 'px';
+      chartCanvas.style.height = h + 'px';
+      chartCanvas.width = w * dpr;
+      chartCanvas.height = h * dpr;
+      cctx.scale(dpr, dpr);
+      drawChart(w, h);
+    }
+
+    function drawChart(w, h) {
+      const isDark = html.getAttribute('data-theme') === 'dark';
+      const textColor = isDark ? '#94a3b8' : '#475569';
+      const gridColor = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+      const padding = { top: 30, bottom: 40, left: 50, right: 20 };
+      const chartW = w - padding.left - padding.right;
+      const chartH = h - padding.top - padding.bottom;
+      const barW = chartW / chartData.labels.length * 0.6;
+      const gap = chartW / chartData.labels.length * 0.4;
+
+      cctx.clearRect(0, 0, w, h);
+
+      // Y axis
+      cctx.strokeStyle = gridColor; cctx.lineWidth = 1;
+      for (let i = 0; i <= 4; i++) {
+        const y = padding.top + chartH - (i / 4) * chartH;
+        cctx.beginPath(); cctx.moveTo(padding.left, y); cctx.lineTo(w - padding.right, y); cctx.stroke();
+        cctx.fillStyle = textColor; cctx.font = '11px Space Grotesk, sans-serif'; cctx.textAlign = 'right';
+        cctx.fillText(i * 25 + '', padding.left - 10, y + 4);
+      }
+
+      chartData.values.forEach((val, i) => {
+        const x = padding.left + (i / chartData.labels.length) * chartW + gap / 2;
+        const barH = (val / 100) * chartH;
+        const y = padding.top + chartH - barH;
+
+        // Bar gradient
+        const grad = cctx.createLinearGradient(x, y, x, padding.top + chartH);
+        grad.addColorStop(0, chartData.colors[i]);
+        grad.addColorStop(1, chartData.colors[i] + '44');
+        cctx.fillStyle = grad;
+
+        // Rounded top
+        const radius = 4;
+        cctx.beginPath();
+        cctx.moveTo(x, padding.top + chartH);
+        cctx.lineTo(x, y + radius);
+        cctx.quadraticCurveTo(x, y, x + radius, y);
+        cctx.lineTo(x + barW - radius, y);
+        cctx.quadraticCurveTo(x + barW, y, x + barW, y + radius);
+        cctx.lineTo(x + barW, padding.top + chartH);
+        cctx.closePath();
+        cctx.fill();
+
+        // Label
+        cctx.fillStyle = textColor; cctx.font = '12px Space Grotesk, sans-serif';
+        cctx.textAlign = 'center';
+        const label = chartData.labels[i].substring(0, 6) + (chartData.labels[i].length > 6 ? '..' : '');
+        cctx.fillText(label, x + barW / 2, padding.top + chartH + 20);
+
+        // Value on top
+        cctx.fillStyle = chartData.colors[i]; cctx.font = 'bold 13px Space Grotesk, sans-serif';
+        cctx.fillText(val + '%', x + barW / 2, y - 8);
+      });
+
+      // Store chart dimensions for tooltip
+      chartCanvas._chartData = { padding, chartW, chartH, barW, gap, w, h };
+    }
+
+    chartCanvas.addEventListener('mousemove', (e) => {
+      const rect = chartCanvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+      const d = chartCanvas._chartData;
+      if (!d) return;
+
+      let found = -1;
+      const scaleX = d.w / rect.width;
+      const mxScaled = mx * scaleX;
+
+      chartData.values.forEach((val, i) => {
+        const x = d.padding.left + (i / chartData.labels.length) * d.chartW + d.gap / 2;
+        if (mxScaled >= x && mxScaled <= x + d.barW) found = i;
+      });
+
+      if (found >= 0) {
+        const val = chartData.values[found];
+        const barH = (val / 100) * d.chartH;
+        const barY = d.padding.top + d.chartH - barH;
+        const scaleY = d.h / rect.height;
+        if (my * scaleY >= barY && my * scaleY <= d.padding.top + d.chartH) {
+          tooltip.style.opacity = '1';
+          tooltip.style.left = (e.clientX - rect.left + 15) + 'px';
+          tooltip.style.top = (my - 40) + 'px';
+          tooltip.textContent = `${chartData.labels[found]}: ${val}% proficiency`;
+          chartCanvas.style.cursor = 'pointer';
+          return;
+        }
+      }
+      tooltip.style.opacity = '0';
+      chartCanvas.style.cursor = 'default';
+    });
+
+    chartCanvas.addEventListener('mouseleave', () => { tooltip.style.opacity = '0'; });
+    window.addEventListener('resize', resizeChart);
+    resizeChart();
+
+    // Redraw chart on theme change
+    const origToggle = themeToggle.click;
+    themeToggle.addEventListener('click', () => {
+      setTimeout(() => resizeChart(), 50);
+    });
+
+    // ===== LANGUAGE =====
+    const translations = {
+      en: {
+        badge: 'Field of Data Science',
+        heroTitle: 'Data Science &amp;<br/>Big Data Analytics',
+        heroSub: 'Turning data into ',
+        exploreBtn: 'Explore Interest',
+        viewChart: 'View Chart Demo',
+        backPortfolio: '← Back to Portfolio',
+        scroll: 'Scroll to explore',
+        aboutLabel: 'About This Interest',
+        aboutTitle: 'Why Data Science &amp; Big Data?',
+        aboutDesc: 'Data is the foundation of every intelligent system. My passion lies in uncovering hidden patterns, building robust data pipelines, and transforming raw information into actionable insights that drive decision-making.',
+        aboutCard1Title: 'Finding Patterns in Chaos',
+        aboutCard1Text: 'Every dataset tells a story — but it takes the right tools and techniques to uncover it. I\'m fascinated by the process of exploratory data analysis, where visualization and statistics reveal hidden trends, anomalies, and correlations that inform everything from business strategy to scientific discovery.',
+        aboutCard2Title: 'Building Data Infrastructure',
+        aboutCard2Text: 'Behind every AI model is a robust data pipeline. I\'m passionate about designing scalable data architectures — from collection and cleaning to storage and processing — using modern big data technologies that can handle terabytes of information efficiently and reliably.',
+        topicsLabel: 'Knowledge Areas',
+        topicsTitle: 'Key Topics I Explore',
+        topicsDesc: 'Core domains in data science, analytics, and big data engineering',
+        topic1Title: 'Exploratory Data Analysis (EDA)',
+        topic1Desc: 'Systematic investigation of datasets using statistical summaries and visualizations to understand distributions, detect anomalies, and generate hypotheses.',
+        topic2Title: 'Statistical Modeling',
+        topic2Desc: 'Applying statistical methods — regression, hypothesis testing, Bayesian inference — to quantify relationships and make data-driven predictions.',
+        topic3Title: 'Big Data Processing',
+        topic3Desc: 'Distributed computing frameworks like Apache Spark and Hadoop for processing and analyzing massive datasets across clusters of machines.',
+        topic4Title: 'Data Visualization &amp; Storytelling',
+        topic4Desc: 'Transforming complex data into compelling visual narratives using charts, dashboards, and interactive plots that communicate insights effectively.',
+        topic5Title: 'Feature Engineering',
+        topic5Desc: 'Crafting meaningful features from raw data through transformation, encoding, scaling, and selection to improve model performance and interpretability.',
+        topic6Title: 'Real-time Data Pipelines',
+        topic6Desc: 'Architecting streaming data systems using Kafka, Flink, and Spark Streaming for real-time ingestion, processing, and analytics.',
+        techLabel: 'Technologies',
+        techTitle: 'Tools &amp; Libraries',
+        techDesc: 'Technologies I use for data science and big data analytics',
+        flowLabel: 'The Process',
+        flowTitle: 'Data Science Lifecycle',
+        flowDesc: 'The journey from raw data to actionable insights',
+        flow1: 'Data Collection',
+        flow2: 'Data Cleaning',
+        flow3: 'Exploratory Analysis',
+        flow4: 'Modeling',
+        flow5: 'Visualization',
+        flow6: 'Insights',
+        chartLabel: 'Interactive Visualization',
+        chartTitle: 'Live Chart Demo',
+        chartDesc: 'Pure JavaScript bar chart showing sample data analysis — hover over bars for details',
+        resourcesLabel: 'Learning',
+        resourcesTitle: 'Learning Path &amp; Resources',
+        resourcesDesc: 'Courses, books, and platforms that shaped my data science journey',
+        res1Title: 'Data Science Specialization',
+        res1Desc: 'Johns Hopkins University\'s comprehensive Data Science Specialization on Coursera covering R, statistics, and machine learning fundamentals.',
+        res2Title: 'Python for Data Science',
+        res2Desc: 'Jake VanderPlas\' "Python Data Science Handbook" — an essential reference for Pandas, NumPy, Matplotlib, and Scikit-Learn.',
+        res3Title: 'Kaggle',
+        res3Desc: 'Learning by doing — Kaggle\'s competitions, datasets, and notebooks have been instrumental in honing my practical data science skills.',
+        visit: 'Visit →',
+        goalsLabel: 'Future',
+        goalsTitle: 'Future Goals',
+        goalsDesc: 'Where I\'m heading next in data science and big data analytics',
+        goal1Title: 'Real-Time Analytics Systems',
+        goal1Desc: 'Build streaming analytics platforms that process millions of events per second for real-time business intelligence and operational dashboards.',
+        goal2Title: 'Big Data Infrastructure for AI',
+        goal2Desc: 'Design and deploy scalable data lakes and warehouses that feed AI/ML pipelines with clean, reliable, and well-governed data at petabyte scale.',
+        goal3Title: 'Open Source Data Tools',
+        goal3Desc: 'Contribute to and build open-source libraries that make data processing, visualization, and analysis more accessible to the community.',
+        goal4Title: 'Data Education &amp; Mentorship',
+        goal4Desc: 'Create tutorials, workshops, and courses to help aspiring data scientists build the skills they need to succeed in the field.',
+        ctaTitle: 'Let\'s Uncover Insights Together',
+        ctaDesc: 'Have a data challenge, analytics project, or just want to discuss data science? I\'d love to connect.',
+        ctaCollaborate: 'Let\'s Collaborate',
+        ctaGithub: 'View GitHub',
+        ctaBack: '← Back to Portfolio',
+        footerTag: 'Turning data into decisions with analytics and AI',
+      },
+      bn: {
+        badge: 'ডেটা সায়েন্সের ক্ষেত্র',
+        heroTitle: 'ডেটা সায়েন্স ও<br/>বিগ ডেটা অ্যানালিটিক্স',
+        heroSub: 'ডেটাকে রূপান্তর করছে ',
+        exploreBtn: 'আগ্রহ অন্বেষণ',
+        viewChart: 'চার্ট ডেমো দেখুন',
+        backPortfolio: '← পোর্টফোলিওতে ফিরুন',
+        scroll: 'অন্বেষণ করতে স্ক্রোল করুন',
+        aboutLabel: 'এই আগ্রহ সম্পর্কে',
+        aboutTitle: 'কেন ডেটা সায়েন্স ও বিগ ডেটা?',
+        aboutDesc: 'ডেটা হল প্রতিটি বুদ্ধিমান সিস্টেমের ভিত্তি। আমার আবেগ লুকানো প্যাটার্ন উন্মোচন, শক্তিশালী ডেটা পাইপলাইন তৈরি এবং কাঁচা তথ্যকে কার্যকরী অন্তর্দৃষ্টিতে রূপান্তরিত করার মধ্যে নিহিত যা সিদ্ধান্ত গ্রহণকে চালিত করে।',
+        aboutCard1Title: 'জটিলতায় প্যাটার্ন খোঁজা',
+        aboutCard1Text: 'প্রতিটি ডেটাসেট একটি গল্প বলে — কিন্তু এটি উন্মোচন করার জন্য সঠিক টুল এবং কৌশল প্রয়োজন। আমি এক্সপ্লোরেটরি ডেটা অ্যানালাইসিসের প্রক্রিয়া দ্বারা মুগ্ধ, যেখানে ভিজুয়ালাইজেশন এবং পরিসংখ্যান লুকানো প্রবণতা, অসঙ্গতি এবং পারস্পরিক সম্পর্ক প্রকাশ করে যা ব্যবসায়িক কৌশল থেকে বৈজ্ঞানিক আবিষ্কার পর্যন্ত সবকিছুকে জানায়।',
+        aboutCard2Title: 'ডেটা ইনফ্রাস্ট্রাকচার তৈরি',
+        aboutCard2Text: 'প্রতিটি AI মডেলের পিছনে একটি শক্তিশালী ডেটা পাইপলাইন রয়েছে। আমি স্কেলেবল ডেটা আর্কিটেকচার ডিজাইন করার বিষয়ে আগ্রহী — সংগ্রহ এবং পরিষ্কার থেকে সংরক্ষণ এবং প্রক্রিয়াকরণ — আধুনিক বিগ ডেটা প্রযুক্তি ব্যবহার করে যা কার্যকরভাবে এবং নির্ভরযোগ্যভাবে টেরাবাইট তথ্য পরিচালনা করতে পারে।',
+        topicsLabel: 'জ্ঞানের ক্ষেত্র',
+        topicsTitle: 'আমি যে মূল বিষয়গুলি অন্বেষণ করি',
+        topicsDesc: 'ডেটা সায়েন্স, অ্যানালিটিক্স এবং বিগ ডেটা ইঞ্জিনিয়ারিংয়ের মূল ডোমেন',
+        topic1Title: 'এক্সপ্লোরেটরি ডেটা অ্যানালাইসিস (EDA)',
+        topic1Desc: 'পরিসংখ্যানগত সারাংশ এবং ভিজুয়ালাইজেশন ব্যবহার করে ডেটাসেটের পদ্ধতিগত তদন্ত, বিতরণ বোঝা, অসঙ্গতি সনাক্তকরণ এবং হাইপোথিসিস তৈরি।',
+        topic2Title: 'পরিসংখ্যানগত মডেলিং',
+        topic2Desc: 'সম্পর্ক পরিমাপ এবং ডেটা-চালিত পূর্বাভাস তৈরি করতে পরিসংখ্যানগত পদ্ধতি প্রয়োগ — রিগ্রেশন, হাইপোথিসিস টেস্টিং, বায়েসিয়ান ইনফারেন্স।',
+        topic3Title: 'বিগ ডেটা প্রসেসিং',
+        topic3Desc: 'মেশিনের ক্লাস্টার জুড়ে বিশাল ডেটাসেট প্রক্রিয়াকরণ এবং বিশ্লেষণের জন্য Apache Spark এবং Hadoop-এর মতো ডিস্ট্রিবিউটেড কম্পিউটিং ফ্রেমওয়ার্ক।',
+        topic4Title: 'ডেটা ভিজুয়ালাইজেশন ও স্টোরিটেলিং',
+        topic4Desc: 'চার্ট, ড্যাশবোর্ড এবং ইন্টারেক্টিভ প্লট ব্যবহার করে জটিল ডেটাকে আকর্ষক ভিজ্যুয়াল গল্পে রূপান্তর যা কার্যকরভাবে অন্তর্দৃষ্টি যোগাযোগ করে।',
+        topic5Title: 'ফিচার ইঞ্জিনিয়ারিং',
+        topic5Desc: 'মডেল কর্মক্ষমতা এবং ব্যাখ্যাযোগ্যতা উন্নত করতে রূপান্তর, এনকোডিং, স্কেলিং এবং নির্বাচনের মাধ্যমে কাঁচা ডেটা থেকে অর্থপূর্ণ বৈশিষ্ট্য তৈরি।',
+        topic6Title: 'রিয়েল-টাইম ডেটা পাইপলাইন',
+        topic6Desc: 'রিয়েল-টাইম ইনজেশন, প্রসেসিং এবং অ্যানালিটিক্সের জন্য Kafka, Flink এবং Spark Streaming ব্যবহার করে স্ট্রিমিং ডেটা সিস্টেম আর্কিটেক্ট করা।',
+        techLabel: 'প্রযুক্তি',
+        techTitle: 'টুলস ও লাইব্রেরি',
+        techDesc: 'ডেটা সায়েন্স এবং বিগ ডেটা অ্যানালিটিক্সের জন্য আমি যে প্রযুক্তি ব্যবহার করি',
+        flowLabel: 'প্রক্রিয়া',
+        flowTitle: 'ডেটা সায়েন্স লাইফসাইকেল',
+        flowDesc: 'কাঁচা ডেটা থেকে কার্যকরী অন্তর্দৃষ্টিতে যাত্রা',
+        flow1: 'ডেটা সংগ্রহ',
+        flow2: 'ডেটা পরিষ্কার',
+        flow3: 'এক্সপ্লোরেটরি অ্যানালাইসিস',
+        flow4: 'মডেলিং',
+        flow5: 'ভিজুয়ালাইজেশন',
+        flow6: 'অন্তর্দৃষ্টি',
+        chartLabel: 'ইন্টারেক্টিভ ভিজুয়ালাইজেশন',
+        chartTitle: 'লাইভ চার্ট ডেমো',
+        chartDesc: 'পিওর জাভাস্ক্রিপ্ট বার চার্ট — বিস্তারিত জানতে বারগুলির উপর হোভার করুন',
+        resourcesLabel: 'শিক্ষা',
+        resourcesTitle: 'শেখার পথ ও সংস্থান',
+        resourcesDesc: 'কোর্স, বই এবং প্ল্যাটফর্ম যা আমার ডেটা সায়েন্স যাত্রা গঠন করেছে',
+        res1Title: 'ডেটা সায়েন্স স্পেশালাইজেশন',
+        res1Desc: 'Coursera-তে জনস হপকিন্স ইউনিভার্সিটির বিস্তৃত ডেটা সায়েন্স স্পেশালাইজেশন যা R, পরিসংখ্যান এবং মেশিন লার্নিং ফান্ডামেন্টাল কভার করে।',
+        res2Title: 'ডেটা সায়েন্সের জন্য পাইথন',
+        res2Desc: 'Jake VanderPlas-এর "Python Data Science Handbook" — Pandas, NumPy, Matplotlib এবং Scikit-Learn-এর জন্য একটি অপরিহার্য রেফারেন্স।',
+        res3Title: 'Kaggle',
+        res3Desc: 'করে শেখা — Kaggle-এর প্রতিযোগিতা, ডেটাসেট এবং নোটবুক আমার ব্যবহারিক ডেটা সায়েন্স দক্ষতা তীক্ষ্ণ করতে সহায়ক হয়েছে।',
+        visit: 'ভিজিট করুন →',
+        goalsLabel: 'ভবিষ্যৎ',
+        goalsTitle: 'ভবিষ্যৎ লক্ষ্য',
+        goalsDesc: 'ডেটা সায়েন্স এবং বিগ ডেটা অ্যানালিটিক্সে আমি এরপর কোথায় যাচ্ছি',
+        goal1Title: 'রিয়েল-টাইম অ্যানালিটিক্স সিস্টেম',
+        goal1Desc: 'রিয়েল-টাইম বিজনেস ইন্টেলিজেন্স এবং অপারেশনাল ড্যাশবোর্ডের জন্য প্রতি সেকেন্ডে মিলিয়ন ইভেন্ট প্রসেস করে এমন স্ট্রিমিং অ্যানালিটিক্স প্ল্যাটফর্ম তৈরি করুন।',
+        goal2Title: 'AI-এর জন্য বিগ ডেটা ইনফ্রাস্ট্রাকচার',
+        goal2Desc: 'পেটাবাইট স্কেলে পরিষ্কার, নির্ভরযোগ্য এবং সুশাসিত ডেটা দিয়ে AI/ML পাইপলাইন সরবরাহ করে এমন স্কেলেবল ডেটা লেক এবং গুদাম ডিজাইন এবং ডিপ্লয় করুন।',
+        goal3Title: 'ওপেন সোর্স ডেটা টুলস',
+        goal3Desc: 'ওপেন-সোর্স লাইব্রেরিতে অবদান রাখুন এবং তৈরি করুন যা ডেটা প্রসেসিং, ভিজুয়ালাইজেশন এবং বিশ্লেষণকে সম্প্রদায়ের জন্য আরও অ্যাক্সেসযোগ্য করে তোলে।',
+        goal4Title: 'ডেটা শিক্ষা ও মেন্টরশিপ',
+        goal4Desc: 'উদীয়মান ডেটা সায়েন্টিস্টদের ক্ষেত্রে সফল হওয়ার জন্য প্রয়োজনীয় দক্ষতা তৈরি করতে সাহায্য করার জন্য টিউটোরিয়াল, ওয়ার্কশপ এবং কোর্স তৈরি করুন।',
+        ctaTitle: 'চলুন একসাথে অন্তর্দৃষ্টি উন্মোচন করি',
+        ctaDesc: 'একটি ডেটা চ্যালেঞ্জ, অ্যানালিটিক্স প্রকল্প বা শুধু ডেটা সায়েন্স নিয়ে আলোচনা করতে চান? আমি সংযোগ করতে চাই।',
+        ctaCollaborate: 'চলুন সহযোগিতা করি',
+        ctaGithub: 'GitHub দেখুন',
+        ctaBack: '← পোর্টফোলিওতে ফিরুন',
+        footerTag: 'অ্যানালিটিক্স এবং AI দিয়ে ডেটাকে সিদ্ধান্তে রূপান্তর',
+      },
+      zh: {
+        badge: '数据科学领域',
+        heroTitle: '数据科学与<br/>大数据分析',
+        heroSub: '将数据转化为 ',
+        exploreBtn: '探索兴趣',
+        viewChart: '查看图表演示',
+        backPortfolio: '← 返回作品集',
+        scroll: '滚动探索',
+        aboutLabel: '关于此兴趣',
+        aboutTitle: '为什么选择数据科学与大数据？',
+        aboutDesc: '数据是每个智能系统的基础。我的热情在于发现隐藏模式、构建强大的数据管道，以及将原始信息转化为推动决策的可操作见解。',
+        aboutCard1Title: '在混乱中发现模式',
+        aboutCard1Text: '每个数据集都有一个故事——但需要正确的工具和技术来发现它。我着迷于探索性数据分析的过程，通过可视化和统计揭示隐藏的趋势、异常和相关性，为从商业策略到科学发现的一切提供信息。',
+        aboutCard2Title: '构建数据基础设施',
+        aboutCard2Text: '每个AI模型背后都有一个强大的数据管道。我热衷于设计可扩展的数据架构——从收集和清洗到存储和处理——使用现代大数据技术高效可靠地处理TB级信息。',
+        topicsLabel: '知识领域',
+        topicsTitle: '我探索的关键主题',
+        topicsDesc: '数据科学、分析和大数据工程的核心领域',
+        topic1Title: '探索性数据分析 (EDA)',
+        topic1Desc: '使用统计摘要和可视化对数据集进行系统调查，以了解分布、检测异常并生成假设。',
+        topic2Title: '统计建模',
+        topic2Desc: '应用统计方法——回归、假设检验、贝叶斯推断——量化关系并做出数据驱动的预测。',
+        topic3Title: '大数据处理',
+        topic3Desc: '使用Apache Spark和Hadoop等分布式计算框架，跨机器集群处理和分析海量数据集。',
+        topic4Title: '数据可视化与叙事',
+        topic4Desc: '使用图表、仪表板和交互式图表将复杂数据转化为引人注目的视觉叙事，有效传达见解。',
+        topic5Title: '特征工程',
+        topic5Desc: '通过转换、编码、缩放和选择从原始数据中构建有意义的特征，以提高模型性能和可解释性。',
+        topic6Title: '实时数据管道',
+        topic6Desc: '使用Kafka、Flink和Spark Streaming构建流式数据系统，用于实时采集、处理和分析。',
+        techLabel: '技术',
+        techTitle: '工具与库',
+        techDesc: '我用于数据科学和大数据分析的技术',
+        flowLabel: '流程',
+        flowTitle: '数据科学生命周期',
+        flowDesc: '从原始数据到可操作见解的旅程',
+        flow1: '数据收集',
+        flow2: '数据清洗',
+        flow3: '探索性分析',
+        flow4: '建模',
+        flow5: '可视化',
+        flow6: '见解',
+        chartLabel: '交互式可视化',
+        chartTitle: '实时图表演示',
+        chartDesc: '纯JavaScript条形图展示示例数据分析——悬停在柱子上查看详情',
+        resourcesLabel: '学习',
+        resourcesTitle: '学习路径与资源',
+        resourcesDesc: '塑造我数据科学旅程的课程、书籍和平台',
+        res1Title: '数据科学专业',
+        res1Desc: '约翰霍普金斯大学在Coursera上的全面数据科学专业，涵盖R语言、统计学和机器学习基础。',
+        res2Title: 'Python数据科学',
+        res2Desc: 'Jake VanderPlas的《Python数据科学手册》——Pandas、NumPy、Matplotlib和Scikit-Learn的重要参考书。',
+        res3Title: 'Kaggle',
+        res3Desc: '在实践中学习——Kaggle的比赛、数据集和笔记本对磨练我的实用数据科学技能起到了重要作用。',
+        visit: '访问 →',
+        goalsLabel: '未来',
+        goalsTitle: '未来目标',
+        goalsDesc: '我在数据科学和大数据分析领域的下一步方向',
+        goal1Title: '实时分析系统',
+        goal1Desc: '构建流式分析平台，每秒处理数百万事件，用于实时商业智能和运营仪表板。',
+        goal2Title: 'AI大数据基础设施',
+        goal2Desc: '设计和部署可扩展的数据湖和仓库，以PB级规模为AI/ML管道提供干净、可靠、治理良好的数据。',
+        goal3Title: '开源数据工具',
+        goal3Desc: '贡献和构建开源库，使数据处理、可视化和分析更易于社区访问。',
+        goal4Title: '数据教育与指导',
+        goal4Desc: '创建教程、研讨会和课程，帮助有抱负的数据科学家建立在该领域成功所需的技能。',
+        ctaTitle: '让我们一起发现见解',
+        ctaDesc: '有数据挑战、分析项目或只是想讨论数据科学？我很乐意联系。',
+        ctaCollaborate: '让我们合作',
+        ctaGithub: '查看GitHub',
+        ctaBack: '← 返回作品集',
+        footerTag: '通过分析和AI将数据转化为决策',
+      },
+      hi: {
+        badge: 'डेटा विज्ञान का क्षेत्र',
+        heroTitle: 'डेटा साइंस और<br/>बिग डेटा एनालिटिक्स',
+        heroSub: 'डेटा को बदल रहा है ',
+        exploreBtn: 'रुचि का अन्वेषण करें',
+        viewChart: 'चार्ट डेमो देखें',
+        backPortfolio: '← पोर्टफोलियो पर वापस जाएं',
+        scroll: 'अन्वेषण करने के लिए स्क्रॉल करें',
+        aboutLabel: 'इस रुचि के बारे में',
+        aboutTitle: 'डेटा साइंस और बिग डेटा क्यों?',
+        aboutDesc: 'डेटा हर बुद्धिमान प्रणाली की नींव है। मेरा जुनून छिपे हुए पैटर्न को उजागर करने, मजबूत डेटा पाइपलाइन बनाने और कच्ची जानकारी को कार्रवाई योग्य अंतर्दृष्टि में बदलने में निहित है जो निर्णय लेने को संचालित करता है।',
+        aboutCard1Title: 'अव्यवस्था में पैटर्न खोजना',
+        aboutCard1Text: 'हर डेटासेट एक कहानी कहता है — लेकिन इसे उजागर करने के लिए सही उपकरण और तकनीकें चाहिए। मैं खोजपूर्ण डेटा विश्लेषण की प्रक्रिया से मोहित हूं, जहां विज़ुअलाइज़ेशन और सांख्यिकी छिपे हुए रुझानों, विसंगतियों और सहसंबंधों को प्रकट करते हैं जो व्यावसायिक रणनीति से लेकर वैज्ञानिक खोज तक सब कुछ सूचित करते हैं।',
+        aboutCard2Title: 'डेटा बुनियादी ढांचा बनाना',
+        aboutCard2Text: 'हर AI मॉडल के पीछे एक मजबूत डेटा पाइपलाइन है। मैं स्केलेबल डेटा आर्किटेक्चर डिजाइन करने के बारे में भावुक हूं — संग्रह और सफाई से भंडारण और प्रसंस्करण तक — आधुनिक बिग डेटा तकनीकों का उपयोग करके जो कुशलतापूर्वक और विश्वसनीय रूप से टेराबाइट्स जानकारी संभाल सकती हैं।',
+        topicsLabel: 'ज्ञान क्षेत्र',
+        topicsTitle: 'मुख्य विषय जिनका मैं अन्वेषण करता हूं',
+        topicsDesc: 'डेटा साइंस, एनालिटिक्स और बिग डेटा इंजीनियरिंग में मुख्य डोमेन',
+        topic1Title: 'खोजपूर्ण डेटा विश्लेषण (EDA)',
+        topic1Desc: 'वितरण को समझने, विसंगतियों का पता लगाने और परिकल्पना उत्पन्न करने के लिए सांख्यिकीय सारांश और विज़ुअलाइज़ेशन का उपयोग करके डेटासेट की व्यवस्थित जांच।',
+        topic2Title: 'सांख्यिकीय मॉडलिंग',
+        topic2Desc: 'संबंधों को मापने और डेटा-संचालित भविष्यवाणियां करने के लिए सांख्यिकीय विधियों — प्रतिगमन, परिकल्पना परीक्षण, बायेसियन अनुमान — को लागू करना।',
+        topic3Title: 'बिग डेटा प्रोसेसिंग',
+        topic3Desc: 'मशीनों के क्लस्टर में विशाल डेटासेट को संसाधित और विश्लेषण करने के लिए Apache Spark और Hadoop जैसे वितरित कंप्यूटिंग फ्रेमवर्क।',
+        topic4Title: 'डेटा विज़ुअलाइज़ेशन और स्टोरीटेलिंग',
+        topic4Desc: 'चार्ट, डैशबोर्ड और इंटरैक्टिव प्लॉट का उपयोग करके जटिल डेटा को सम्मोहक दृश्य कथाओं में बदलना जो प्रभावी रूप से अंतर्दृष्टि संचारित करते हैं।',
+        topic5Title: 'फीचर इंजीनियरिंग',
+        topic5Desc: 'मॉडल प्रदर्शन और व्याख्यात्मकता में सुधार करने के लिए रूपांतरण, एन्कोडिंग, स्केलिंग और चयन के माध्यम से कच्चे डेटा से सार्थक विशेषताएं तैयार करना।',
+        topic6Title: 'रीयल-टाइम डेटा पाइपलाइन',
+        topic6Desc: 'रीयल-टाइम इंजेशन, प्रोसेसिंग और एनालिटिक्स के लिए Kafka, Flink और Spark Streaming का उपयोग करके स्ट्रीमिंग डेटा सिस्टम आर्किटेक्ट करना।',
+        techLabel: 'प्रौद्योगिकियां',
+        techTitle: 'उपकरण और लाइब्रेरी',
+        techDesc: 'डेटा साइंस और बिग डेटा एनालिटिक्स के लिए मैं जिन तकनीकों का उपयोग करता हूं',
+        flowLabel: 'प्रक्रिया',
+        flowTitle: 'डेटा साइंस लाइफसाइकिल',
+        flowDesc: 'कच्चे डेटा से कार्रवाई योग्य अंतर्दृष्टि तक की यात्रा',
+        flow1: 'डेटा संग्रह',
+        flow2: 'डेटा सफाई',
+        flow3: 'खोजपूर्ण विश्लेषण',
+        flow4: 'मॉडलिंग',
+        flow5: 'विज़ुअलाइज़ेशन',
+        flow6: 'अंतर्दृष्टि',
+        chartLabel: 'इंटरैक्टिव विज़ुअलाइज़ेशन',
+        chartTitle: 'लाइव चार्ट डेमो',
+        chartDesc: 'शुद्ध जावास्क्रिप्ट बार चार्ट — विवरण के लिए बार पर होवर करें',
+        resourcesLabel: 'सीखना',
+        resourcesTitle: 'सीखने का पथ और संसाधन',
+        resourcesDesc: 'पाठ्यक्रम, किताबें और प्लेटफॉर्म जिन्होंने मेरी डेटा साइंस यात्रा को आकार दिया',
+        res1Title: 'डेटा साइंस स्पेशलाइज़ेशन',
+        res1Desc: 'Coursera पर जॉन्स हॉपकिन्स विश्वविद्यालय का व्यापक डेटा साइंस स्पेशलाइज़ेशन जो R, सांख्यिकी और मशीन लर्निंग फंडामेंटल को कवर करता है।',
+        res2Title: 'डेटा साइंस के लिए पायथन',
+        res2Desc: 'Jake VanderPlas की "Python Data Science Handbook" — Pandas, NumPy, Matplotlib और Scikit-Learn के लिए एक आवश्यक संदर्भ।',
+        res3Title: 'Kaggle',
+        res3Desc: 'करके सीखना — Kaggle की प्रतियोगिताएं, डेटासेट और नोटबुक मेरे व्यावहारिक डेटा साइंस कौशल को निखारने में सहायक रहे हैं।',
+        visit: 'विज़िट करें →',
+        goalsLabel: 'भविष्य',
+        goalsTitle: 'भविष्य के लक्ष्य',
+        goalsDesc: 'डेटा साइंस और बिग डेटा एनालिटिक्स में मैं आगे कहां जा रहा हूं',
+        goal1Title: 'रीयल-टाइम एनालिटिक्स सिस्टम',
+        goal1Desc: 'रीयल-टाइम बिजनेस इंटेलिजेंस और ऑपरेशनल डैशबोर्ड के लिए प्रति सेकंड लाखों इवेंट प्रोसेस करने वाले स्ट्रीमिंग एनालिटिक्स प्लेटफॉर्म बनाएं।',
+        goal2Title: 'AI के लिए बिग डेटा इंफ्रास्ट्रक्चर',
+        goal2Desc: 'पेटाबाइट पैमाने पर AI/ML पाइपलाइनों को स्वच्छ, विश्वसनीय और सुशासित डेटा प्रदान करने वाले स्केलेबल डेटा लेक और वेयरहाउस डिजाइन और तैनात करें।',
+        goal3Title: 'ओपन सोर्स डेटा टूल्स',
+        goal3Desc: 'ओपन-सोर्स लाइब्रेरी में योगदान दें और बनाएं जो डेटा प्रोसेसिंग, विज़ुअलाइज़ेशन और विश्लेषण को समुदाय के लिए अधिक सुलभ बनाती हैं।',
+        goal4Title: 'डेटा शिक्षा और मेंटरशिप',
+        goal4Desc: 'महत्वाकांक्षी डेटा वैज्ञानिकों को क्षेत्र में सफल होने के लिए आवश्यक कौशल बनाने में मदद करने के लिए ट्यूटोरियल, कार्यशालाएं और पाठ्यक्रम बनाएं।',
+        ctaTitle: 'आइए एक साथ अंतर्दृष्टि उजागर करें',
+        ctaDesc: 'एक डेटा चुनौती, एनालिटिक्स प्रोजेक्ट है या बस डेटा साइंस पर चर्चा करना चाहते हैं? मुझे जुड़ने में खुशी होगी।',
+        ctaCollaborate: 'आइए सहयोग करें',
+        ctaGithub: 'GitHub देखें',
+        ctaBack: '← पोर्टफोलियो पर वापस जाएं',
+        footerTag: 'एनालिटिक्स और AI के साथ डेटा को निर्णयों में बदलना',
+      },
+    };
+
+    function applyLanguage(lang) {
+      const t = translations[lang] || translations.en;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key] !== undefined) {
+          if (key === 'heroTitle') { el.innerHTML = t[key]; }
+          else { el.textContent = t[key]; }
+        }
+      });
+    }
+
+    const langSelect = document.getElementById('langSelect');
+    const savedLang = localStorage.getItem('ds-lang') || 'en';
+    langSelect.value = savedLang;
+    applyLanguage(savedLang);
+
+    langSelect.addEventListener('change', () => {
+      const lang = langSelect.value;
+      localStorage.setItem('ds-lang', lang);
+      applyLanguage(lang);
+    });
+  </script>
+
+  <script id="custom-cursor-js">
+    (function() {
+      var cursor = document.getElementById('custom-cursor');
+      if (!cursor) return;
+      var isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      if (!isTouch) {
+        document.addEventListener('mousemove', function(e) {
+          cursor.style.opacity = '1';
+          cursor.style.left = e.clientX + 'px';
+          cursor.style.top = e.clientY + 'px';
+        });
+        document.addEventListener('mouseleave', function() { cursor.style.opacity = '0'; });
+        document.addEventListener('mouseenter', function() { cursor.style.opacity = '1'; });
+        document.querySelectorAll('a, button, [role="button"]').forEach(function(el) {
+          el.addEventListener('mouseenter', function() {
+            cursor.style.width = '40px'; cursor.style.height = '40px';
+            cursor.style.background = 'radial-gradient(circle, rgba(139,92,246,0.4), transparent)';
+          });
+          el.addEventListener('mouseleave', function() {
+            cursor.style.width = '20px'; cursor.style.height = '20px';
+            cursor.style.background = 'radial-gradient(circle, rgba(59,130,246,0.3), transparent)';
+          });
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

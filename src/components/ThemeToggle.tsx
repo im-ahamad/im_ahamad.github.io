@@ -14,10 +14,10 @@ export function ThemeToggle() {
   const { i18n } = useTranslation();
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null;
-    if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.classList.toggle("dark", savedTheme === "dark");
+    const saved = localStorage.getItem("theme") as "light" | "dark" | null;
+    if (saved) {
+      setTheme(saved);
+      document.documentElement.classList.toggle("dark", saved === "dark");
     }
   }, []);
 
@@ -38,7 +38,7 @@ export function ThemeToggle() {
         variant="outline"
         size="icon"
         onClick={() => toggleTheme(theme === "light" ? "dark" : "light")}
-        className="bg-background/80 backdrop-blur-sm"
+        className="glass border-border/50 h-10 w-10 rounded-full"
       >
         {theme === "light" ? (
           <Sun className="h-5 w-5" />
@@ -49,20 +49,15 @@ export function ThemeToggle() {
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="icon" className="bg-background/80 backdrop-blur-sm">
+          <Button variant="outline" size="icon" className="glass border-border/50 h-10 w-10 rounded-full">
             <Globe className="h-5 w-5" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => changeLanguage("en")}>
-            English
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => changeLanguage("bn")}>
-            বাংলা
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => changeLanguage("zh")}>
-            中文
-          </DropdownMenuItem>
+        <DropdownMenuContent align="end" className="glass border-border/50">
+          <DropdownMenuItem onClick={() => changeLanguage("en")}>English</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => changeLanguage("bn")}>বাংলা</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => changeLanguage("zh")}>中文</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => changeLanguage("hi")}>हिन्दी</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

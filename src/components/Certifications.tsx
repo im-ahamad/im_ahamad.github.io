@@ -38,8 +38,6 @@ const colors = [
   "from-indigo-500 via-purple-500 to-pink-500",
   "from-green-500 via-emerald-500 to-teal-400",
   "from-amber-500 via-yellow-500 to-orange-400",
-  "from-red-500 via-rose-500 to-pink-400",
-  "from-sky-500 via-blue-500 to-indigo-400",
 ];
 
 const Certifications = () => {
@@ -47,32 +45,31 @@ const Certifications = () => {
 
   const bubbles = useMemo(
     () =>
-      [...Array(12)].map((_, i) => ({
-        size: Math.floor(Math.random() * 50) + 15,
+      [...Array(8)].map((_, i) => ({
+        size: Math.floor(Math.random() * 40) + 15,
         top: Math.floor(Math.random() * 100),
         left: Math.floor(Math.random() * 100),
         duration: (Math.random() * 10 + 5).toFixed(2),
         delay: (Math.random() * 5).toFixed(2),
-        opacity: Math.random() * 0.25 + 0.05,
+        opacity: Math.random() * 0.2 + 0.03,
         color: colors[i % colors.length],
       })),
     []
   );
 
   return (
-    <section id="certifications" className="relative py-20 px-6 bg-muted/30 overflow-hidden">
-
-      {/* Mesh gradient background */}
+    <section id="certifications" className="relative py-24 px-6 overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_center,hsl(var(--gradient-end)/0.1),transparent_50%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--accent)/0.08),transparent_50%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.06),transparent_50%)]" />
 
-      {/* Glow orbs */}
-      <div className="absolute top-1/4 left-1/4 w-56 h-56 rounded-full bg-accent opacity-8 blur-[90px] animate-hero-orb-2" />
-      <div className="absolute bottom-1/3 right-1/4 w-72 h-72 rounded-full bg-primary opacity-8 blur-[100px] animate-hero-orb-1" />
-      <div className="absolute top-1/2 left-1/2 w-40 h-40 rounded-full bg-purple-500 opacity-8 blur-[70px] animate-hero-orb-3" />
+      <div className="absolute inset-0 animate-shimmer" />
+      <div className="section-overlay section-noise" />
+      <div className="section-overlay section-grid" />
 
-      {/* Floating Bubbles */}
+      <div className="absolute top-1/4 left-1/4 w-56 h-56 rounded-full bg-accent opacity-12 blur-[90px] animate-hero-orb-2" />
+      <div className="absolute bottom-1/3 right-1/4 w-72 h-72 rounded-full bg-primary opacity-12 blur-[100px] animate-hero-orb-1" />
+
       <div className="absolute inset-0 pointer-events-none z-0">
         {bubbles.map((b, i) => (
           <div
@@ -92,37 +89,31 @@ const Certifications = () => {
       </div>
 
       <div className="container mx-auto max-w-6xl relative z-10">
-
-        {/* Main Header */}
-        <div className="text-center mb-12 animate-fade-in">
-                <div className="flex items-center justify-center gap-4">
-            <div className="p-4 rounded-xl bg-blue-100 text-blue-500 transition-all duration-500 hover:rotate-24 hover:scale-110 hover:shadow-[0_0_25px_rgba(79,70,229,0.6)]">
-              <Award className="h-8 w-8" />
-            </div>
-              <h2 className="text-4xl md:text-5xl font-bold gradient-text">
-              {t("certifications.title")}
-            </h2>
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-sm font-medium mb-6">
+            <Award className="h-4 w-4" />
+            {t("certifications.title")}
           </div>
-          <p className="text-muted-foreground mt-4">{t("certifications.subtitle")}</p>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            <span className="gradient-text-rich">{t("certifications.title")}</span>
+          </h2>
+          <p className="text-muted-foreground">{t("certifications.subtitle")}</p>
         </div>
 
-        {/* Certification Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {certifications.map((cert, index) => (
             <Card
               key={index}
-              className="p-6 transform transition-all duration-500 hover:scale-[1.05] hover:shadow-[0_30px_70px_rgba(0,0,0,0.15)] hover:shadow-accent/30 cursor-default"
+              className="p-6 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_30px_70px_rgba(0,0,0,0.12)] glass border-border/50 hover:border-amber-500/50"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="flex items-start gap-4 mb-4">
-
-                <div className="p-3 rounded-lg bg-accent/10 text-accent flex-shrink-0 icon-glow">
+                <div className="p-3 rounded-lg bg-gradient-to-br from-amber-500/20 to-amber-500/5 text-amber-500 flex-shrink-0">
                   <Award className="h-6 w-6" />
                 </div>
 
                 <div className="flex-1">
-                  {/* Item Title: Glow effect applied here */}
-                  <h3 className="text-lg font-semibold mb-2 cert-title-glow">{cert.title}</h3>
+                  <h3 className="text-lg font-semibold mb-2 gradient-text">{cert.title}</h3>
 
                   <div className="flex flex-wrap items-center gap-2 mb-1">
                     <span className="text-sm text-accent font-medium">{cert.platform}</span>
@@ -143,7 +134,7 @@ const Certifications = () => {
                     asChild
                     variant="outline"
                     size="sm"
-                    className="gap-2 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-accent/30 hover:bg-gradient-to-r hover:from-primary hover:to-accent hover:text-white"
+                    className="gap-2 transition-all duration-300 hover:scale-105 border-border/50 hover:border-amber-500/50 hover:bg-gradient-to-r hover:from-primary hover:to-accent hover:text-white"
                   >
                     <a href={cert.url} target="_blank" rel="noopener noreferrer">
                       View Certificate
@@ -156,6 +147,8 @@ const Certifications = () => {
           ))}
         </div>
       </div>
+
+      <div className="gradient-divider-wave absolute bottom-0 left-10 right-10" />
     </section>
   );
 };

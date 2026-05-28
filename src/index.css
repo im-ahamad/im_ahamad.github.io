@@ -2,12 +2,9 @@
 @tailwind utilities;
 @tailwind components;
 
-/* /* ───────────────────────────────
-   DESIGN SYSTEM (Light + Dark)
-─────────────────────────────── */
 @layer base {
   :root {
-    --background: 210 40% 98%;
+    --background: 0 0% 98%;
     --foreground: 222 47% 11%;
     --card: 0 0% 100%;
     --card-foreground: 222 47% 11%;
@@ -27,12 +24,13 @@
     --input: 214 32% 91%;
     --ring: 217 91% 60%;
     --radius: 0.75rem;
-
-    /* Custom gradients */
     --gradient-start: 217 91% 60%;
     --gradient-end: 262 83% 58%;
-
-    /* Sidebar */
+    --section-edu: 217 91% 60%;
+    --section-skills: 160 84% 39%;
+    --section-certs: 38 92% 50%;
+    --section-interests: 263 70% 50%;
+    --section-projects: 336 80% 58%;
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -41,10 +39,12 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
-
-    /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-spring: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+    --cursor-glow: 0 0 20px rgba(59, 130, 246, 0.3);
   }
 
   .dark {
@@ -77,26 +77,104 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    --glass-bg: rgba(17, 17, 24, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.06);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --cursor-glow: 0 0 20px rgba(96, 165, 250, 0.3);
   }
 }
 
-/* ───────────────────────────────
-   UTILITIES
-─────────────────────────────── */
 @layer utilities {
-  /* Space Grotesk variants */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(1.4);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+  }
+
+  .glass-strong {
+    background: var(--glass-bg);
+    backdrop-filter: blur(30px) saturate(1.6);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+  }
+
+  .gradient-tech {
+    background: linear-gradient(135deg, hsl(var(--gradient-start)), hsl(var(--gradient-end)));
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, hsl(var(--gradient-start)), hsl(var(--gradient-end)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-text-rich {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4, #10b981);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientFlow 6s ease infinite;
+  }
+
+  .gradient-border {
+    position: relative;
+  }
+
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--gradient-end)));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+
+  .gradient-border:hover::before {
+    opacity: 1;
+  }
+
+  .card-hover {
+    @apply shadow-xl transform transition-all duration-500;
+  }
+
+  .card-hover:hover {
+    @apply shadow-2xl -translate-y-2 scale-[1.02];
+  }
+
+  .font-body {
+    font-family: "Space Grotesk", ui-sans-serif, system-ui;
+  }
+
+  .font-heading {
+    font-family: "Space Grotesk", ui-sans-serif, system-ui;
+  }
+
+  .font-code {
+    font-family: "Fira Code", ui-monospace, monospace;
+  }
+
   .space-grotesk-400 {
     font-family: "Space Grotesk", sans-serif;
     font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
   }
+
   .space-grotesk-500 {
     font-family: "Space Grotesk", sans-serif;
     font-optical-sizing: auto;
     font-weight: 500;
     font-style: normal;
   }
+
   .space-grotesk-600 {
     font-family: "Space Grotesk", sans-serif;
     font-optical-sizing: auto;
@@ -104,19 +182,20 @@
     font-style: normal;
   }
 
-  /* Playfair Display variants */
   .playfair-display-400 {
     font-family: "Playfair Display", serif;
     font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
   }
+
   .playfair-display-500 {
     font-family: "Playfair Display", serif;
     font-optical-sizing: auto;
     font-weight: 500;
     font-style: normal;
   }
+
   .playfair-display-600 {
     font-family: "Playfair Display", serif;
     font-optical-sizing: auto;
@@ -124,49 +203,74 @@
     font-style: normal;
   }
 
-  .gradient-tech {
-    background: linear-gradient(
-      135deg,
-      hsl(var(--gradient-start)),
-      hsl(var(--gradient-end))
-    );
+  .shimmer-btn {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--gradient-end)));
+    color: white;
+    border: none;
   }
 
-  .gradient-text {
-    background: linear-gradient(
-      135deg,
-      hsl(var(--gradient-start)),
-      hsl(var(--gradient-end))
-    );
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .shimmer-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+    background-size: 200% 200%;
+    animation: shimmerBtn 3s ease-in-out infinite;
+    transform: rotate(25deg);
   }
 
-  /* Auto shadow + hover scale for all cards */
-  .card-hover {
-    @apply shadow-xl transform transition-all duration-300;
+  .shimmer-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px hsl(var(--primary) / 0.4);
   }
 
-  .card-hover:hover {
-    @apply shadow-2xl scale-105;
+  .shimmer-btn:active {
+    transform: translateY(0) scale(0.98);
   }
 
-  /* Font utility helpers */
-  .font-body {
-    font-family: "Space Grotesk", ui-sans-serif, system-ui;
+  .section-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
   }
-  .font-heading {
-    font-family: "Space Grotesk", ui-sans-serif, system-ui;
+
+  .section-noise {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.02;
+    mix-blend-mode: overlay;
   }
-  .font-code {
-    font-family: "Fira Code", ui-monospace, monospace;
+
+  .dark .section-noise {
+    opacity: 0.035;
+  }
+
+  .section-grid {
+    background-image: linear-gradient(to right, hsl(var(--foreground) / 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--foreground) / 0.05) 1px, transparent 1px);
+    background-size: 3rem 3rem;
+    opacity: 0.03;
+  }
+
+  .section-divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, hsl(var(--primary) / 0.4) 25%, hsl(var(--accent) / 0.4) 50%, hsl(var(--primary) / 0.4) 75%, transparent 100%);
+  }
+
+  .gradient-divider-wave {
+    height: 4px;
+    background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--accent)), hsl(var(--gradient-end)), hsl(var(--accent)), hsl(var(--primary)));
+    background-size: 200% 100%;
+    animation: gradientFlow 4s ease infinite;
+    border-radius: 2px;
   }
 }
 
-/* ───────────────────────────────
-   BASE TYPOGRAPHY & GLOBALS
-─────────────────────────────── */
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -175,67 +279,103 @@
 
   body {
     @apply bg-background text-foreground font-sans;
+    transition: background-color 0.4s ease, color 0.4s ease;
   }
+
+  * {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  }
+
   h1 {
     @apply font-heading;
     font-weight: 800;
     font-size: 2.25rem;
   }
+
   h2 {
     @apply font-heading;
     font-weight: 700;
     font-size: 1.875rem;
   }
+
   h3 {
     @apply font-heading;
     font-weight: 600;
     font-size: 1.5rem;
   }
-  h4,
-  h5 {
+
+  h4, h5 {
     @apply space-grotesk-500;
-    font-size: 1.25rem; /* xl or lg */
+    font-size: 1.25rem;
   }
+
   h6 {
     @apply space-grotesk-400;
-    font-size: 1rem; /* base */
+    font-size: 1rem;
   }
+
   p {
     @apply font-body font-normal text-base leading-7;
   }
+
   li {
     @apply font-body font-normal text-base leading-6;
   }
+
   strong {
     @apply font-sans font-semibold;
   }
+
   code {
     @apply font-code text-sm font-normal px-1 py-0.5 rounded bg-muted/20;
   }
+
   a {
     @apply space-grotesk-500 underline;
   }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.3);
+    color: hsl(var(--foreground));
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary) / 0.3);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary) / 0.5);
+  }
 }
 
-/* ───────────────────────────────
-   CONSOLIDATED ANIMATIONS
-─────────────────────────────── */
 @keyframes bounce-slow {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-15px); }
 }
+
 .animate-bounce-slow { animation: bounce-slow 6s ease-in-out infinite; }
 
 @keyframes bounce-slower {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
 }
+
 .animate-bounce-slower { animation: bounce-slower 8s ease-in-out infinite; }
 
 @keyframes bubble-move {
-  0%,100% { transform: translateY(0); }
-  50% { transform: translateY(-25px); }
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-25px) scale(1.05); }
 }
+
 .animate-bubble { animation: bubble-move ease-in-out infinite; }
 
 @keyframes gradientFlow {
@@ -244,42 +384,20 @@
   100% { background-position: 0% 50%; }
 }
 
-.gradient-header {
-  background: linear-gradient(90deg,#1e3a8a,#9333ea,#f59e0b,#065f46);
-  background-size: 300% 300%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradientFlow 6s ease infinite;
-}
-
-.name-blue-style {
-  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 50%, #8b5cf6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  display: inline-block;
-}
-
-.name-glow-animation {
-  background: linear-gradient(90deg,#1e3a8a,#9333ea,#f59e0b,#065f46);
-  background-size: 300% 300%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradientFlow 6s ease infinite;
-  display: inline-block;
-}
-
 @keyframes hero-orb-1 {
   0%, 100% { transform: translate(0, 0) scale(1); }
   25% { transform: translate(30px, -40px) scale(1.1); }
   50% { transform: translate(-20px, 20px) scale(0.9); }
   75% { transform: translate(40px, 30px) scale(1.05); }
 }
+
 @keyframes hero-orb-2 {
   0%, 100% { transform: translate(0, 0) scale(1); }
   25% { transform: translate(-40px, 30px) scale(0.95); }
   50% { transform: translate(30px, -30px) scale(1.1); }
   75% { transform: translate(-20px, -40px) scale(1); }
 }
+
 @keyframes hero-orb-3 {
   0%, 100% { transform: translate(0, 0) scale(1); }
   33% { transform: translate(50px, 20px) scale(1.15); }
@@ -291,16 +409,152 @@
 .animate-hero-orb-3 { animation: hero-orb-3 18s ease-in-out infinite; }
 .animate-hero-orb-4 { animation: hero-orb-2 22s ease-in-out infinite reverse; }
 
+@keyframes shimmer {
+  0% { background-position: -200% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 0%, hsl(var(--primary) / 0.03) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  33% { transform: translateY(-10px) rotate(1deg); }
+  66% { transform: translateY(5px) rotate(-1deg); }
+}
+
+.animate-float { animation: float 12s ease-in-out infinite; }
+.animate-float-slow { animation: float 18s ease-in-out infinite; }
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+
+.animate-pulse-soft { animation: pulse-soft 6s ease-in-out infinite; }
+.animate-pulse-soft-slow { animation: pulse-soft 10s ease-in-out infinite reverse; }
+
+@keyframes shimmerBtn {
+  0% { background-position: 200% 50%; }
+  100% { background-position: -200% 50%; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.5s ease forwards;
+}
+
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes cursorPulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.5); opacity: 0.2; }
+}
+
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(100px, -50px) scale(1.2); }
+  50% { transform: translate(-50px, 100px) scale(0.8); }
+  75% { transform: translate(80px, 80px) scale(1.1); }
+}
+
+@keyframes meshGradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes neuralPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes borderGlow {
+  0%, 100% { border-color: hsl(var(--primary) / 0.3); box-shadow: 0 0 15px hsl(var(--primary) / 0.1); }
+  50% { border-color: hsl(var(--accent) / 0.5); box-shadow: 0 0 25px hsl(var(--accent) / 0.2); }
+}
+
+.animate-border-glow {
+  animation: borderGlow 3s ease-in-out infinite;
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes revealGradient {
+  from { opacity: 0; filter: blur(10px); }
+  to { opacity: 1; filter: blur(0); }
+}
+
+.reveal-gradient {
+  animation: revealGradient 1s ease forwards;
+}
+
 @media (max-width: 768px) {
   .animate-bounce-slow,
   .animate-bounce-slower {
     animation: none;
     opacity: 0.1 !important;
   }
+
   .animate-hero-orb-1,
   .animate-hero-orb-2,
   .animate-hero-orb-3,
   .animate-hero-orb-4 {
     animation: none;
   }
+
+  .section-grid {
+    display: none;
+  }
+}
+
+@keyframes cursorGlow {
+  0%, 100% { box-shadow: 0 0 20px hsl(var(--primary) / 0.3); }
+  50% { box-shadow: 0 0 40px hsl(var(--accent) / 0.4); }
+}
+
+.name-gradient {
+  background: linear-gradient(135deg, #2563eb, #8b5cf6, #06b6d4, #10b981);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientFlow 6s ease infinite;
+  display: inline-block;
+}
+
+.gradient-header {
+  background: linear-gradient(135deg, hsl(var(--gradient-start)), hsl(var(--gradient-end)), hsl(var(--accent)));
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientFlow 6s ease infinite;
 }

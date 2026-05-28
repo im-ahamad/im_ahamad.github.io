@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agriculture &amp; Artificial Intelligence | Ahamad Ullah</title>
+  <meta name="description" content="Exploring AI-driven agriculture, smart farming, and AgriTech innovations" />
+  <style>body{background:#0a0a0f}.loader-bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:99999;pointer-events:none;background:linear-gradient(90deg,transparent,#10b981,#3b82f6,transparent);animation:loaderBar .45s ease forwards}@keyframes loaderBar{0%{transform:scaleX(0);transform-origin:left}40%{transform:scaleX(.55)}100%{transform:scaleX(1);opacity:0}}
+    /* ─── Premium Upgrade Styles ─── */
+    .glass {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px) saturate(1.4);
+      -webkit-backdrop-filter: blur(20px) saturate(1.4);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+    }
+
+    .shimmer-btn {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shimmer-btn::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+      background-size: 200% 200%;
+      animation: shimmerBtn 3s ease-in-out infinite;
+      transform: rotate(25deg);
+    }
+
+    @keyframes shimmerBtn {
+      0% { background-position: 200% 50%; }
+      100% { background-position: -200% 50%; }
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--primary), var(--purple), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      background-size: 200% 200%;
+      animation: gradientShift 6s ease infinite;
+    }
+
+    .gradient-divider {
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--primary), var(--purple), var(--accent), transparent);
+      border-radius: 2px;
+      margin: 0 20px;
+    }
+
+    .card-hover-effect {
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .card-hover-effect:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+
+    .fade-zoom {
+      opacity: 0;
+      transform: scale(0.95);
+      transition: all 0.7s ease;
+    }
+
+    .fade-zoom.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    #custom-cursor {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999999;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(var(--primary-rgb, 59,130,246), 0.3), transparent);
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, opacity 0.2s;
+      opacity: 0;
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      #custom-cursor { display: none; }
+    }
+
+    @keyframes countUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    @media (max-width: 600px) {
+      .stat-number { font-size: 2rem; }
+    }
+
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --primary:#10b981;--primary-dark:#059669;--primary-glow:rgba(16,185,129,0.3);
+      --accent:#3b82f6;--accent-glow:rgba(59,130,246,0.3);
+      --purple:#8b5cf6;--purple-glow:rgba(139,92,246,0.3);
+      --bg-primary:#0a0a0f;--bg-secondary:#111118;--bg-card:rgba(17,17,24,0.8);
+      --text-primary:#f1f7f5;--text-secondary:#94a3b8;--text-muted:#64748b;
+      --border-color:rgba(16,185,129,0.12);--nav-bg:rgba(10,10,15,0.85);
+      --alpha-3:rgba(255,255,255,0.03);--alpha-4:rgba(255,255,255,0.04);
+      --alpha-6:rgba(255,255,255,0.06);--alpha-8:rgba(255,255,255,0.08);
+      --radius:16px;--radius-sm:10px;
+    }
+    [data-theme="light"]{
+      --bg-primary:#f8fafc;--bg-secondary:#f1f5f9;--bg-card:rgba(255,255,255,0.85);
+      --text-primary:#0f172a;--text-secondary:#475569;--text-muted:#94a3b8;
+      --border-color:rgba(0,0,0,0.08);--nav-bg:rgba(255,255,255,0.85);
+      --alpha-3:rgba(0,0,0,0.03);--alpha-4:rgba(0,0,0,0.04);
+      --alpha-6:rgba(0,0,0,0.06);--alpha-8:rgba(0,0,0,0.08);
+    }
+    html{scroll-behavior:smooth}
+    body{
+      font-family:'Space Grotesk',sans-serif;background:var(--bg-primary);
+      color:var(--text-primary);line-height:1.6;overflow-x:hidden;
+    }
+    ::-webkit-scrollbar{width:8px}
+    ::-webkit-scrollbar-track{background:var(--bg-secondary)}
+    ::-webkit-scrollbar-thumb{background:var(--primary);border-radius:4px}
+    ::selection{background:var(--primary);color:#fff}
+
+    nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--nav-bg);backdrop-filter:blur(16px);border-bottom:1px solid var(--border-color);height:56px}
+    .nav-inner{max-width:1200px;margin:0 auto;padding:0 20px;height:100%;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-weight:700;font-size:18px;text-decoration:none}
+    .logo .g{background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .nav-right{display:flex;align-items:center;gap:8px}
+    .nav-btn{width:36px;height:36px;border-radius:10px;border:1px solid var(--border-color);background:var(--alpha-4);color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s ease;font-size:16px}
+    .nav-btn:hover{background:var(--alpha-8);color:var(--text-primary);border-color:var(--primary)}
+    .lang-select{padding:6px 10px;border-radius:10px;border:1px solid var(--border-color);background:var(--alpha-4);color:var(--text-secondary);font-size:13px;cursor:pointer;font-family:inherit;transition:all .25s ease}
+    .lang-select:hover{border-color:var(--primary);color:var(--text-primary);background:var(--alpha-8)}
+    .lang-select option{background:var(--bg-secondary);color:var(--text-primary)}
+
+    .progress-bar{position:fixed;top:56px;left:0;right:0;height:3px;z-index:999;background:linear-gradient(90deg,var(--primary),var(--accent),var(--purple));transform-origin:left;transform:scaleX(0);transition:transform .1s linear}
+
+    section{padding:100px 20px;position:relative}
+    .container{max-width:1100px;margin:0 auto;position:relative;z-index:2}
+
+    .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding-top:80px;overflow:hidden}
+    #field-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+    .hero-content{position:relative;z-index:2;max-width:800px}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:999px;background:var(--alpha-6);border:1px solid var(--border-color);font-size:13px;color:var(--text-secondary);margin-bottom:24px;animation:fadeUp .8s ease}
+    .hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--primary);animation:pulse 2s infinite}
+    .hero-title{font-size:clamp(28px,5.5vw,60px);font-weight:700;line-height:1.1;margin-bottom:16px;animation:fadeUp .8s ease .1s both}
+    .hero-title .g{background:linear-gradient(135deg,var(--primary),var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% 200%;animation:gradientShift 6s ease infinite}
+    .hero-sub{font-size:clamp(16px,2.2vw,22px);color:var(--text-secondary);margin-bottom:32px;animation:fadeUp .8s ease .2s both}
+    .hero-typed{color:var(--primary);font-weight:600}
+    .hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:fadeUp .8s ease .3s both}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:12px;font-size:15px;font-weight:500;text-decoration:none;cursor:pointer;font-family:inherit;transition:all .3s ease;border:none}
+    .btn-primary{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;box-shadow:0 4px 20px var(--primary-glow)}
+    .btn-primary:hover{transform:translateY(-3px);box-shadow:0 8px 30px var(--primary-glow)}
+    .btn-outline{background:transparent;border:1px solid var(--border-color);color:var(--text-secondary)}
+    .btn-outline:hover{background:var(--alpha-6);border-color:var(--primary);color:var(--text-primary);transform:translateY(-3px)}
+    .btn-sm{padding:8px 18px;font-size:13px}
+    .scroll-indicator{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:12px;animation:fadeUp .8s ease .5s both}
+    .scroll-mouse{width:22px;height:34px;border:2px solid var(--text-muted);border-radius:999px;position:relative}
+    .scroll-dot{position:absolute;top:6px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--primary);animation:scrollDot 2s infinite}
+
+    .section-label{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;background:var(--alpha-6);border:1px solid var(--border-color);font-size:12px;font-weight:500;color:var(--primary);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+    .section-title{font-size:clamp(24px,3.5vw,40px);font-weight:700;margin-bottom:8px}
+    .section-title .g{background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .section-desc{color:var(--text-secondary);font-size:16px;max-width:600px;margin-bottom:40px}
+
+    .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:32px}
+    .about-card,.topic-card,.project-card{background:var(--bg-card);backdrop-filter:blur(12px);border:1px solid var(--border-color);border-radius:var(--radius);padding:28px;transition:all .35s ease}
+    .about-card:hover,.topic-card:hover,.project-card:hover{transform:translateY(-6px);border-color:var(--primary);box-shadow:0 20px 60px rgba(0,0,0,0.2)}
+    .about-card p{color:var(--text-secondary);font-size:15px;line-height:1.7}
+    .about-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px;background:linear-gradient(135deg,var(--primary),var(--accent))}
+    .about-card h3{margin-bottom:8px;font-size:18px}
+
+    .topics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .topic-card{text-align:center;padding:32px 24px}
+    .topic-icon{width:52px;height:52px;border-radius:14px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:24px;transition:all .35s ease}
+    .topic-card:hover .topic-icon{transform:scale(1.15) rotate(-6deg);border-radius:50%}
+    .topic-icon-emerald{background:linear-gradient(135deg,#10b981,#059669);box-shadow:0 4px 15px rgba(16,185,129,0.3)}
+    .topic-icon-blue{background:linear-gradient(135deg,#3b82f6,#2563eb);box-shadow:0 4px 15px rgba(59,130,246,0.3)}
+    .topic-icon-cyan{background:linear-gradient(135deg,#06b6d4,#0891b2);box-shadow:0 4px 15px rgba(6,182,212,0.3)}
+    .topic-icon-amber{background:linear-gradient(135deg,#f59e0b,#d97706);box-shadow:0 4px 15px rgba(245,158,11,0.3)}
+    .topic-icon-purple{background:linear-gradient(135deg,#8b5cf6,#7c3aed);box-shadow:0 4px 15px rgba(139,92,246,0.3)}
+    .topic-icon-rose{background:linear-gradient(135deg,#f43f5e,#e11d48);box-shadow:0 4px 15px rgba(244,63,94,0.3)}
+    .topic-card h3{font-size:16px;font-weight:600;margin-bottom:8px}
+    .topic-card p{color:var(--text-secondary);font-size:13px;line-height:1.6}
+
+    .tech-section{text-align:center}
+    .tech-grid{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:24px}
+    .tech-badge{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:12px;background:var(--alpha-6);border:1px solid var(--border-color);font-size:14px;font-weight:500;transition:all .3s ease;cursor:default}
+    .tech-badge:hover{transform:translateY(-4px);background:var(--alpha-8);border-color:var(--primary);box-shadow:0 8px 25px var(--primary-glow)}
+    .tech-badge .icon{font-size:20px}
+
+    .projects-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .project-card{text-align:center;padding:32px 24px}
+    .project-card .tag{display:inline-block;padding:2px 10px;border-radius:6px;background:var(--alpha-6);font-size:11px;color:var(--text-secondary);margin:2px}
+    .project-card h3{font-size:16px;font-weight:600;margin:12px 0 8px}
+    .project-card p{color:var(--text-secondary);font-size:13px;line-height:1.6;margin-bottom:16px}
+    .project-card .btn{margin-top:auto}
+
+    /* Stats */
+    .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:32px}
+    .stat-card{text-align:center;padding:36px 20px;background:var(--bg-card);backdrop-filter:blur(12px);border:1px solid var(--border-color);border-radius:var(--radius);transition:all .35s ease}
+    .stat-card:hover{transform:translateY(-6px);border-color:var(--primary);box-shadow:0 20px 60px rgba(0,0,0,0.2)}
+    .stat-number{font-size:clamp(32px,4vw,52px);font-weight:700;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .stat-label{color:var(--text-secondary);font-size:14px;margin-top:6px}
+    .stat-icon{font-size:32px;margin-bottom:12px}
+
+    .goals-list{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:24px}
+    .goal-item{display:flex;align-items:flex-start;gap:12px;padding:16px;border-radius:var(--radius-sm);background:var(--alpha-4);border:1px solid var(--border-color);transition:all .3s}
+    .goal-item:hover{background:var(--alpha-6);border-color:var(--primary);transform:translateX(4px)}
+    .goal-item .check{width:24px;height:24px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0}
+    .goal-item div{flex:1}
+    .goal-item h4{font-size:15px;font-weight:600;margin-bottom:2px}
+    .goal-item p{color:var(--text-secondary);font-size:13px}
+
+    .cta-section{text-align:center;padding:80px 20px}
+    .cta-section h2{font-size:clamp(24px,4vw,42px);margin-bottom:12px}
+    .cta-section p{color:var(--text-secondary);margin-bottom:28px;font-size:16px}
+    .cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+    .footer-bar{text-align:center;padding:24px;border-top:1px solid var(--border-color);color:var(--text-muted);font-size:13px}
+    .footer-bar a{color:var(--primary);text-decoration:none}
+
+    [data-anim]{opacity:0;transform:translateY(30px);transition:all .7s ease}
+    [data-anim].visible{opacity:1;transform:translateY(0)}
+
+    /* SVG field animation */
+    .field-svg{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;overflow:hidden}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes gradientShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+    @keyframes scrollDot{0%{top:6px;opacity:1}100%{top:20px;opacity:0}}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+    @keyframes sway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+    @keyframes rotate3d{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+
+    .hidden{display:none!important}
+
+    @media(max-width:900px){
+      .about-grid,.goals-list{grid-template-columns:1fr}
+      .topics-grid,.projects-grid{grid-template-columns:repeat(2,1fr)}
+      .stats-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .topics-grid,.projects-grid{grid-template-columns:1fr}
+      .stats-grid{grid-template-columns:1fr}
+      section{padding:60px 16px}
+      .hero{padding-top:60px}
+      .nav-inner{padding:0 12px}
+      .btn{padding:10px 20px;font-size:14px}
+    }
+  </style>
+</head>
+<body>
+  <div class="loader-bar"></div>
+  <div id="custom-cursor"></div>
+  <div class="progress-bar" id="progressBar"></div>
+
+  <canvas id="field-canvas"></canvas>
+
+  <!-- SVG Agriculture Background -->
+  <svg class="field-svg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="fieldGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+        <stop offset="0%" stop-color="#10b981" stop-opacity="0.06"/>
+        <stop offset="50%" stop-color="#3b82f6" stop-opacity="0.03"/>
+        <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+      </linearGradient>
+      <filter id="glowField"><feGaussianBlur stdDeviation="2"/></filter>
+    </defs>
+    <rect width="1440" height="900" fill="url(#fieldGrad)"/>
+    <!-- Wheat/crop stalks -->
+    <g opacity="0.08">
+      <g style="animation:sway 3s ease-in-out infinite" transform="translate(100,550)">
+        <line x1="0" y1="0" x2="0" y2="-80" stroke="#10b981" stroke-width="1.5"/><circle cx="0" cy="-85" r="3" fill="#f59e0b"/>
+      </g>
+      <g style="animation:sway 3.2s ease-in-out infinite .2s" transform="translate(200,520)">
+        <line x1="0" y1="0" x2="0" y2="-90" stroke="#10b981" stroke-width="1.5"/><circle cx="0" cy="-95" r="3" fill="#f59e0b"/>
+      </g>
+      <g style="animation:sway 2.8s ease-in-out infinite .5s" transform="translate(350,580)">
+        <line x1="0" y1="0" x2="0" y2="-75" stroke="#10b981" stroke-width="1.5"/><circle cx="0" cy="-80" r="3" fill="#f59e0b"/>
+      </g>
+      <g style="animation:sway 3.5s ease-in-out infinite .1s" transform="translate(500,540)">
+        <line x1="0" y1="0" x2="0" y2="-85" stroke="#10b981" stroke-width="1.5"/><circle cx="0" cy="-90" r="3" fill="#f59e0b"/>
+      </g>
+      <g style="animation:sway 2.9s ease-in-out infinite .4s" transform="translate(650,560)">
+        <line x1="0" y1="0" x2="0" y2="-80" stroke="#10b981" stroke-width="1.5"/><circle cx="0" cy="-85" r="3" fill="#f59e0b"/>
+      </g>
+      <g style="animation:sway 3.1s ease-in-out infinite .3s" transform="translate(800,530)">
+        <line x1="0" y1="0" x2="0" y2="-90" stroke="#10b981" stroke-width="1.5"/><circle cx="0" cy="-95" r="3" fill="#f59e0b"/>
+      </g>
+      <g style="animation:sway 3.4s ease-in-out infinite .15s" transform="translate(950,570)">
+        <line x1="0" y1="0" x2="0" y2="-75" stroke="#10b981" stroke-width="1.5"/><circle cx="0" cy="-80" r="3" fill="#f59e0b"/>
+      </g>
+      <g style="animation:sway 2.7s ease-in-out infinite .6s" transform="translate(1100,550)">
+        <line x1="0" y1="0" x2="0" y2="-85" stroke="#10b981" stroke-width="1.5"/><circle cx="0" cy="-90" r="3" fill="#f59e0b"/>
+      </g>
+      <g style="animation:sway 3.3s ease-in-out infinite .25s" transform="translate(1250,520)">
+        <line x1="0" y1="0" x2="0" y2="-90" stroke="#10b981" stroke-width="1.5"/><circle cx="0" cy="-95" r="3" fill="#f59e0b"/>
+      </g>
+      <g style="animation:sway 3.6s ease-in-out infinite .45s" transform="translate(1350,580)">
+        <line x1="0" y1="0" x2="0" y2="-75" stroke="#10b981" stroke-width="1.5"/><circle cx="0" cy="-80" r="3" fill="#f59e0b"/>
+      </g>
+    </g>
+    <!-- Floating tech dots -->
+    <g opacity="0.06">
+      <circle cx="200" cy="200" r="4" fill="#3b82f6" style="animation:float 4s ease-in-out infinite"/>
+      <circle cx="600" cy="150" r="3" fill="#10b981" style="animation:float 5s ease-in-out infinite 1s"/>
+      <circle cx="1000" cy="250" r="5" fill="#8b5cf6" style="animation:float 3.5s ease-in-out infinite .5s"/>
+      <circle cx="400" cy="300" r="3" fill="#f59e0b" style="animation:float 4.5s ease-in-out infinite 1.5s"/>
+      <circle cx="1200" cy="180" r="4" fill="#3b82f6" style="animation:float 3.8s ease-in-out infinite .8s"/>
+      <circle cx="800" cy="350" r="3" fill="#10b981" style="animation:float 4.2s ease-in-out infinite 2s"/>
+    </g>
+  </svg>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="../../" class="logo"><span class="g">Ahamad</span></a>
+      <div class="nav-right">
+        <button class="nav-btn" id="themeToggle" title="Toggle theme">🌙</button>
+        <select class="lang-select" id="langSelect">
+          <option value="en">English</option>
+          <option value="bn">বাংলা</option>
+          <option value="zh">中文</option>
+          <option value="hi">हिन्दी</option>
+        </select>
+        <a href="../../" class="nav-btn" title="Back to Portfolio">←</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <div class="hero-badge"><span class="hero-badge-dot"></span><span data-i18n="badge">Field of Innovation</span></div>
+      <h1 class="hero-title"><span class="g" data-i18n="heroTitle">Agriculture &amp;<br/>Artificial Intelligence</span></h1>
+      <p class="hero-sub"><span data-i18n="heroSub">Transforming farming with </span><span class="hero-typed" id="typedText"></span></p>
+      <div class="hero-btns">
+        <a href="#about" class="btn btn-primary shimmer-btn" data-i18n="exploreBtn">Explore Interest</a>
+        <a href="#projects" class="btn btn-outline" data-i18n="viewProjects">View Projects</a>
+        <a href="../../" class="btn btn-outline" data-i18n="backPortfolio">← Back to Portfolio</a>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <div class="scroll-mouse"><div class="scroll-dot"></div></div>
+      <span data-i18n="scroll">Scroll to explore</span>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="container">
+      <div data-anim>
+        <div class="section-label" data-i18n="aboutLabel">About This Interest</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="aboutTitle">Why Agriculture &amp; AI?</span></h2>
+        <p class="section-desc" data-i18n="aboutDesc">My passion lies at the intersection of agriculture and artificial intelligence — using data-driven solutions to empower farmers, especially in developing nations facing food security challenges.</p>
+      </div>
+      <div class="about-grid">
+        <div class="about-card" data-anim>
+          <div class="about-icon">🌍</div>
+          <h3 data-i18n="aboutCard1Title">Transforming Developing Agriculture</h3>
+          <p data-i18n="aboutCard1Text">In many developing countries, farmers rely on traditional knowledge passed down through generations. While valuable, they lack access to data-driven insights that could dramatically improve yields. I believe AI can bridge this gap — providing affordable, accessible tools for crop recommendations, pest detection, and weather forecasting tailored to local conditions.</p>
+        </div>
+        <div class="about-card" data-anim>
+          <div class="about-icon">🌱</div>
+          <h3 data-i18n="aboutCard2Title">AI for Food Security</h3>
+          <p data-i18n="aboutCard2Text">With a growing global population and climate change threatening traditional farming, the need for precision agriculture has never been greater. I'm driven to build AI systems that help farmers make smarter decisions — from choosing the right crops to optimizing irrigation — ultimately contributing to sustainable food production and reducing hunger worldwide.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="topics" style="background:var(--alpha-3)">
+    <div class="container">
+      <div data-anim style="text-align:center;margin-bottom:40px">
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="topicsLabel">Knowledge Areas</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="topicsTitle">Key Topics I Explore</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="topicsDesc">Core domains in AI-driven agriculture and smart farming</p>
+      </div>
+      <div class="topics-grid">
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-emerald">🌾</div>
+          <h3 data-i18n="topic1Title">Crop Recommendation Systems</h3>
+          <p data-i18n="topic1Desc">ML models that analyze soil nutrients, climate data, and historical yields to recommend the most suitable crops for specific farmland conditions.</p>
+        </div>
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-blue">📈</div>
+          <h3 data-i18n="topic2Title">Yield Prediction &amp; Forecasting</h3>
+          <p data-i18n="topic2Desc">Regression models that predict crop yields using rainfall, temperature, soil data, and historical patterns to enable better planning and food security.</p>
+        </div>
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-cyan">👁️</div>
+          <h3 data-i18n="topic3Title">Disease Detection using Computer Vision</h3>
+          <p data-i18n="topic3Desc">Deep CNN models trained on plant leaf images to identify diseases, pests, and nutrient deficiencies in real-time for rapid intervention.</p>
+        </div>
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-amber">💧</div>
+          <h3 data-i18n="topic4Title">Smart Irrigation &amp; IoT</h3>
+          <p data-i18n="topic4Desc">IoT sensor networks combined with AI to optimize water usage, monitor soil moisture, and automate irrigation schedules for water conservation.</p>
+        </div>
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-purple">🧪</div>
+          <h3 data-i18n="topic5Title">Fertilizer Optimization</h3>
+          <p data-i18n="topic5Desc">Data-driven models that recommend precise fertilizer amounts based on soil nutrient profiles, reducing waste and environmental impact.</p>
+        </div>
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-rose">🌍</div>
+          <h3 data-i18n="topic6Title">Climate-Smart Agriculture</h3>
+          <p data-i18n="topic6Desc">Integrating climate data with AI to develop adaptive farming strategies that mitigate the effects of climate change on crop production.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="technologies">
+    <div class="container tech-section">
+      <div data-anim>
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="techLabel">Technologies</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="techTitle">Tools &amp; Frameworks</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="techDesc">Technologies I use to build AI-powered agricultural solutions</p>
+      </div>
+      <div class="tech-grid">
+        <div class="tech-badge" data-anim><span class="icon">🐍</span> Python</div>
+        <div class="tech-badge" data-anim><span class="icon">🧠</span> TensorFlow</div>
+        <div class="tech-badge" data-anim><span class="icon">📊</span> Scikit-Learn</div>
+        <div class="tech-badge" data-anim><span class="icon">🚀</span> Streamlit</div>
+        <div class="tech-badge" data-anim><span class="icon">🌐</span> Flask</div>
+        <div class="tech-badge" data-anim><span class="icon">⚡</span> XGBoost</div>
+        <div class="tech-badge" data-anim><span class="icon">🔧</span> FastAPI</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" style="background:var(--alpha-3)">
+    <div class="container">
+      <div data-anim style="text-align:center;margin-bottom:40px">
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="projectsLabel">AgriTech Projects</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="projectsTitle">My AgriTech Project Showcase</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="projectsDesc">Real-world AI applications I've built to address agricultural challenges</p>
+      </div>
+      <div class="projects-grid">
+        <div class="project-card" data-anim>
+          <div class="topic-icon topic-icon-emerald" style="margin:0">🌾</div>
+          <h3 data-i18n="proj1Title">AI-Based Crop Recommendation System</h3>
+          <p data-i18n="proj1Desc">ML classifier that analyzes soil nutrients (N, P, K), pH, rainfall, and temperature to recommend the best crops for a given farmland.</p>
+          <div><span class="tag">Python</span><span class="tag">Scikit-Learn</span><span class="tag">Streamlit</span></div>
+          <a href="crop-recommendation.html" class="btn btn-primary btn-sm" style="margin-top:12px;display:inline-flex" data-i18n="viewProject">View Project →</a>
+        </div>
+        <div class="project-card" data-anim>
+          <div class="topic-icon topic-icon-blue" style="margin:0">📈</div>
+          <h3 data-i18n="proj2Title">Crop Yield Prediction using ML</h3>
+          <p data-i18n="proj2Desc">Regression-based forecasting model using historical rainfall, fertilizer usage, and area data to predict crop yields for agricultural planning.</p>
+          <div><span class="tag">Python</span><span class="tag">Pandas</span><span class="tag">Plotly</span></div>
+          <a href="crop-yield-prediction.html" class="btn btn-primary btn-sm" style="margin-top:12px;display:inline-flex" data-i18n="viewProject">View Project →</a>
+        </div>
+        <div class="project-card" data-anim>
+          <div class="topic-icon topic-icon-cyan" style="margin:0">🍂</div>
+          <h3 data-i18n="proj3Title">Crop Disease Detection using Deep Learning</h3>
+          <p data-i18n="proj3Desc">Deep CNN trained on plant leaf images to classify diseases and suggest treatments in real-time, helping farmers protect their crops.</p>
+          <div><span class="tag">TensorFlow</span><span class="tag">Keras</span><span class="tag">Flask</span></div>
+          <a href="crop-disease-detection.html" class="btn btn-primary btn-sm" style="margin-top:12px;display:inline-flex" data-i18n="viewProject">View Project →</a>
+        </div>
+        <div class="project-card" data-anim>
+          <div class="topic-icon topic-icon-amber" style="margin:0">🌤️</div>
+          <h3 data-i18n="proj4Title">Climate-Aware Crop Planning Dashboard</h3>
+          <p data-i18n="proj4Desc">Interactive dashboard integrating climate data with ML models to help farmers plan crop cycles based on weather patterns and forecasts.</p>
+          <div><span class="tag">Python</span><span class="tag">Streamlit</span><span class="tag">Plotly</span></div>
+          <a href="climate-crop-planning.html" class="btn btn-primary btn-sm" style="margin-top:12px;display:inline-flex" data-i18n="viewProject">View Project →</a>
+        </div>
+        <div class="project-card" data-anim>
+          <div class="topic-icon topic-icon-purple" style="margin:0">🧪</div>
+          <h3 data-i18n="proj5Title">AI-Driven Smart Fertilizer Management</h3>
+          <p data-i18n="proj5Desc">Data-driven system that recommends optimal fertilizer types and quantities based on soil nutrient analysis and crop requirements.</p>
+          <div><span class="tag">Python</span><span class="tag">XGBoost</span><span class="tag">Flask</span></div>
+          <a href="smart-fertilizer-management.html" class="btn btn-primary btn-sm" style="margin-top:12px;display:inline-flex" data-i18n="viewProject">View Project →</a>
+        </div>
+        <div class="project-card" data-anim>
+          <div class="topic-icon topic-icon-rose" style="margin:0">💧</div>
+          <h3 data-i18n="proj6Title">AI-Based Soil Moisture Prediction</h3>
+          <p data-i18n="proj6Desc">ML model that predicts soil moisture levels using environmental data to optimize irrigation scheduling and conserve water resources.</p>
+          <div><span class="tag">Python</span><span class="tag">FastAPI</span><span class="tag">IoT</span></div>
+          <a href="soil-moisture-prediction.html" class="btn btn-primary btn-sm" style="margin-top:12px;display:inline-flex" data-i18n="viewProject">View Project →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="stats">
+    <div class="container">
+      <div data-anim style="text-align:center;margin-bottom:32px">
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="statsLabel">Impact</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="statsTitle">Making a Difference</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="statsDesc">The reach and accuracy of our AgriTech solutions</p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card" data-anim>
+          <div class="stat-icon">👨‍🌾</div>
+          <div class="stat-number" id="statFarmers">0</div>
+          <div class="stat-label" data-i18n="stat1Label">Farmers Supported</div>
+        </div>
+        <div class="stat-card" data-anim>
+          <div class="stat-icon">🎯</div>
+          <div class="stat-number" id="statAccuracy">0%</div>
+          <div class="stat-label" data-i18n="stat2Label">Avg. Prediction Accuracy</div>
+        </div>
+        <div class="stat-card" data-anim>
+          <div class="stat-icon">💧</div>
+          <div class="stat-number" id="statWater">0L</div>
+          <div class="stat-label" data-i18n="stat3Label">Water Saved (est.)</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="goals" style="background:var(--alpha-3)">
+    <div class="container">
+      <div data-anim style="text-align:center;margin-bottom:40px">
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="goalsLabel">Future</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="goalsTitle">Future Vision</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="goalsDesc">Where I'm heading next in AI-powered agriculture</p>
+      </div>
+      <div class="goals-list">
+        <div class="goal-item" data-anim><div class="check">✓</div><div><h4 data-i18n="goal1Title">AI Farming for Developing Nations</h4><p data-i18n="goal1Desc">Build affordable, offline-capable AI tools that smallholder farmers in developing countries can use on basic smartphones to improve their yields and livelihoods.</p></div></div>
+        <div class="goal-item" data-anim><div class="check">✓</div><div><h4 data-i18n="goal2Title">Open Source AgriTech Platform</h4><p data-i18n="goal2Desc">Create an open-source platform for agricultural AI models, datasets, and tools that researchers and developers worldwide can contribute to and build upon.</p></div></div>
+        <div class="goal-item" data-anim><div class="check">✓</div><div><h4 data-i18n="goal3Title">Climate Resilience Models</h4><p data-i18n="goal3Desc">Develop predictive models that help farmers adapt to climate change by forecasting extreme weather events and recommending adaptive crop strategies.</p></div></div>
+        <div class="goal-item" data-anim><div class="check">✓</div><div><h4 data-i18n="goal4Title">Community Training &amp; Impact</h4><p data-i18n="goal4Desc">Train farming communities on using AI tools and establish feedback loops to continuously improve models based on real-world farming outcomes.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section" id="cta">
+    <div class="container" data-anim>
+      <h2><span class="g" data-i18n="ctaTitle">Let's Grow Smarter Together</span></h2>
+      <p data-i18n="ctaDesc">Have an idea for an AgriTech project or want to collaborate on AI solutions for agriculture? I'd love to hear from you.</p>
+      <div class="cta-btns">
+        <a href="mailto:anmdahamadullah@gmail.com" class="btn btn-primary shimmer-btn" data-i18n="ctaCollaborate">Let's Collaborate</a>
+        <a href="https://github.com/im-ahamad" target="_blank" class="btn btn-outline" data-i18n="ctaGithub">View GitHub</a>
+        <a href="../../" class="btn btn-outline" data-i18n="ctaBack">← Back to Portfolio</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-bar">
+    <p>© 2024 <a href="../../">Md Ahamad Ullah</a> — <span data-i18n="footerTag">Empowering agriculture through artificial intelligence</span></p>
+  </div>
+
+  <script>
+    // ===== THEME =====
+    const themeToggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    const savedTheme = localStorage.getItem('agri-theme') || 'light';
+    html.setAttribute('data-theme', savedTheme);
+    themeToggle.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+
+    themeToggle.addEventListener('click', () => {
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('agri-theme', next);
+      themeToggle.textContent = next === 'dark' ? '🌙' : '☀️';
+    });
+
+    // ===== PARTICLES =====
+    const canvas = document.getElementById('field-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let mouseX = -1000, mouseY = -1000;
+
+    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = document.documentElement.scrollHeight; }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2.5 + 0.5;
+        this.speedX = (Math.random() - 0.5) * 0.4;
+        this.speedY = (Math.random() - 0.5) * 0.4;
+        this.opacity = Math.random() * 0.4 + 0.08;
+        this.color = Math.random() > 0.5 ? '16,185,129' : '59,130,246';
+        this.grow = Math.random() * 0.02 + 0.005;
+        this.maxSize = this.size + Math.random() * 1.5;
+        this.minSize = this.size * 0.5;
+        this.growing = true;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+        const dx = this.x - mouseX, dy = this.y - mouseY, dist = Math.sqrt(dx*dx+dy*dy);
+        if (dist < 120) { this.x += dx/dist * 0.6; this.y += dy/dist * 0.6; }
+        if (this.growing) { this.size += this.grow; if (this.size >= this.maxSize) this.growing = false; }
+        else { this.size -= this.grow; if (this.size <= this.minSize) this.growing = true; }
+      }
+      draw() {
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${this.color},${this.opacity})`; ctx.fill();
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.size * 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${this.color},${this.opacity * 0.15})`; ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < 60; i++) particles.push(new Particle());
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const isDark = html.getAttribute('data-theme') === 'dark';
+      const connOpacity = isDark ? 0.05 : 0.025;
+      particles.forEach(p => { p.update(); p.draw(); });
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y, dist = Math.sqrt(dx*dx+dy*dy);
+          if (dist < 130) {
+            ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(16,185,129,${connOpacity * (1 - dist/130)})`; ctx.lineWidth = 0.5; ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY + window.scrollY; });
+    document.addEventListener('scroll', () => { canvas.height = document.documentElement.scrollHeight; });
+
+    // ===== TYPED TEXT =====
+    const typedEl = document.getElementById('typedText');
+    const phrases = [
+      'precision agriculture', 'smart irrigation', 'crop intelligence',
+      'computer vision', 'yield forecasting', 'sustainable farming'
+    ];
+    let phraseIdx = 0, charIdx = 0, isDeleting = false;
+
+    function typeEffect() {
+      const current = phrases[phraseIdx];
+      if (!isDeleting) {
+        typedEl.textContent = current.substring(0, charIdx + 1); charIdx++;
+        if (charIdx === current.length) { isDeleting = true; setTimeout(typeEffect, 2000); return; }
+        setTimeout(typeEffect, 80);
+      } else {
+        typedEl.textContent = current.substring(0, charIdx - 1); charIdx--;
+        if (charIdx === 0) { isDeleting = false; phraseIdx = (phraseIdx + 1) % phrases.length; setTimeout(typeEffect, 300); return; }
+        setTimeout(typeEffect, 40);
+      }
+    }
+    typeEffect();
+
+    // ===== SCROLL ANIMATIONS =====
+    const animEls = document.querySelectorAll('[data-anim]');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    animEls.forEach(el => observer.observe(el));
+
+    // ===== PROGRESS BAR =====
+    const progressBar = document.getElementById('progressBar');
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      progressBar.style.transform = `scaleX(${docHeight > 0 ? scrollTop / docHeight : 0})`;
+    });
+
+    // ===== STAT COUNTERS =====
+    function animateCounter(el, target, suffix) {
+      let current = 0;
+      const increment = target / 60;
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) { el.textContent = Math.round(target) + suffix; clearInterval(timer); return; }
+        el.textContent = Math.round(current) + suffix;
+      }, 20);
+    }
+
+    let statsAnimated = false;
+    const statsSection = document.getElementById('stats');
+    const statsObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !statsAnimated) {
+          statsAnimated = true;
+          animateCounter(document.getElementById('statFarmers'), 10000, '+');
+          animateCounter(document.getElementById('statAccuracy'), 94, '%');
+          animateCounter(document.getElementById('statWater'), 5000000, 'L+');
+        }
+      });
+    }, { threshold: 0.3 });
+    statsObserver.observe(statsSection);
+
+    // ===== LANGUAGE =====
+    const translations = {
+      en: {
+        badge: 'Field of Innovation',
+        heroTitle: 'Agriculture &amp;<br/>Artificial Intelligence',
+        heroSub: 'Transforming farming with ',
+        exploreBtn: 'Explore Interest',
+        viewProjects: 'View Projects',
+        backPortfolio: '← Back to Portfolio',
+        scroll: 'Scroll to explore',
+        aboutLabel: 'About This Interest',
+        aboutTitle: 'Why Agriculture &amp; AI?',
+        aboutDesc: 'My passion lies at the intersection of agriculture and artificial intelligence — using data-driven solutions to empower farmers, especially in developing nations facing food security challenges.',
+        aboutCard1Title: 'Transforming Developing Agriculture',
+        aboutCard1Text: 'In many developing countries, farmers rely on traditional knowledge passed down through generations. While valuable, they lack access to data-driven insights that could dramatically improve yields. I believe AI can bridge this gap — providing affordable, accessible tools for crop recommendations, pest detection, and weather forecasting tailored to local conditions.',
+        aboutCard2Title: 'AI for Food Security',
+        aboutCard2Text: 'With a growing global population and climate change threatening traditional farming, the need for precision agriculture has never been greater. I\'m driven to build AI systems that help farmers make smarter decisions — from choosing the right crops to optimizing irrigation — ultimately contributing to sustainable food production and reducing hunger worldwide.',
+        topicsLabel: 'Knowledge Areas',
+        topicsTitle: 'Key Topics I Explore',
+        topicsDesc: 'Core domains in AI-driven agriculture and smart farming',
+        topic1Title: 'Crop Recommendation Systems',
+        topic1Desc: 'ML models that analyze soil nutrients, climate data, and historical yields to recommend the most suitable crops for specific farmland conditions.',
+        topic2Title: 'Yield Prediction &amp; Forecasting',
+        topic2Desc: 'Regression models that predict crop yields using rainfall, temperature, soil data, and historical patterns to enable better planning and food security.',
+        topic3Title: 'Disease Detection using Computer Vision',
+        topic3Desc: 'Deep CNN models trained on plant leaf images to identify diseases, pests, and nutrient deficiencies in real-time for rapid intervention.',
+        topic4Title: 'Smart Irrigation &amp; IoT',
+        topic4Desc: 'IoT sensor networks combined with AI to optimize water usage, monitor soil moisture, and automate irrigation schedules for water conservation.',
+        topic5Title: 'Fertilizer Optimization',
+        topic5Desc: 'Data-driven models that recommend precise fertilizer amounts based on soil nutrient profiles, reducing waste and environmental impact.',
+        topic6Title: 'Climate-Smart Agriculture',
+        topic6Desc: 'Integrating climate data with AI to develop adaptive farming strategies that mitigate the effects of climate change on crop production.',
+        techLabel: 'Technologies',
+        techTitle: 'Tools &amp; Frameworks',
+        techDesc: 'Technologies I use to build AI-powered agricultural solutions',
+        projectsLabel: 'AgriTech Projects',
+        projectsTitle: 'My AgriTech Project Showcase',
+        projectsDesc: 'Real-world AI applications I\'ve built to address agricultural challenges',
+        proj1Title: 'AI-Based Crop Recommendation System',
+        proj1Desc: 'ML classifier that analyzes soil nutrients (N, P, K), pH, rainfall, and temperature to recommend the best crops for a given farmland.',
+        proj2Title: 'Crop Yield Prediction using ML',
+        proj2Desc: 'Regression-based forecasting model using historical rainfall, fertilizer usage, and area data to predict crop yields for agricultural planning.',
+        proj3Title: 'Crop Disease Detection using Deep Learning',
+        proj3Desc: 'Deep CNN trained on plant leaf images to classify diseases and suggest treatments in real-time, helping farmers protect their crops.',
+        proj4Title: 'Climate-Aware Crop Planning Dashboard',
+        proj4Desc: 'Interactive dashboard integrating climate data with ML models to help farmers plan crop cycles based on weather patterns and forecasts.',
+        proj5Title: 'AI-Driven Smart Fertilizer Management',
+        proj5Desc: 'Data-driven system that recommends optimal fertilizer types and quantities based on soil nutrient analysis and crop requirements.',
+        proj6Title: 'AI-Based Soil Moisture Prediction',
+        proj6Desc: 'ML model that predicts soil moisture levels using environmental data to optimize irrigation scheduling and conserve water resources.',
+        viewProject: 'View Project →',
+        statsLabel: 'Impact',
+        statsTitle: 'Making a Difference',
+        statsDesc: 'The reach and accuracy of our AgriTech solutions',
+        stat1Label: 'Farmers Supported',
+        stat2Label: 'Avg. Prediction Accuracy',
+        stat3Label: 'Water Saved (est.)',
+        goalsLabel: 'Future',
+        goalsTitle: 'Future Vision',
+        goalsDesc: 'Where I\'m heading next in AI-powered agriculture',
+        goal1Title: 'AI Farming for Developing Nations',
+        goal1Desc: 'Build affordable, offline-capable AI tools that smallholder farmers in developing countries can use on basic smartphones to improve their yields and livelihoods.',
+        goal2Title: 'Open Source AgriTech Platform',
+        goal2Desc: 'Create an open-source platform for agricultural AI models, datasets, and tools that researchers and developers worldwide can contribute to and build upon.',
+        goal3Title: 'Climate Resilience Models',
+        goal3Desc: 'Develop predictive models that help farmers adapt to climate change by forecasting extreme weather events and recommending adaptive crop strategies.',
+        goal4Title: 'Community Training &amp; Impact',
+        goal4Desc: 'Train farming communities on using AI tools and establish feedback loops to continuously improve models based on real-world farming outcomes.',
+        ctaTitle: 'Let\'s Grow Smarter Together',
+        ctaDesc: 'Have an idea for an AgriTech project or want to collaborate on AI solutions for agriculture? I\'d love to hear from you.',
+        ctaCollaborate: 'Let\'s Collaborate',
+        ctaGithub: 'View GitHub',
+        ctaBack: '← Back to Portfolio',
+        footerTag: 'Empowering agriculture through artificial intelligence',
+      },
+      bn: {
+        badge: 'উদ্ভাবনের ক্ষেত্র',
+        heroTitle: 'কৃষি ও<br/>কৃত্রিম বুদ্ধিমত্তা',
+        heroSub: 'কৃষি রূপান্তর করছে ',
+        exploreBtn: 'আগ্রহ অন্বেষণ',
+        viewProjects: 'প্রকল্প দেখুন',
+        backPortfolio: '← পোর্টফোলিওতে ফিরুন',
+        scroll: 'অন্বেষণ করতে স্ক্রোল করুন',
+        aboutLabel: 'এই আগ্রহ সম্পর্কে',
+        aboutTitle: 'কেন কৃষি ও AI?',
+        aboutDesc: 'আমার আবেগ কৃষি এবং কৃত্রিম বুদ্ধিমত্তার সংযোগস্থলে — ডেটা-চালিত সমাধান ব্যবহার করে কৃষকদের ক্ষমতায়ন করা, বিশেষ করে খাদ্য নিরাপত্তা চ্যালেঞ্জের মুখোমুখি উন্নয়নশীল দেশগুলিতে।',
+        aboutCard1Title: 'উন্নয়নশীল কৃষি রূপান্তর',
+        aboutCard1Text: 'অনেক উন্নয়নশীল দেশে, কৃষকরা প্রজন্মের পর প্রজন্ম ধরে চলে আসা ঐতিহ্যগত জ্ঞানের উপর নির্ভর করে। মূল্যবান হলেও, তাদের ডেটা-চালিত অন্তর্দৃষ্টিতে অ্যাক্সেস নেই যা নাটকীয়ভাবে ফলন উন্নত করতে পারে। আমি বিশ্বাস করি AI এই ব্যবধান পূরণ করতে পারে — স্থানীয় অবস্থার সাথে সামঞ্জস্যপূর্ণ ফসলের সুপারিশ, কীটপতঙ্গ সনাক্তকরণ এবং আবহাওয়ার পূর্বাভাসের জন্য সাশ্রয়ী মূল্যের টুল সরবরাহ করা।',
+        aboutCard2Title: 'খাদ্য নিরাপত্তার জন্য AI',
+        aboutCard2Text: 'ক্রমবর্ধমান বিশ্ব জনসংখ্যা এবং জলবায়ু পরিবর্তন ঐতিহ্যগত কৃষিকে হুমকির মুখে ফেলায়, নির্ভুল কৃষির প্রয়োজনীয়তা আগের চেয়ে বেশি। আমি AI সিস্টেম তৈরি করতে চালিত যা কৃষকদের স্মার্ট সিদ্ধান্ত নিতে সাহায্য করে — সঠিক ফসল নির্বাচন থেকে সেচ অপ্টিমাইজ করা — শেষ পর্যন্ত টেকসই খাদ্য উৎপাদনে অবদান রাখা এবং বিশ্বব্যাপী ক্ষুধা হ্রাস করা।',
+        topicsLabel: 'জ্ঞানের ক্ষেত্র',
+        topicsTitle: 'আমি যে মূল বিষয়গুলি অন্বেষণ করি',
+        topicsDesc: 'AI-চালিত কৃষি এবং স্মার্ট ফার্মিংয়ের মূল ডোমেন',
+        topic1Title: 'ফসল সুপারিশ সিস্টেম',
+        topic1Desc: 'মাটির পুষ্টি, জলবায়ু ডেটা এবং ঐতিহাসিক ফলন বিশ্লেষণ করে নির্দিষ্ট কৃষিজমি অবস্থার জন্য সবচেয়ে উপযুক্ত ফসল সুপারিশ করে এমন ML মডেল।',
+        topic2Title: 'ফলন পূর্বাভাস ও ভবিষ্যদ্বাণী',
+        topic2Desc: 'বৃষ্টিপাত, তাপমাত্রা, মাটির ডেটা এবং ঐতিহাসিক প্যাটার্ন ব্যবহার করে ফসলের ফলন পূর্বাভাস দেয় এমন রিগ্রেশন মডেল, আরও ভাল পরিকল্পনা এবং খাদ্য নিরাপত্তা সক্ষম করে।',
+        topic3Title: 'কম্পিউটার ভিশন ব্যবহার করে রোগ সনাক্তকরণ',
+        topic3Desc: 'দ্রুত হস্তক্ষেপের জন্য রিয়েল-টাইমে রোগ, কীটপতঙ্গ এবং পুষ্টির ঘাটতি সনাক্ত করতে উদ্ভিদ পাতার ছবিতে প্রশিক্ষিত ডিপ CNN মডেল।',
+        topic4Title: 'স্মার্ট সেচ ও IoT',
+        topic4Desc: 'পানি ব্যবহার অপ্টিমাইজ, মাটির আর্দ্রতা পর্যবেক্ষণ এবং পানি সংরক্ষণের জন্য সেচ সময়সূচী স্বয়ংক্রিয় করতে IoT সেন্সর নেটওয়ার্ক AI-এর সাথে যুক্ত।',
+        topic5Title: 'সার অপ্টিমাইজেশন',
+        topic5Desc: 'মাটির পুষ্টি প্রোফাইলের উপর ভিত্তি করে নির্ভুল সার পরিমাণ সুপারিশ করে এমন ডেটা-চালিত মডেল, বর্জ্য এবং পরিবেশগত প্রভাব হ্রাস করে।',
+        topic6Title: 'জলবায়ু-স্মার্ট কৃষি',
+        topic6Desc: 'ফসল উৎপাদনে জলবায়ু পরিবর্তনের প্রভাব প্রশমিত করে এমন অভিযোজিত কৃষি কৌশল বিকাশের জন্য জলবায়ু ডেটার সাথে AI একীভূত করা।',
+        techLabel: 'প্রযুক্তি',
+        techTitle: 'টুলস ও ফ্রেমওয়ার্ক',
+        techDesc: 'AI-চালিত কৃষি সমাধান তৈরির জন্য আমি যে প্রযুক্তি ব্যবহার করি',
+        projectsLabel: 'AgriTech প্রকল্প',
+        projectsTitle: 'আমার AgriTech প্রকল্প শোকেস',
+        projectsDesc: 'কৃষি চ্যালেঞ্জ মোকাবেলায় আমি তৈরি করা বাস্তব-world AI অ্যাপ্লিকেশন',
+        proj1Title: 'AI-ভিত্তিক ফসল সুপারিশ সিস্টেম',
+        proj1Desc: 'মাটির পুষ্টি (N, P, K), pH, বৃষ্টিপাত এবং তাপমাত্রা বিশ্লেষণ করে একটি নির্দিষ্ট কৃষিজমির জন্য সেরা ফসল সুপারিশ করে এমন ML ক্লাসিফায়ার।',
+        proj2Title: 'ML ব্যবহার করে ফসলের ফলন পূর্বাভাস',
+        proj2Desc: 'কৃষি পরিকল্পনার জন্য ফসলের ফলন পূর্বাভাস দিতে ঐতিহাসিক বৃষ্টিপাত, সার ব্যবহার এবং এলাকা ডেটা ব্যবহার করে রিগ্রেশন-ভিত্তিক মডেল।',
+        proj3Title: 'ডিপ লার্নিং ব্যবহার করে ফসলের রোগ সনাক্তকরণ',
+        proj3Desc: 'রিয়েল-টাইমে রোগ শ্রেণীবদ্ধ করতে এবং চিকিৎসা সুপারিশ করতে উদ্ভিদ পাতার ছবিতে প্রশিক্ষিত ডিপ CNN, কৃষকদের তাদের ফসল রক্ষা করতে সহায়তা করে।',
+        proj4Title: 'জলবায়ু-সচেতন ফসল পরিকল্পনা ড্যাশবোর্ড',
+        proj4Desc: 'আবহাওয়ার প্যাটার্ন এবং পূর্বাভাসের উপর ভিত্তি করে ফসল চক্র পরিকল্পনায় কৃষকদের সাহায্য করার জন্য জলবায়ু ডেটার সাথে ML মডেল একীভূত ইন্টারেক্টিভ ড্যাশবোর্ড।',
+        proj5Title: 'AI-চালিত স্মার্ট সার ব্যবস্থাপনা',
+        proj5Desc: 'মাটির পুষ্টি বিশ্লেষণ এবং ফসলের প্রয়োজনীয়তার উপর ভিত্তি করে সর্বোত্তম সার প্রকার এবং পরিমাণ সুপারিশ করে এমন ডেটা-চালিত সিস্টেম।',
+        proj6Title: 'AI-ভিত্তিক মাটির আর্দ্রতা পূর্বাভাস',
+        proj6Desc: 'সেচ সময়সূচী অপ্টিমাইজ এবং পানি সম্পদ সংরক্ষণের জন্য পরিবেশগত ডেটা ব্যবহার করে মাটির আর্দ্রতা স্তর পূর্বাভাস দেয় এমন ML মডেল।',
+        viewProject: 'প্রকল্প দেখুন →',
+        statsLabel: 'প্রভাব',
+        statsTitle: 'পরিবর্তন তৈরি করা',
+        statsDesc: 'আমাদের AgriTech সমাধানের নাগাল এবং নির্ভুলতা',
+        stat1Label: 'কৃষক সমর্থিত',
+        stat2Label: 'গড় পূর্বাভাস নির্ভুলতা',
+        stat3Label: 'পানি সংরক্ষিত (আনুমানিক)',
+        goalsLabel: 'ভবিষ্যৎ',
+        goalsTitle: 'ভবিষ্যৎ দৃষ্টি',
+        goalsDesc: 'AI-চালিত কৃষিতে আমি এরপর কোথায় যাচ্ছি',
+        goal1Title: 'উন্নয়নশীল দেশের জন্য AI কৃষি',
+        goal1Desc: 'সাশ্রয়ী, অফলাইন-সক্ষম AI টুল তৈরি করুন যা উন্নয়নশীল দেশের ক্ষুদ্র কৃষকরা তাদের ফলন এবং জীবিকা উন্নত করতে সাধারণ স্মার্টফোনে ব্যবহার করতে পারে।',
+        goal2Title: 'ওপেন সোর্স AgriTech প্ল্যাটফর্ম',
+        goal2Desc: 'কৃষি AI মডেল, ডেটাসেট এবং টুলের জন্য একটি ওপেন-সোর্স প্ল্যাটফর্ম তৈরি করুন যাতে বিশ্বব্যাপী গবেষক এবং ডেভেলপাররা অবদান রাখতে এবং তৈরি করতে পারে।',
+        goal3Title: 'জলবায়ু সহনশীলতা মডেল',
+        goal3Desc: 'চরম আবহাওয়ার ঘটনা পূর্বাভাস এবং অভিযোজিত ফসল কৌশল সুপারিশ করে কৃষকদের জলবায়ু পরিবর্তনের সাথে খাপ খাইয়ে নিতে সাহায্য করার জন্য ভবিষ্যদ্বাণীমূলক মডেল তৈরি করুন।',
+        goal4Title: 'সম্প্রদায় প্রশিক্ষণ ও প্রভাব',
+        goal4Desc: 'AI টুল ব্যবহারে কৃষক সম্প্রদায়কে প্রশিক্ষণ দিন এবং বাস্তব-world কৃষি ফলাফলের উপর ভিত্তি করে মডেলগুলি ক্রমাগত উন্নত করতে ফিডব্যাক লুপ স্থাপন করুন।',
+        ctaTitle: 'চলুন স্মার্টভাবে বাড়াই একসাথে',
+        ctaDesc: 'একটি AgriTech প্রকল্পের ধারণা বা কৃষির জন্য AI সমাধানে সহযোগিতা করতে চান? আমি আপনার কথা শুনতে চাই।',
+        ctaCollaborate: 'চলুন সহযোগিতা করি',
+        ctaGithub: 'GitHub দেখুন',
+        ctaBack: '← পোর্টফোলিওতে ফিরুন',
+        footerTag: 'কৃত্রিম বুদ্ধিমত্তার মাধ্যমে কৃষিকে ক্ষমতায়ন',
+      },
+      zh: {
+        badge: '创新领域',
+        heroTitle: '农业与<br/>人工智能',
+        heroSub: '用科技变革农业 ',
+        exploreBtn: '探索兴趣',
+        viewProjects: '查看项目',
+        backPortfolio: '← 返回作品集',
+        scroll: '滚动探索',
+        aboutLabel: '关于此兴趣',
+        aboutTitle: '为什么选择农业与AI？',
+        aboutDesc: '我的热情在于农业与人工智能的交汇处——利用数据驱动的解决方案赋予农民力量，尤其是在面临粮食安全挑战的发展中国家。',
+        aboutCard1Title: '变革发展中的农业',
+        aboutCard1Text: '在许多发展中国家，农民依赖代代相传的传统知识。虽然宝贵，但他们缺乏能够大幅提高产量的数据驱动洞察。我相信AI可以弥合这一差距——提供适合当地条件的作物推荐、害虫检测和天气预报等负担得起的工具。',
+        aboutCard2Title: 'AI促进粮食安全',
+        aboutCard2Text: '随着全球人口增长和气候变化威胁传统农业，精准农业的需求从未如此迫切。我致力于构建帮助农民做出更明智决策的AI系统——从选择正确的作物到优化灌溉——最终为可持续粮食生产和减少全球饥饿做出贡献。',
+        topicsLabel: '知识领域',
+        topicsTitle: '我探索的关键主题',
+        topicsDesc: 'AI驱动农业和智慧农业的核心领域',
+        topic1Title: '作物推荐系统',
+        topic1Desc: '分析土壤养分、气候数据和历史产量的ML模型，为特定农田条件推荐最合适的作物。',
+        topic2Title: '产量预测与预报',
+        topic2Desc: '利用降雨量、温度、土壤数据和历史模式预测作物产量的回归模型，实现更好的规划和粮食安全。',
+        topic3Title: '计算机视觉疾病检测',
+        topic3Desc: '在植物叶片图像上训练的深度CNN模型，可实时识别疾病、害虫和营养缺乏症，实现快速干预。',
+        topic4Title: '智能灌溉与IoT',
+        topic4Desc: '物联网传感器网络与AI相结合，优化用水量，监测土壤湿度，自动化灌溉计划以节约水资源。',
+        topic5Title: '肥料优化',
+        topic5Desc: '基于土壤养分状况推荐精确肥料用量的数据驱动模型，减少浪费和环境影响。',
+        topic6Title: '气候智能农业',
+        topic6Desc: '将气候数据与AI相结合，开发适应性农业策略，减轻气候变化对作物生产的影响。',
+        techLabel: '技术',
+        techTitle: '工具与框架',
+        techDesc: '我用于构建AI驱动农业解决方案的技术',
+        projectsLabel: 'AgriTech项目',
+        projectsTitle: '我的AgriTech项目展示',
+        projectsDesc: '我为应对农业挑战构建的真实世界AI应用',
+        proj1Title: '基于AI的作物推荐系统',
+        proj1Desc: '分析土壤养分（N、P、K）、pH值、降雨量和温度的ML分类器，为特定农田推荐最佳作物。',
+        proj2Title: '使用ML的作物产量预测',
+        proj2Desc: '使用历史降雨量、肥料使用量和面积数据进行回归预测的模型，用于农业规划。',
+        proj3Title: '使用深度学习的作物病害检测',
+        proj3Desc: '在植物叶片图像上训练的深度CNN，可实时分类疾病并建议治疗方案，帮助农民保护作物。',
+        proj4Title: '气候感知作物规划仪表板',
+        proj4Desc: '将气候数据与ML模型相结合的交互式仪表板，帮助农民根据天气模式和预报规划作物周期。',
+        proj5Title: 'AI驱动的智能肥料管理',
+        proj5Desc: '基于土壤养分分析和作物需求推荐最佳肥料类型和用量的数据驱动系统。',
+        proj6Title: '基于AI的土壤湿度预测',
+        proj6Desc: '使用环境数据预测土壤湿度水平的ML模型，优化灌溉计划并节约水资源。',
+        viewProject: '查看项目 →',
+        statsLabel: '影响力',
+        statsTitle: '创造改变',
+        statsDesc: '我们的AgriTech解决方案的覆盖范围和准确性',
+        stat1Label: '支持的农民',
+        stat2Label: '平均预测准确率',
+        stat3Label: '节约水资源（估算）',
+        goalsLabel: '未来',
+        goalsTitle: '未来愿景',
+        goalsDesc: '我在AI驱动农业领域的下一步',
+        goal1Title: '发展中国家的AI农业',
+        goal1Desc: '构建价格合理、可离线使用的AI工具，发展中国家的自给农民可以在基本智能手机上使用，以提高产量和生计。',
+        goal2Title: '开源AgriTech平台',
+        goal2Desc: '创建农业AI模型、数据集和工具的开源平台，全球研究人员和开发者可以贡献和构建。',
+        goal3Title: '气候韧性模型',
+        goal3Desc: '开发预测模型，通过预测极端天气事件和推荐适应性作物策略，帮助农民适应气候变化。',
+        goal4Title: '社区培训与影响力',
+        goal4Desc: '培训农业社区使用AI工具，并建立反馈循环，根据真实世界的农业成果不断改进模型。',
+        ctaTitle: '让我们一起智慧成长',
+        ctaDesc: '有AgriTech项目想法或想合作农业AI解决方案？我很乐意听取您的意见。',
+        ctaCollaborate: '让我们合作',
+        ctaGithub: '查看GitHub',
+        ctaBack: '← 返回作品集',
+        footerTag: '通过人工智能赋能农业',
+      },
+      hi: {
+        badge: 'नवाचार का क्षेत्र',
+        heroTitle: 'कृषि और<br/>कृत्रिम बुद्धिमत्ता',
+        heroSub: 'खेती को बदल रहा है ',
+        exploreBtn: 'रुचि का अन्वेषण करें',
+        viewProjects: 'प्रोजेक्ट देखें',
+        backPortfolio: '← पोर्टफोलियो पर वापस जाएं',
+        scroll: 'अन्वेषण करने के लिए स्क्रॉल करें',
+        aboutLabel: 'इस रुचि के बारे में',
+        aboutTitle: 'कृषि और AI क्यों?',
+        aboutDesc: 'मेरा जुनून कृषि और कृत्रिम बुद्धिमत्ता के प्रतिच्छेदन पर है — डेटा-संचालित समाधानों का उपयोग करके किसानों को सशक्त बनाना, विशेष रूप से खाद्य सुरक्षा चुनौतियों का सामना कर रहे विकासशील देशों में।',
+        aboutCard1Title: 'विकासशील कृषि को बदलना',
+        aboutCard1Text: 'कई विकासशील देशों में, किसान पीढ़ियों से चले आ रहे पारंपरिक ज्ञान पर निर्भर हैं। मूल्यवान होते हुए भी, उनके पास डेटा-संचालित अंतर्दृष्टि तक पहुंच नहीं है जो नाटकीय रूप से पैदावार में सुधार कर सकती है। मेरा मानना है कि AI इस अंतर को पाट सकता है — स्थानीय परिस्थितियों के अनुरूप फसल सिफारिशों, कीट पहचान और मौसम पूर्वानुमान के लिए किफायती उपकरण प्रदान करना।',
+        aboutCard2Title: 'खाद्य सुरक्षा के लिए AI',
+        aboutCard2Text: 'बढ़ती वैश्विक जनसंख्या और जलवायु परिवर्तन पारंपरिक खेती को खतरे में डालने के साथ, सटीक कृषि की आवश्यकता पहले कभी इतनी अधिक नहीं रही। मैं ऐसी AI प्रणालियाँ बनाने के लिए प्रेरित हूं जो किसानों को स्मार्ट निर्णय लेने में मदद करें — सही फसल चुनने से लेकर सिंचाई को अनुकूलित करने तक — अंततः टिकाऊ खाद्य उत्पादन में योगदान देना और दुनिया भर में भूख को कम करना।',
+        topicsLabel: 'ज्ञान क्षेत्र',
+        topicsTitle: 'मुख्य विषय जिनका मैं अन्वेषण करता हूं',
+        topicsDesc: 'AI-संचालित कृषि और स्मार्ट फार्मिंग के मुख्य डोमेन',
+        topic1Title: 'फसल अनुशंसा प्रणाली',
+        topic1Desc: 'मिट्टी के पोषक तत्वों, जलवायु डेटा और ऐतिहासिक पैदावार का विश्लेषण करके विशिष्ट खेत की स्थितियों के लिए सबसे उपयुक्त फसलों की सिफारिश करने वाले ML मॉडल।',
+        topic2Title: 'उपज भविष्यवाणी और पूर्वानुमान',
+        topic2Desc: 'बेहतर योजना और खाद्य सुरक्षा सक्षम करने के लिए वर्षा, तापमान, मिट्टी डेटा और ऐतिहासिक पैटर्न का उपयोग करके फसल की पैदावार का पूर्वानुमान लगाने वाले रिग्रेशन मॉडल।',
+        topic3Title: 'कंप्यूटर विज़न से रोग पहचान',
+        topic3Desc: 'त्वरित हस्तक्षेप के लिए पौधों की पत्ती की छवियों पर प्रशिक्षित डीप CNN मॉडल जो वास्तविक समय में रोगों, कीटों और पोषक तत्वों की कमी की पहचान करते हैं।',
+        topic4Title: 'स्मार्ट सिंचाई और IoT',
+        topic4Desc: 'पानी के उपयोग को अनुकूलित करने, मिट्टी की नमी की निगरानी करने और जल संरक्षण के लिए सिंचाई कार्यक्रम को स्वचालित करने के लिए IoT सेंसर नेटवर्क AI के साथ संयुक्त।',
+        topic5Title: 'उर्वरक अनुकूलन',
+        topic5Desc: 'मिट्टी के पोषक तत्व प्रोफाइल के आधार पर सटीक उर्वरक मात्रा की सिफारिश करने वाले डेटा-संचालित मॉडल, अपशिष्ट और पर्यावरणीय प्रभाव को कम करना।',
+        topic6Title: 'जलवायु-स्मार्ट कृषि',
+        topic6Desc: 'फसल उत्पादन पर जलवायु परिवर्तन के प्रभावों को कम करने वाली अनुकूली कृषि रणनीतियों को विकसित करने के लिए जलवायु डेटा को AI के साथ एकीकृत करना।',
+        techLabel: 'प्रौद्योगिकियां',
+        techTitle: 'उपकरण और फ्रेमवर्क',
+        techDesc: 'AI-संचालित कृषि समाधान बनाने के लिए मैं जिन तकनीकों का उपयोग करता हूं',
+        projectsLabel: 'AgriTech परियोजनाएं',
+        projectsTitle: 'मेरा AgriTech प्रोजेक्ट शोकेस',
+        projectsDesc: 'कृषि चुनौतियों का समाधान करने के लिए मेरे द्वारा बनाए गए वास्तविक दुनिया के AI अनुप्रयोग',
+        proj1Title: 'AI-आधारित फसल अनुशंसा प्रणाली',
+        proj1Desc: 'किसी दिए गए खेत के लिए सर्वोत्तम फसलों की सिफारिश करने के लिए मिट्टी के पोषक तत्वों (N, P, K), pH, वर्षा और तापमान का विश्लेषण करने वाला ML क्लासिफायर।',
+        proj2Title: 'ML का उपयोग करके फसल उपज भविष्यवाणी',
+        proj2Desc: 'कृषि योजना के लिए फसल की पैदावार का पूर्वानुमान लगाने के लिए ऐतिहासिक वर्षा, उर्वरक उपयोग और क्षेत्र डेटा का उपयोग करने वाला रिग्रेशन-आधारित मॉडल।',
+        proj3Title: 'डीप लर्निंग का उपयोग करके फसल रोग पहचान',
+        proj3Desc: 'वास्तविक समय में रोगों को वर्गीकृत करने और उपचार सुझाने के लिए पौधों की पत्ती की छवियों पर प्रशिक्षित डीप CNN, किसानों को उनकी फसलों की रक्षा करने में मदद करना।',
+        proj4Title: 'जलवायु-जागरूक फसल योजना डैशबोर्ड',
+        proj4Desc: 'मौसम पैटर्न और पूर्वानुमानों के आधार पर फसल चक्र की योजना बनाने में किसानों की मदद करने के लिए जलवायु डेटा को ML मॉडल के साथ एकीकृत करने वाला इंटरैक्टिव डैशबोर्ड।',
+        proj5Title: 'AI-संचालित स्मार्ट उर्वरक प्रबंधन',
+        proj5Desc: 'मिट्टी के पोषक तत्व विश्लेषण और फसल आवश्यकताओं के आधार पर इष्टतम उर्वरक प्रकार और मात्रा की सिफारिश करने वाली डेटा-संचालित प्रणाली।',
+        proj6Title: 'AI-आधारित मिट्टी नमी भविष्यवाणी',
+        proj6Desc: 'सिंचाई कार्यक्रम को अनुकूलित करने और जल संसाधनों के संरक्षण के लिए पर्यावरणीय डेटा का उपयोग करके मिट्टी की नमी के स्तर का पूर्वानुमान लगाने वाला ML मॉडल।',
+        viewProject: 'प्रोजेक्ट देखें →',
+        statsLabel: 'प्रभाव',
+        statsTitle: 'बदलाव लाना',
+        statsDesc: 'हमारे AgriTech समाधानों की पहुंच और सटीकता',
+        stat1Label: 'किसान समर्थित',
+        stat2Label: 'औसत भविष्यवाणी सटीकता',
+        stat3Label: 'पानी बचाया (अनुमानित)',
+        goalsLabel: 'भविष्य',
+        goalsTitle: 'भविष्य की दृष्टि',
+        goalsDesc: 'AI-संचालित कृषि में मैं आगे कहां जा रहा हूं',
+        goal1Title: 'विकासशील देशों के लिए AI खेती',
+        goal1Desc: 'किफायती, ऑफलाइन-सक्षम AI उपकरण बनाएं जो विकासशील देशों में छोटे किसान अपनी पैदावार और आजीविका में सुधार के लिए बुनियादी स्मार्टफोन पर उपयोग कर सकें।',
+        goal2Title: 'ओपन सोर्स AgriTech प्लेटफॉर्म',
+        goal2Desc: 'कृषि AI मॉडल, डेटासेट और टूल के लिए एक ओपन-सोर्स प्लेटफॉर्म बनाएं जिसमें दुनिया भर के शोधकर्ता और डेवलपर योगदान दे सकें और उस पर निर्माण कर सकें।',
+        goal3Title: 'जलवायु लचीलापन मॉडल',
+        goal3Desc: 'चरम मौसम की घटनाओं का पूर्वानुमान लगाकर और अनुकूली फसल रणनीतियों की सिफारिश करके किसानों को जलवायु परिवर्तन के अनुकूल होने में मदद करने के लिए पूर्वानुमान मॉडल विकसित करें।',
+        goal4Title: 'सामुदायिक प्रशिक्षण और प्रभाव',
+        goal4Desc: 'किसान समुदायों को AI उपकरणों के उपयोग पर प्रशिक्षित करें और वास्तविक दुनिया के खेती के परिणामों के आधार पर मॉडलों में लगातार सुधार करने के लिए फीडबैक लूप स्थापित करें।',
+        ctaTitle: 'आइए एक साथ स्मार्ट बढ़ें',
+        ctaDesc: 'एक AgriTech प्रोजेक्ट का विचार है या कृषि के लिए AI समाधानों पर सहयोग करना चाहते हैं? मुझे आपसे सुनकर खुशी होगी।',
+        ctaCollaborate: 'आइए सहयोग करें',
+        ctaGithub: 'GitHub देखें',
+        ctaBack: '← पोर्टफोलियो पर वापस जाएं',
+        footerTag: 'कृत्रिम बुद्धिमत्ता के माध्यम से कृषि को सशक्त बनाना',
+      },
+    };
+
+    function applyLanguage(lang) {
+      const t = translations[lang] || translations.en;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key] !== undefined) {
+          if (key === 'heroTitle') { el.innerHTML = t[key]; }
+          else { el.textContent = t[key]; }
+        }
+      });
+    }
+
+    const langSelect = document.getElementById('langSelect');
+    const savedLang = localStorage.getItem('agri-lang') || 'en';
+    langSelect.value = savedLang;
+    applyLanguage(savedLang);
+
+    langSelect.addEventListener('change', () => {
+      const lang = langSelect.value;
+      localStorage.setItem('agri-lang', lang);
+      applyLanguage(lang);
+    });
+  </script>
+
+  <script id="custom-cursor-js">
+    (function() {
+      var cursor = document.getElementById('custom-cursor');
+      if (!cursor) return;
+      var isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      if (!isTouch) {
+        document.addEventListener('mousemove', function(e) {
+          cursor.style.opacity = '1';
+          cursor.style.left = e.clientX + 'px';
+          cursor.style.top = e.clientY + 'px';
+        });
+        document.addEventListener('mouseleave', function() { cursor.style.opacity = '0'; });
+        document.addEventListener('mouseenter', function() { cursor.style.opacity = '1'; });
+        document.querySelectorAll('a, button, [role="button"]').forEach(function(el) {
+          el.addEventListener('mouseenter', function() {
+            cursor.style.width = '40px'; cursor.style.height = '40px';
+            cursor.style.background = 'radial-gradient(circle, rgba(139,92,246,0.4), transparent)';
+          });
+          el.addEventListener('mouseleave', function() {
+            cursor.style.width = '20px'; cursor.style.height = '20px';
+            cursor.style.background = 'radial-gradient(circle, rgba(59,130,246,0.3), transparent)';
+          });
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

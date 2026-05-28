@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Personalized Learning Systems | Ahamad Ullah</title>
+  <meta name="description" content="Exploring AI-powered personalized learning, adaptive education, and intelligent tutoring systems" />
+  <style>body{background:#0a0a0f}.loader-bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:99999;pointer-events:none;background:linear-gradient(90deg,transparent,#f59e0b,#8b5cf6,transparent);animation:loaderBar .45s ease forwards}@keyframes loaderBar{0%{transform:scaleX(0);transform-origin:left}40%{transform:scaleX(.55)}100%{transform:scaleX(1);opacity:0}}
+    /* ─── Premium Upgrade Styles ─── */
+    .glass {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px) saturate(1.4);
+      -webkit-backdrop-filter: blur(20px) saturate(1.4);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+    }
+
+    .shimmer-btn {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shimmer-btn::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+      background-size: 200% 200%;
+      animation: shimmerBtn 3s ease-in-out infinite;
+      transform: rotate(25deg);
+    }
+
+    @keyframes shimmerBtn {
+      0% { background-position: 200% 50%; }
+      100% { background-position: -200% 50%; }
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--primary), var(--purple), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      background-size: 200% 200%;
+      animation: gradientShift 6s ease infinite;
+    }
+
+    .gradient-divider {
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--primary), var(--purple), var(--accent), transparent);
+      border-radius: 2px;
+      margin: 0 20px;
+    }
+
+    .card-hover-effect {
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .card-hover-effect:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+
+    .fade-zoom {
+      opacity: 0;
+      transform: scale(0.95);
+      transition: all 0.7s ease;
+    }
+
+    .fade-zoom.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    #custom-cursor {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999999;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(var(--primary-rgb, 59,130,246), 0.3), transparent);
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, opacity 0.2s;
+      opacity: 0;
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      #custom-cursor { display: none; }
+    }
+
+    @keyframes countUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    @media (max-width: 600px) {
+      .stat-number { font-size: 2rem; }
+    }
+
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --primary:#f59e0b;--primary-dark:#d97706;--primary-glow:rgba(245,158,11,0.3);
+      --accent:#8b5cf6;--accent-glow:rgba(139,92,246,0.3);
+      --purple:#a78bfa;--purple-glow:rgba(167,139,250,0.3);
+      --bg-primary:#0a0a0f;--bg-secondary:#111118;--bg-card:rgba(17,17,24,0.8);
+      --text-primary:#f1f7f5;--text-secondary:#94a3b8;--text-muted:#64748b;
+      --border-color:rgba(245,158,11,0.12);--nav-bg:rgba(10,10,15,0.85);
+      --alpha-3:rgba(255,255,255,0.03);--alpha-4:rgba(255,255,255,0.04);
+      --alpha-6:rgba(255,255,255,0.06);--alpha-8:rgba(255,255,255,0.08);
+      --radius:16px;--radius-sm:10px;
+    }
+    [data-theme="light"]{
+      --bg-primary:#f8fafc;--bg-secondary:#f1f5f9;--bg-card:rgba(255,255,255,0.85);
+      --text-primary:#0f172a;--text-secondary:#475569;--text-muted:#94a3b8;
+      --border-color:rgba(0,0,0,0.08);--nav-bg:rgba(255,255,255,0.85);
+      --alpha-3:rgba(0,0,0,0.03);--alpha-4:rgba(0,0,0,0.04);
+      --alpha-6:rgba(0,0,0,0.06);--alpha-8:rgba(0,0,0,0.08);
+    }
+    html{scroll-behavior:smooth}
+    body{
+      font-family:'Space Grotesk',sans-serif;background:var(--bg-primary);
+      color:var(--text-primary);line-height:1.6;overflow-x:hidden;
+    }
+    ::-webkit-scrollbar{width:8px}
+    ::-webkit-scrollbar-track{background:var(--bg-secondary)}
+    ::-webkit-scrollbar-thumb{background:var(--primary);border-radius:4px}
+    ::selection{background:var(--primary);color:#fff}
+
+    nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--nav-bg);backdrop-filter:blur(16px);border-bottom:1px solid var(--border-color);height:56px}
+    .nav-inner{max-width:1200px;margin:0 auto;padding:0 20px;height:100%;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-weight:700;font-size:18px;text-decoration:none}
+    .logo .g{background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .nav-right{display:flex;align-items:center;gap:8px}
+    .nav-btn{width:36px;height:36px;border-radius:10px;border:1px solid var(--border-color);background:var(--alpha-4);color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s ease;font-size:16px}
+    .nav-btn:hover{background:var(--alpha-8);color:var(--text-primary);border-color:var(--primary)}
+    .lang-select{padding:6px 10px;border-radius:10px;border:1px solid var(--border-color);background:var(--alpha-4);color:var(--text-secondary);font-size:13px;cursor:pointer;font-family:inherit;transition:all .25s ease}
+    .lang-select:hover{border-color:var(--primary);color:var(--text-primary);background:var(--alpha-8)}
+    .lang-select option{background:var(--bg-secondary);color:var(--text-primary)}
+
+    .progress-bar{position:fixed;top:56px;left:0;right:0;height:3px;z-index:999;background:linear-gradient(90deg,var(--primary),var(--accent),var(--purple));transform-origin:left;transform:scaleX(0);transition:transform .1s linear}
+
+    section{padding:100px 20px;position:relative}
+    .container{max-width:1100px;margin:0 auto;position:relative;z-index:2}
+
+    .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding-top:80px;overflow:hidden}
+    #learn-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+    .hero-content{position:relative;z-index:2;max-width:800px}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:999px;background:var(--alpha-6);border:1px solid var(--border-color);font-size:13px;color:var(--text-secondary);margin-bottom:24px;animation:fadeUp .8s ease}
+    .hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--primary);animation:pulse 2s infinite}
+    .hero-title{font-size:clamp(28px,5.5vw,60px);font-weight:700;line-height:1.1;margin-bottom:16px;animation:fadeUp .8s ease .1s both}
+    .hero-title .g{background:linear-gradient(135deg,var(--primary),var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% 200%;animation:gradientShift 6s ease infinite}
+    .hero-sub{font-size:clamp(16px,2.2vw,22px);color:var(--text-secondary);margin-bottom:32px;animation:fadeUp .8s ease .2s both}
+    .hero-typed{color:var(--primary);font-weight:600}
+    .hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:fadeUp .8s ease .3s both}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:12px;font-size:15px;font-weight:500;text-decoration:none;cursor:pointer;font-family:inherit;transition:all .3s ease;border:none}
+    .btn-primary{background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;box-shadow:0 4px 20px var(--primary-glow)}
+    .btn-primary:hover{transform:translateY(-3px);box-shadow:0 8px 30px var(--primary-glow)}
+    .btn-outline{background:transparent;border:1px solid var(--border-color);color:var(--text-secondary)}
+    .btn-outline:hover{background:var(--alpha-6);border-color:var(--primary);color:var(--text-primary);transform:translateY(-3px)}
+    .btn-sm{padding:8px 18px;font-size:13px}
+    .scroll-indicator{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:12px;animation:fadeUp .8s ease .5s both}
+    .scroll-mouse{width:22px;height:34px;border:2px solid var(--text-muted);border-radius:999px;position:relative}
+    .scroll-dot{position:absolute;top:6px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--primary);animation:scrollDot 2s infinite}
+
+    .section-label{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:999px;background:var(--alpha-6);border:1px solid var(--border-color);font-size:12px;font-weight:500;color:var(--primary);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+    .section-title{font-size:clamp(24px,3.5vw,40px);font-weight:700;margin-bottom:8px}
+    .section-title .g{background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .section-desc{color:var(--text-secondary);font-size:16px;max-width:600px;margin-bottom:40px}
+
+    .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:32px}
+    .about-card,.topic-card,.research-card{background:var(--bg-card);backdrop-filter:blur(12px);border:1px solid var(--border-color);border-radius:var(--radius);padding:28px;transition:all .35s ease}
+    .about-card:hover,.topic-card:hover,.research-card:hover{transform:translateY(-6px);border-color:var(--primary);box-shadow:0 20px 60px rgba(0,0,0,0.2)}
+    .about-card p{color:var(--text-secondary);font-size:15px;line-height:1.7}
+    .about-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px;background:linear-gradient(135deg,var(--primary),var(--accent))}
+    .about-card h3{margin-bottom:8px;font-size:18px}
+
+    .topics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .topic-card{text-align:center;padding:32px 24px}
+    .topic-icon{width:52px;height:52px;border-radius:14px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:24px;transition:all .35s ease}
+    .topic-card:hover .topic-icon{transform:scale(1.15) rotate(-6deg);border-radius:50%}
+    .topic-icon-amber{background:linear-gradient(135deg,#f59e0b,#d97706);box-shadow:0 4px 15px rgba(245,158,11,0.3)}
+    .topic-icon-purple{background:linear-gradient(135deg,#8b5cf6,#7c3aed);box-shadow:0 4px 15px rgba(139,92,246,0.3)}
+    .topic-icon-blue{background:linear-gradient(135deg,#3b82f6,#2563eb);box-shadow:0 4px 15px rgba(59,130,246,0.3)}
+    .topic-icon-cyan{background:linear-gradient(135deg,#06b6d4,#0891b2);box-shadow:0 4px 15px rgba(6,182,212,0.3)}
+    .topic-icon-emerald{background:linear-gradient(135deg,#10b981,#059669);box-shadow:0 4px 15px rgba(16,185,129,0.3)}
+    .topic-icon-rose{background:linear-gradient(135deg,#f43f5e,#e11d48);box-shadow:0 4px 15px rgba(244,63,94,0.3)}
+    .topic-card h3{font-size:16px;font-weight:600;margin-bottom:8px}
+    .topic-card p{color:var(--text-secondary);font-size:13px;line-height:1.6}
+
+    .tech-section{text-align:center}
+    .tech-grid{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:24px}
+    .tech-badge{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:12px;background:var(--alpha-6);border:1px solid var(--border-color);font-size:14px;font-weight:500;transition:all .3s ease;cursor:default}
+    .tech-badge:hover{transform:translateY(-4px);background:var(--alpha-8);border-color:var(--primary);box-shadow:0 8px 25px var(--primary-glow)}
+    .tech-badge .icon{font-size:20px}
+
+    /* Flow */
+    .flow-section{text-align:center}
+    .flow-diagram{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;margin-top:40px;padding:20px}
+    .flow-step{display:flex;flex-direction:column;align-items:center;gap:10px;min-width:100px;position:relative}
+    .flow-icon{width:64px;height:64px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;background:var(--bg-card);border:2px solid var(--border-color);transition:all .35s ease;position:relative;z-index:2}
+    .flow-step:hover .flow-icon{transform:scale(1.12);border-color:var(--primary);box-shadow:0 0 30px var(--primary-glow)}
+    .flow-label{font-size:13px;font-weight:500;color:var(--text-secondary);max-width:120px;text-align:center;line-height:1.3}
+    .flow-arrow{font-size:24px;color:var(--primary);margin:0 8px;opacity:0.6;align-self:center;padding-top:30px;animation:flowArrow 1.5s ease infinite}
+    @keyframes flowArrow{0%,100%{transform:translateX(0);opacity:0.6}50%{transform:translateX(6px);opacity:1}}
+    .flow-step .step-num{position:absolute;top:-8px;right:-8px;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;z-index:3}
+
+    /* Stats */
+    .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:32px}
+    .stat-card{text-align:center;padding:36px 20px;background:var(--bg-card);backdrop-filter:blur(12px);border:1px solid var(--border-color);border-radius:var(--radius);transition:all .35s ease}
+    .stat-card:hover{transform:translateY(-6px);border-color:var(--primary);box-shadow:0 20px 60px rgba(0,0,0,0.2)}
+    .stat-number{font-size:clamp(32px,4vw,52px);font-weight:700;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .stat-label{color:var(--text-secondary);font-size:14px;margin-top:6px}
+    .stat-icon{font-size:32px;margin-bottom:12px}
+
+    /* Research */
+    .research-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .research-card{text-align:left;padding:24px}
+    .research-card .r-icon{font-size:28px;margin-bottom:10px}
+    .research-card h3{font-size:15px;font-weight:600;margin-bottom:6px}
+    .research-card p{color:var(--text-secondary);font-size:13px;line-height:1.6}
+    .research-card .r-link{display:inline-flex;align-items:center;gap:4px;color:var(--primary);font-size:13px;text-decoration:none;margin-top:10px;font-weight:500;transition:all .2s}
+    .research-card .r-link:hover{gap:8px}
+
+    .goals-list{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:24px}
+    .goal-item{display:flex;align-items:flex-start;gap:12px;padding:16px;border-radius:var(--radius-sm);background:var(--alpha-4);border:1px solid var(--border-color);transition:all .3s}
+    .goal-item:hover{background:var(--alpha-6);border-color:var(--primary);transform:translateX(4px)}
+    .goal-item .check{width:24px;height:24px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0}
+    .goal-item div{flex:1}
+    .goal-item h4{font-size:15px;font-weight:600;margin-bottom:2px}
+    .goal-item p{color:var(--text-secondary);font-size:13px}
+
+    .cta-section{text-align:center;padding:80px 20px}
+    .cta-section h2{font-size:clamp(24px,4vw,42px);margin-bottom:12px}
+    .cta-section p{color:var(--text-secondary);margin-bottom:28px;font-size:16px}
+    .cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+    .footer-bar{text-align:center;padding:24px;border-top:1px solid var(--border-color);color:var(--text-muted);font-size:13px}
+    .footer-bar a{color:var(--primary);text-decoration:none}
+
+    [data-anim]{opacity:0;transform:translateY(30px);transition:all .7s ease}
+    [data-anim].visible{opacity:1;transform:translateY(0)}
+
+    /* Brain SVG */
+    .brain-svg{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;overflow:hidden}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes gradientShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+    @keyframes scrollDot{0%{top:6px;opacity:1}100%{top:20px;opacity:0}}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+    @keyframes pulseNode{0%,100%{opacity:0.08;r:3}50%{opacity:0.18;r:5}}
+
+    .hidden{display:none!important}
+
+    @media(max-width:900px){
+      .about-grid,.goals-list{grid-template-columns:1fr}
+      .topics-grid,.research-grid{grid-template-columns:repeat(2,1fr)}
+      .stats-grid{grid-template-columns:repeat(2,1fr)}
+      .flow-arrow{display:none}
+      .flow-diagram{flex-direction:column;gap:16px}
+      .flow-step{flex-direction:row;gap:12px;width:100%}
+      .flow-icon{width:48px;height:48px;font-size:20px;flex-shrink:0}
+      .flow-label{text-align:left}
+    }
+    @media(max-width:600px){
+      .topics-grid,.research-grid{grid-template-columns:1fr}
+      .stats-grid{grid-template-columns:1fr}
+      section{padding:60px 16px}
+      .hero{padding-top:60px}
+      .nav-inner{padding:0 12px}
+      .btn{padding:10px 20px;font-size:14px}
+    }
+  </style>
+</head>
+<body>
+  <div class="loader-bar"></div>
+  <div id="custom-cursor"></div>
+  <div class="progress-bar" id="progressBar"></div>
+
+  <canvas id="learn-canvas"></canvas>
+
+  <!-- SVG Brain/Neural Background -->
+  <svg class="brain-svg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <linearGradient id="brainGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.04"/>
+        <stop offset="50%" stop-color="#8b5cf6" stop-opacity="0.03"/>
+        <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.02"/>
+      </linearGradient>
+      <filter id="glowBrain"><feGaussianBlur stdDeviation="3"/></filter>
+      <radialGradient id="nodeGlow"><stop offset="0%" stop-color="#f59e0b" stop-opacity="0.15"/><stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/></radialGradient>
+    </defs>
+    <rect width="1440" height="900" fill="url(#brainGrad)"/>
+    <!-- Neural network abstract -->
+    <g transform="translate(720,420)" opacity="0.08">
+      <!-- Outer ring -->
+      <circle cx="0" cy="-120" r="5" fill="#f59e0b" filter="url(#glowBrain)"/>
+      <circle cx="120" cy="0" r="5" fill="#8b5cf6" filter="url(#glowBrain)"/>
+      <circle cx="0" cy="120" r="5" fill="#f59e0b" filter="url(#glowBrain)"/>
+      <circle cx="-120" cy="0" r="5" fill="#8b5cf6" filter="url(#glowBrain)"/>
+      <circle cx="85" cy="-85" r="4" fill="#a78bfa" filter="url(#glowBrain)"/>
+      <circle cx="85" cy="85" r="4" fill="#f59e0b" filter="url(#glowBrain)"/>
+      <circle cx="-85" cy="85" r="4" fill="#a78bfa" filter="url(#glowBrain)"/>
+      <circle cx="-85" cy="-85" r="4" fill="#f59e0b" filter="url(#glowBrain)"/>
+      <!-- Inner ring -->
+      <circle cx="0" cy="-60" r="4" fill="#f59e0b" filter="url(#glowBrain)"/>
+      <circle cx="60" cy="0" r="4" fill="#8b5cf6" filter="url(#glowBrain)"/>
+      <circle cx="0" cy="60" r="4" fill="#f59e0b" filter="url(#glowBrain)"/>
+      <circle cx="-60" cy="0" r="4" fill="#8b5cf6" filter="url(#glowBrain)"/>
+      <!-- Center -->
+      <circle cx="0" cy="0" r="6" fill="#f59e0b" filter="url(#glowBrain)"/>
+      <!-- Connections -->
+      <line x1="0" y1="0" x2="0" y2="-120" stroke="#f59e0b" stroke-width="0.6"/>
+      <line x1="0" y1="0" x2="120" y2="0" stroke="#8b5cf6" stroke-width="0.6"/>
+      <line x1="0" y1="0" x2="0" y2="120" stroke="#f59e0b" stroke-width="0.6"/>
+      <line x1="0" y1="0" x2="-120" y2="0" stroke="#8b5cf6" stroke-width="0.6"/>
+      <line x1="0" y1="0" x2="85" y2="-85" stroke="#a78bfa" stroke-width="0.4"/>
+      <line x1="0" y1="0" x2="85" y2="85" stroke="#f59e0b" stroke-width="0.4"/>
+      <line x1="0" y1="0" x2="-85" y2="85" stroke="#a78bfa" stroke-width="0.4"/>
+      <line x1="0" y1="0" x2="-85" y2="-85" stroke="#f59e0b" stroke-width="0.4"/>
+      <line x1="0" y1="-120" x2="85" y2="-85" stroke="#f59e0b" stroke-width="0.3"/>
+      <line x1="85" y1="-85" x2="120" y2="0" stroke="#8b5cf6" stroke-width="0.3"/>
+      <line x1="120" y1="0" x2="85" y2="85" stroke="#a78bfa" stroke-width="0.3"/>
+      <line x1="85" y1="85" x2="0" y2="120" stroke="#f59e0b" stroke-width="0.3"/>
+      <line x1="0" y1="120" x2="-85" y2="85" stroke="#a78bfa" stroke-width="0.3"/>
+      <line x1="-85" y1="85" x2="-120" y2="0" stroke="#f59e0b" stroke-width="0.3"/>
+      <line x1="-120" y1="0" x2="-85" y2="-85" stroke="#8b5cf6" stroke-width="0.3"/>
+      <line x1="-85" y1="-85" x2="0" y2="-120" stroke="#f59e0b" stroke-width="0.3"/>
+      <!-- Inner connections -->
+      <line x1="0" y1="-60" x2="60" y2="0" stroke="#f59e0b" stroke-width="0.3"/>
+      <line x1="60" y1="0" x2="0" y2="60" stroke="#8b5cf6" stroke-width="0.3"/>
+      <line x1="0" y1="60" x2="-60" y2="0" stroke="#f59e0b" stroke-width="0.3"/>
+      <line x1="-60" y1="0" x2="0" y2="-60" stroke="#8b5cf6" stroke-width="0.3"/>
+    </g>
+  </svg>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="../../" class="logo"><span class="g">Ahamad</span></a>
+      <div class="nav-right">
+        <button class="nav-btn" id="themeToggle" title="Toggle theme">🌙</button>
+        <select class="lang-select" id="langSelect">
+          <option value="en">English</option>
+          <option value="bn">বাংলা</option>
+          <option value="zh">中文</option>
+          <option value="hi">हिन्दी</option>
+        </select>
+        <a href="../../" class="nav-btn" title="Back to Portfolio">←</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <div class="hero-badge"><span class="hero-badge-dot"></span><span data-i18n="badge">Education Revolution</span></div>
+      <h1 class="hero-title"><span class="g" data-i18n="heroTitle">Personalized<br/>Learning Systems</span></h1>
+      <p class="hero-sub"><span data-i18n="heroSub">Making quality education </span><span class="hero-typed" id="typedText"></span></p>
+      <div class="hero-btns">
+        <a href="#about" class="btn btn-primary shimmer-btn" data-i18n="exploreBtn">Explore Interest</a>
+        <a href="#impact" class="btn btn-outline" data-i18n="viewImpact">View Impact</a>
+        <a href="../../" class="btn btn-outline" data-i18n="backPortfolio">← Back to Portfolio</a>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <div class="scroll-mouse"><div class="scroll-dot"></div></div>
+      <span data-i18n="scroll">Scroll to explore</span>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="container">
+      <div data-anim>
+        <div class="section-label" data-i18n="aboutLabel">About This Interest</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="aboutTitle">Why Personalized Learning?</span></h2>
+        <p class="section-desc" data-i18n="aboutDesc">Education is the most powerful tool for transforming lives. I believe AI can make personalized, high-quality education accessible to every student — regardless of their background, location, or learning pace.</p>
+      </div>
+      <div class="about-grid">
+        <div class="about-card" data-anim>
+          <div class="about-icon">🎓</div>
+          <h3 data-i18n="aboutCard1Title">Education for Everyone</h3>
+          <p data-i18n="aboutCard1Text">In Bangladesh and many developing nations, students face overcrowded classrooms, limited teacher access, and one-size-fits-all curricula. AI-powered personalized learning systems can adapt to each student's unique needs — providing custom explanations, practice problems, and feedback that help them learn at their own pace. My dream is to make this technology available to every Bengali-speaking student.</p>
+        </div>
+        <div class="about-card" data-anim>
+          <div class="about-icon">🤖</div>
+          <h3 data-i18n="aboutCard2Title">AI as a Learning Companion</h3>
+          <p data-i18n="aboutCard2Text">Imagine an AI tutor that knows exactly where you're struggling, adapts its teaching style to match your learning preferences, and provides instant feedback — available 24/7 at zero cost. Intelligent tutoring systems, powered by knowledge graphs and NLP, are making this vision a reality. I'm driven to build systems that augment teachers and empower learners.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="topics" style="background:var(--alpha-3)">
+    <div class="container">
+      <div data-anim style="text-align:center;margin-bottom:40px">
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="topicsLabel">Knowledge Areas</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="topicsTitle">Key Topics I Explore</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="topicsDesc">Core domains in AI-powered personalized education and EdTech</p>
+      </div>
+      <div class="topics-grid">
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-amber">🔄</div>
+          <h3 data-i18n="topic1Title">Adaptive Learning Algorithms</h3>
+          <p data-i18n="topic1Desc">ML models that dynamically adjust content difficulty, pacing, and learning pathways based on individual student performance and engagement patterns.</p>
+        </div>
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-purple">🔗</div>
+          <h3 data-i18n="topic2Title">Knowledge Graph Construction</h3>
+          <p data-i18n="topic2Desc">Building structured representations of educational content that map prerequisite relationships, concept dependencies, and learning trajectories.</p>
+        </div>
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-blue">📊</div>
+          <h3 data-i18n="topic3Title">Student Performance Prediction</h3>
+          <p data-i18n="topic3Desc">Predictive models that identify at-risk students early, forecast learning outcomes, and recommend timely interventions to keep learners on track.</p>
+        </div>
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-cyan">💬</div>
+          <h3 data-i18n="topic4Title">Intelligent Tutoring Systems</h3>
+          <p data-i18n="topic4Desc">AI-powered tutors that provide step-by-step guidance, misconceptions diagnosis, and personalized feedback across subjects like math and science.</p>
+        </div>
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-emerald">📝</div>
+          <h3 data-i18n="topic5Title">NLP for Education</h3>
+          <p data-i18n="topic5Desc">Natural language processing applications for automated essay scoring, question generation, content summarization, and multilingual learning support.</p>
+        </div>
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-rose">📈</div>
+          <h3 data-i18n="topic6Title">Learning Analytics &amp; Dashboards</h3>
+          <p data-i18n="topic6Desc">Visual analytics platforms that give teachers and students real-time insights into learning progress, engagement metrics, and areas needing improvement.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="technologies">
+    <div class="container tech-section">
+      <div data-anim>
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="techLabel">Technologies</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="techTitle">Tools &amp; Frameworks</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="techDesc">Technologies driving personalized learning systems</p>
+      </div>
+      <div class="tech-grid">
+        <div class="tech-badge" data-anim><span class="icon">🐍</span> Python</div>
+        <div class="tech-badge" data-anim><span class="icon">🧠</span> TensorFlow</div>
+        <div class="tech-badge" data-anim><span class="icon">📚</span> NLP Libraries</div>
+        <div class="tech-badge" data-anim><span class="icon">🔗</span> Knowledge Graphs</div>
+        <div class="tech-badge" data-anim><span class="icon">🎯</span> Recommender Systems</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="flow" style="background:var(--alpha-3)">
+    <div class="container flow-section">
+      <div data-anim>
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="flowLabel">How It Works</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="flowTitle">The Personalized Learning Loop</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="flowDesc">How AI creates a continuous cycle of personalized education</p>
+      </div>
+      <div class="flow-diagram" data-anim>
+        <div class="flow-step"><span class="step-num">1</span><div class="flow-icon">👤</div><span class="flow-label" data-i18n="flow1">Student Input</span></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><span class="step-num">2</span><div class="flow-icon">🧠</div><span class="flow-label" data-i18n="flow2">AI Analysis</span></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><span class="step-num">3</span><div class="flow-icon">📖</div><span class="flow-label" data-i18n="flow3">Personalized Content</span></div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><span class="step-num">4</span><div class="flow-icon">🔄</div><span class="flow-label" data-i18n="flow4">Feedback Loop</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="impact">
+    <div class="container">
+      <div data-anim style="text-align:center;margin-bottom:32px">
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="impactLabel">Real World Impact</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="impactTitle">Transforming Education</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="impactDesc">The measurable impact of personalized learning systems</p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card" data-anim>
+          <div class="stat-icon">📉</div>
+          <div class="stat-number" id="statDropout">0%</div>
+          <div class="stat-label" data-i18n="stat1Label">Dropout Rate Reduction</div>
+        </div>
+        <div class="stat-card" data-anim>
+          <div class="stat-icon">📈</div>
+          <div class="stat-number" id="statEngagement">0%</div>
+          <div class="stat-label" data-i18n="stat2Label">Student Engagement Increase</div>
+        </div>
+        <div class="stat-card" data-anim>
+          <div class="stat-icon">🌍</div>
+          <div class="stat-number" id="statAccess">0M</div>
+          <div class="stat-label" data-i18n="stat3Label">Rural Students Reached</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="research" style="background:var(--alpha-3)">
+    <div class="container">
+      <div data-anim style="text-align:center;margin-bottom:40px">
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="researchLabel">Research &amp; Inspiration</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="researchTitle">EdTech Research I Follow</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="researchDesc">Pioneering work in AI-powered education that inspires my journey</p>
+      </div>
+      <div class="research-grid">
+        <div class="research-card" data-anim>
+          <div class="r-icon">📘</div>
+          <h3 data-i18n="res1Title">Intelligent Tutoring Systems</h3>
+          <p data-i18n="res1Desc">Carnegie Mellon's Cognitive Tutors pioneered the field of AI-driven tutoring. Their work shows that one-on-one AI tutoring can outperform traditional classroom instruction by adapting to each learner's cognitive model.</p>
+          <a href="https://www.cmu.edu/ilt/" target="_blank" class="r-link" data-i18n="learnMore">Explore →</a>
+        </div>
+        <div class="research-card" data-anim>
+          <div class="r-icon">🔗</div>
+          <h3 data-i18n="res2Title">Knowledge Tracing &amp; Bayesian Models</h3>
+          <p data-i18n="res2Desc">Knowledge tracing models use Bayesian inference and deep learning to track student mastery of skills over time, enabling accurate predictions of future performance and targeted interventions.</p>
+          <a href="https://educationaldatamining.org/" target="_blank" class="r-link" data-i18n="learnMore">Explore →</a>
+        </div>
+        <div class="research-card" data-anim>
+          <div class="r-icon">🌍</div>
+          <h3 data-i18n="res3Title">AI for Low-Resource Education</h3>
+          <p data-i18n="res3Desc">UNESCO and partners are exploring how AI can bridge education gaps in developing nations — from language-adaptive content to offline-capable learning platforms for remote areas.</p>
+          <a href="https://www.unesco.org/en/digital-education/artificial-intelligence" target="_blank" class="r-link" data-i18n="learnMore">Explore →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="goals">
+    <div class="container">
+      <div data-anim style="text-align:center;margin-bottom:40px">
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="goalsLabel">Future</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="goalsTitle">My Vision for the Future</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="goalsDesc">What I aim to achieve in AI-powered personalized education</p>
+      </div>
+      <div class="goals-list">
+        <div class="goal-item" data-anim><div class="check">✓</div><div><h4 data-i18n="goal1Title">Open Source Learning Platform for Bangladesh</h4><p data-i18n="goal1Desc">Build a free, open-source personalized learning platform tailored to the Bangladeshi curriculum in Bengali, reaching millions of students with quality adaptive education.</p></div></div>
+        <div class="goal-item" data-anim><div class="check">✓</div><div><h4 data-i18n="goal2Title">AI Tutors for Every Student</h4><p data-i18n="goal2Desc">Develop affordable AI tutoring systems that work on basic smartphones and offline — making personalized learning accessible to students in rural and underprivileged communities.</p></div></div>
+        <div class="goal-item" data-anim><div class="check">✓</div><div><h4 data-i18n="goal3Title">Multilingual EdTech for South Asia</h4><p data-i18n="goal3Desc">Scale personalized learning across Bengali, Hindi, and other South Asian languages using NLP models that understand local languages and cultural contexts.</p></div></div>
+        <div class="goal-item" data-anim><div class="check">✓</div><div><h4 data-i18n="goal4Title">Teacher Empowerment Tools</h4><p data-i18n="goal4Desc">Create analytics dashboards and AI assistants that help teachers understand their students better, reduce workload, and focus on what matters most — inspiring young minds.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section" id="cta" style="background:var(--alpha-3)">
+    <div class="container" data-anim>
+      <h2><span class="g" data-i18n="ctaTitle">Let's Build the Future of Education</span></h2>
+      <p data-i18n="ctaDesc">Passionate about EdTech, personalized learning, or interested in collaborating on an educational AI project? Let's connect and make learning accessible to all.</p>
+      <div class="cta-btns">
+        <a href="mailto:anmdahamadullah@gmail.com" class="btn btn-primary shimmer-btn" data-i18n="ctaCollaborate">Let's Collaborate</a>
+        <a href="https://github.com/im-ahamad" target="_blank" class="btn btn-outline" data-i18n="ctaGithub">View GitHub</a>
+        <a href="../../" class="btn btn-outline" data-i18n="ctaBack">← Back to Portfolio</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-bar">
+    <p>© 2024 <a href="../../">Md Ahamad Ullah</a> — <span data-i18n="footerTag">Making quality education personal with artificial intelligence</span></p>
+  </div>
+
+  <script>
+    // ===== THEME =====
+    const themeToggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    const savedTheme = localStorage.getItem('learn-theme') || 'light';
+    html.setAttribute('data-theme', savedTheme);
+    themeToggle.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+
+    themeToggle.addEventListener('click', () => {
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('learn-theme', next);
+      themeToggle.textContent = next === 'dark' ? '🌙' : '☀️';
+    });
+
+    // ===== PARTICLES =====
+    const canvas = document.getElementById('learn-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let mouseX = -1000, mouseY = -1000;
+
+    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = document.documentElement.scrollHeight; }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2.5 + 0.5;
+        this.speedX = (Math.random() - 0.5) * 0.3;
+        this.speedY = (Math.random() - 0.5) * 0.3;
+        this.opacity = Math.random() * 0.35 + 0.05;
+        this.color = Math.random() > 0.5 ? '245,158,11' : '139,92,246';
+        this.angle = Math.random() * Math.PI * 2;
+        this.orbitSpeed = (Math.random() - 0.5) * 0.01;
+      }
+      update() {
+        this.angle += this.orbitSpeed;
+        this.x += Math.cos(this.angle) * 0.15;
+        this.y += Math.sin(this.angle) * 0.15;
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+        const dx = this.x - mouseX, dy = this.y - mouseY, dist = Math.sqrt(dx*dx+dy*dy);
+        if (dist < 100) { this.x += dx/dist * 0.5; this.y += dy/dist * 0.5; }
+      }
+      draw() {
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${this.color},${this.opacity})`; ctx.fill();
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.size * 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${this.color},${this.opacity * 0.12})`; ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < 70; i++) particles.push(new Particle());
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const isDark = html.getAttribute('data-theme') === 'dark';
+      const connOpacity = isDark ? 0.05 : 0.025;
+      particles.forEach(p => { p.update(); p.draw(); });
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y, dist = Math.sqrt(dx*dx+dy*dy);
+          if (dist < 130) {
+            ctx.beginPath(); ctx.moveTo(particles[i].x, particles[i].y); ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(245,158,11,${connOpacity * (1 - dist/130)})`; ctx.lineWidth = 0.5; ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY + window.scrollY; });
+    document.addEventListener('scroll', () => { canvas.height = document.documentElement.scrollHeight; });
+
+    // ===== TYPED TEXT =====
+    const typedEl = document.getElementById('typedText');
+    const phrases = [
+      'personalized for you', 'adaptive and inclusive',
+      'available to everyone', 'powered by AI',
+      'made for every learner', 'bridging the gap'
+    ];
+    let phraseIdx = 0, charIdx = 0, isDeleting = false;
+
+    function typeEffect() {
+      const current = phrases[phraseIdx];
+      if (!isDeleting) {
+        typedEl.textContent = current.substring(0, charIdx + 1); charIdx++;
+        if (charIdx === current.length) { isDeleting = true; setTimeout(typeEffect, 2000); return; }
+        setTimeout(typeEffect, 80);
+      } else {
+        typedEl.textContent = current.substring(0, charIdx - 1); charIdx--;
+        if (charIdx === 0) { isDeleting = false; phraseIdx = (phraseIdx + 1) % phrases.length; setTimeout(typeEffect, 300); return; }
+        setTimeout(typeEffect, 40);
+      }
+    }
+    typeEffect();
+
+    // ===== SCROLL ANIMATIONS =====
+    const animEls = document.querySelectorAll('[data-anim]');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    animEls.forEach(el => observer.observe(el));
+
+    // ===== PROGRESS BAR =====
+    const progressBar = document.getElementById('progressBar');
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      progressBar.style.transform = `scaleX(${docHeight > 0 ? scrollTop / docHeight : 0})`;
+    });
+
+    // ===== STAT COUNTERS =====
+    function animateCounter(el, target, suffix) {
+      let current = 0;
+      const increment = target / 60;
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) { el.textContent = Math.round(target) + suffix; clearInterval(timer); return; }
+        el.textContent = Math.round(current) + suffix;
+      }, 20);
+    }
+
+    let statsAnimated = false;
+    const statsSection = document.getElementById('impact');
+    const statsObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !statsAnimated) {
+          statsAnimated = true;
+          animateCounter(document.getElementById('statDropout'), 45, '%');
+          animateCounter(document.getElementById('statEngagement'), 62, '%');
+          animateCounter(document.getElementById('statAccess'), 5, 'M+');
+        }
+      });
+    }, { threshold: 0.3 });
+    statsObserver.observe(statsSection);
+
+    // ===== LANGUAGE =====
+    const translations = {
+      en: {
+        badge: 'Education Revolution',
+        heroTitle: 'Personalized<br/>Learning Systems',
+        heroSub: 'Making quality education ',
+        exploreBtn: 'Explore Interest',
+        viewImpact: 'View Impact',
+        backPortfolio: '← Back to Portfolio',
+        scroll: 'Scroll to explore',
+        aboutLabel: 'About This Interest',
+        aboutTitle: 'Why Personalized Learning?',
+        aboutDesc: 'Education is the most powerful tool for transforming lives. I believe AI can make personalized, high-quality education accessible to every student — regardless of their background, location, or learning pace.',
+        aboutCard1Title: 'Education for Everyone',
+        aboutCard1Text: 'In Bangladesh and many developing nations, students face overcrowded classrooms, limited teacher access, and one-size-fits-all curricula. AI-powered personalized learning systems can adapt to each student\'s unique needs — providing custom explanations, practice problems, and feedback that help them learn at their own pace. My dream is to make this technology available to every Bengali-speaking student.',
+        aboutCard2Title: 'AI as a Learning Companion',
+        aboutCard2Text: 'Imagine an AI tutor that knows exactly where you\'re struggling, adapts its teaching style to match your learning preferences, and provides instant feedback — available 24/7 at zero cost. Intelligent tutoring systems, powered by knowledge graphs and NLP, are making this vision a reality. I\'m driven to build systems that augment teachers and empower learners.',
+        topicsLabel: 'Knowledge Areas',
+        topicsTitle: 'Key Topics I Explore',
+        topicsDesc: 'Core domains in AI-powered personalized education and EdTech',
+        topic1Title: 'Adaptive Learning Algorithms',
+        topic1Desc: 'ML models that dynamically adjust content difficulty, pacing, and learning pathways based on individual student performance and engagement patterns.',
+        topic2Title: 'Knowledge Graph Construction',
+        topic2Desc: 'Building structured representations of educational content that map prerequisite relationships, concept dependencies, and learning trajectories.',
+        topic3Title: 'Student Performance Prediction',
+        topic3Desc: 'Predictive models that identify at-risk students early, forecast learning outcomes, and recommend timely interventions to keep learners on track.',
+        topic4Title: 'Intelligent Tutoring Systems',
+        topic4Desc: 'AI-powered tutors that provide step-by-step guidance, misconceptions diagnosis, and personalized feedback across subjects like math and science.',
+        topic5Title: 'NLP for Education',
+        topic5Desc: 'Natural language processing applications for automated essay scoring, question generation, content summarization, and multilingual learning support.',
+        topic6Title: 'Learning Analytics &amp; Dashboards',
+        topic6Desc: 'Visual analytics platforms that give teachers and students real-time insights into learning progress, engagement metrics, and areas needing improvement.',
+        techLabel: 'Technologies',
+        techTitle: 'Tools &amp; Frameworks',
+        techDesc: 'Technologies driving personalized learning systems',
+        flowLabel: 'How It Works',
+        flowTitle: 'The Personalized Learning Loop',
+        flowDesc: 'How AI creates a continuous cycle of personalized education',
+        flow1: 'Student Input',
+        flow2: 'AI Analysis',
+        flow3: 'Personalized Content',
+        flow4: 'Feedback Loop',
+        impactLabel: 'Real World Impact',
+        impactTitle: 'Transforming Education',
+        impactDesc: 'The measurable impact of personalized learning systems',
+        stat1Label: 'Dropout Rate Reduction',
+        stat2Label: 'Student Engagement Increase',
+        stat3Label: 'Rural Students Reached',
+        researchLabel: 'Research &amp; Inspiration',
+        researchTitle: 'EdTech Research I Follow',
+        researchDesc: 'Pioneering work in AI-powered education that inspires my journey',
+        res1Title: 'Intelligent Tutoring Systems',
+        res1Desc: 'Carnegie Mellon\'s Cognitive Tutors pioneered the field of AI-driven tutoring. Their work shows one-on-one AI tutoring can outperform traditional classroom instruction.',
+        res2Title: 'Knowledge Tracing &amp; Bayesian Models',
+        res2Desc: 'Knowledge tracing models use Bayesian inference and deep learning to track student mastery of skills over time, enabling accurate predictions and targeted interventions.',
+        res3Title: 'AI for Low-Resource Education',
+        res3Desc: 'UNESCO and partners explore how AI can bridge education gaps in developing nations — from language-adaptive content to offline-capable learning platforms for remote areas.',
+        learnMore: 'Explore →',
+        goalsLabel: 'Future',
+        goalsTitle: 'My Vision for the Future',
+        goalsDesc: 'What I aim to achieve in AI-powered personalized education',
+        goal1Title: 'Open Source Learning Platform for Bangladesh',
+        goal1Desc: 'Build a free, open-source personalized learning platform tailored to the Bangladeshi curriculum in Bengali, reaching millions with quality adaptive education.',
+        goal2Title: 'AI Tutors for Every Student',
+        goal2Desc: 'Develop affordable AI tutoring systems that work on basic smartphones and offline — making personalized learning accessible to rural and underprivileged communities.',
+        goal3Title: 'Multilingual EdTech for South Asia',
+        goal3Desc: 'Scale personalized learning across Bengali, Hindi, and other South Asian languages using NLP models that understand local languages and cultural contexts.',
+        goal4Title: 'Teacher Empowerment Tools',
+        goal4Desc: 'Create analytics dashboards and AI assistants that help teachers understand their students better, reduce workload, and focus on inspiring young minds.',
+        ctaTitle: 'Let\'s Build the Future of Education',
+        ctaDesc: 'Passionate about EdTech, personalized learning, or interested in collaborating on an educational AI project? Let\'s connect and make learning accessible to all.',
+        ctaCollaborate: 'Let\'s Collaborate',
+        ctaGithub: 'View GitHub',
+        ctaBack: '← Back to Portfolio',
+        footerTag: 'Making quality education personal with artificial intelligence',
+      },
+      bn: {
+        badge: 'শিক্ষা বিপ্লব',
+        heroTitle: 'ব্যক্তিগতকৃত<br/>শিক্ষা ব্যবস্থা',
+        heroSub: 'মানসম্মত শিক্ষাকে ',
+        exploreBtn: 'আগ্রহ অন্বেষণ',
+        viewImpact: 'প্রভাব দেখুন',
+        backPortfolio: '← পোর্টফোলিওতে ফিরুন',
+        scroll: 'অন্বেষণ করতে স্ক্রোল করুন',
+        aboutLabel: 'এই আগ্রহ সম্পর্কে',
+        aboutTitle: 'কেন ব্যক্তিগতকৃত শিক্ষা?',
+        aboutDesc: 'শিক্ষা হলো জীবন পরিবর্তনের সবচেয়ে শক্তিশালী হাতিয়ার। আমি বিশ্বাস করি AI প্রতিটি শিক্ষার্থীর জন্য ব্যক্তিগতকৃত, উচ্চমানের শিক্ষা অ্যাক্সেসযোগ্য করতে পারে — তাদের পটভূমি, অবস্থান বা শেখার গতি নির্বিশেষে।',
+        aboutCard1Title: 'সবার জন্য শিক্ষা',
+        aboutCard1Text: 'বাংলাদেশ এবং অনেক উন্নয়নশীল দেশে, শিক্ষার্থীরা ভিড় ক্লাসরুম, সীমিত শিক্ষক অ্যাক্সেস এবং এক-আকার-সবার-জন্য-উপযোগী পাঠ্যক্রমের মুখোমুখি হয়। AI-চালিত ব্যক্তিগতকৃত শিক্ষা ব্যবস্থা প্রতিটি শিক্ষার্থীর অনন্য চাহিদার সাথে খাপ খাইয়ে নিতে পারে — কাস্টম ব্যাখ্যা, অনুশীলন সমস্যা এবং প্রতিক্রিয়া প্রদান করে যা তাদের নিজস্ব গতিতে শিখতে সাহায্য করে। আমার স্বপ্ন হল এই প্রযুক্তি প্রতিটি বাংলাভাষী শিক্ষার্থীর কাছে পৌঁছে দেওয়া।',
+        aboutCard2Title: 'শেখার সহচর হিসেবে AI',
+        aboutCard2Text: 'একটি AI টিউটর কল্পনা করুন যে জানে আপনি ঠিক কোথায় সমস্যায় পড়ছেন, আপনার শেখার পছন্দ অনুসারে তার শিক্ষার শৈলী পরিবর্তন করে, এবং তাৎক্ষণিক প্রতিক্রিয়া প্রদান করে — ২৪/৭ বিনামূল্যে উপলব্ধ। নলেজ গ্রাফ এবং NLP দ্বারা চালিত ইন্টেলিজেন্ট টিউটরিং সিস্টেম এই দৃষ্টিভঙ্গিকে বাস্তবে পরিণত করছে। আমি শিক্ষকদের শক্তিশালী এবং শিক্ষার্থীদের ক্ষমতায়ন করে এমন সিস্টেম তৈরি করতে চালিত।',
+        topicsLabel: 'জ্ঞানের ক্ষেত্র',
+        topicsTitle: 'আমি যে মূল বিষয়গুলি অন্বেষণ করি',
+        topicsDesc: 'AI-চালিত ব্যক্তিগতকৃত শিক্ষা এবং EdTech-এর মূল ডোমেন',
+        topic1Title: 'অ্যাডাপটিভ লার্নিং অ্যালগরিদম',
+        topic1Desc: 'ML মডেল যা স্বতন্ত্র শিক্ষার্থীর কর্মক্ষমতা এবং ব্যস্ততার প্যাটার্নের উপর ভিত্তি করে গতিশীলভাবে বিষয়বস্তুর কঠিন্‌তা, গতি এবং শেখার পথ সামঞ্জস্য করে।',
+        topic2Title: 'নলেজ গ্রাফ নির্মাণ',
+        topic2Desc: 'শিক্ষামূলক সামগ্রীর কাঠামোগত উপস্থাপনা তৈরি যা পূর্বশর্ত সম্পর্ক, ধারণা নির্ভরতা এবং শেখার গতিপথ ম্যাপ করে।',
+        topic3Title: 'শিক্ষার্থীর কর্মক্ষমতা পূর্বাভাস',
+        topic3Desc: 'প্রেডিকটিভ মডেল যা প্রাথমিকভাবে ঝুঁকিপূর্ণ শিক্ষার্থীদের চিহ্নিত করে, শেখার ফলাফল পূর্বাভাস দেয় এবং শিক্ষার্থীদের ট্র্যাকে রাখতে সময়োপযোগী হস্তক্ষেপের সুপারিশ করে।',
+        topic4Title: 'ইন্টেলিজেন্ট টিউটরিং সিস্টেম',
+        topic4Desc: 'AI-চালিত টিউটর যা গণিত এবং বিজ্ঞানের মতো বিষয় জুড়ে ধাপে ধাপে নির্দেশিকা, ভুল ধারণা নির্ণয় এবং ব্যক্তিগতকৃত প্রতিক্রিয়া প্রদান করে।',
+        topic5Title: 'শিক্ষার জন্য NLP',
+        topic5Desc: 'স্বয়ংক্রিয় প্রবন্ধ স্কোরিং, প্রশ্ন তৈরি, বিষয়বস্তু সারাংশ এবং বহুভাষিক শিক্ষা সহায়তার জন্য ন্যাচারাল ল্যাঙ্গুয়েজ প্রসেসিং অ্যাপ্লিকেশন।',
+        topic6Title: 'লার্নিং অ্যানালিটিক্স ও ড্যাশবোর্ড',
+        topic6Desc: 'ভিজ্যুয়াল অ্যানালিটিক্স প্ল্যাটফর্ম যা শিক্ষক এবং শিক্ষার্থীদের শেখার অগ্রগতি, ব্যস্ততা মেট্রিক্স এবং উন্নতির প্রয়োজন এমন ক্ষেত্রগুলিতে রিয়েল-টাইম অন্তর্দৃষ্টি দেয়।',
+        techLabel: 'প্রযুক্তি',
+        techTitle: 'টুলস ও ফ্রেমওয়ার্ক',
+        techDesc: 'ব্যক্তিগতকৃত শিক্ষা ব্যবস্থা চালিত প্রযুক্তি',
+        flowLabel: 'কিভাবে কাজ করে',
+        flowTitle: 'ব্যক্তিগতকৃত শিক্ষা লুপ',
+        flowDesc: 'কীভাবে AI ব্যক্তিগতকৃত শিক্ষার একটি ধারাবাহিক চক্র তৈরি করে',
+        flow1: 'শিক্ষার্থী ইনপুট',
+        flow2: 'AI বিশ্লেষণ',
+        flow3: 'ব্যক্তিগতকৃত বিষয়বস্তু',
+        flow4: 'ফিডব্যাক লুপ',
+        impactLabel: 'বাস্তব বিশ্বের প্রভাব',
+        impactTitle: 'শিক্ষা রূপান্তর',
+        impactDesc: 'ব্যক্তিগতকৃত শিক্ষা ব্যবস্থার পরিমাপযোগ্য প্রভাব',
+        stat1Label: 'ড্রপআউট হার হ্রাস',
+        stat2Label: 'শিক্ষার্থী ব্যস্ততা বৃদ্ধি',
+        stat3Label: 'গ্রামীণ শিক্ষার্থীতে পৌঁছানো',
+        researchLabel: 'গবেষণা ও অনুপ্রেরণা',
+        researchTitle: 'আমি যে EdTech গবেষণা অনুসরণ করি',
+        researchDesc: 'AI-চালিত শিক্ষায় অগ্রণী কাজ যা আমার যাত্রাকে অনুপ্রাণিত করে',
+        res1Title: 'ইন্টেলিজেন্ট টিউটরিং সিস্টেম',
+        res1Desc: 'কার্নেগি মেলনের কগনিটিভ টিউটর AI-চালিত টিউটরিংয়ের ক্ষেত্রে পথিকৃৎ। তাদের কাজ দেখায় যে একের পর এক AI টিউটরিং ঐতিহ্যগত ক্লাসরুম নির্দেশনার চেয়ে ভালো করতে পারে।',
+        res2Title: 'নলেজ ট্রেসিং ও বায়েসিয়ান মডেল',
+        res2Desc: 'নলেজ ট্রেসিং মডেল সময়ের সাথে শিক্ষার্থীর দক্ষতা দক্ষতা ট্র্যাক করতে বায়েসিয়ান ইনফারেন্স এবং ডিপ লার্নিং ব্যবহার করে, সঠিক পূর্বাভাস এবং লক্ষ্যবস্তু হস্তক্ষেপ সক্ষম করে।',
+        res3Title: 'স্বল্প-সম্পদ শিক্ষার জন্য AI',
+        res3Desc: 'UNESCO এবং অংশীদাররা অন্বেষণ করে কিভাবে AI উন্নয়নশীল দেশে শিক্ষার ব্যবধান পূরণ করতে পারে — ভাষা-অভিযোজিত বিষয়বস্তু থেকে দূরবর্তী এলাকার জন্য অফলাইন-সক্ষম লার্নিং প্ল্যাটফর্ম।',
+        learnMore: 'অন্বেষণ →',
+        goalsLabel: 'ভবিষ্যৎ',
+        goalsTitle: 'ভবিষ্যতের জন্য আমার দৃষ্টি',
+        goalsDesc: 'AI-চালিত ব্যক্তিগতকৃত শিক্ষায় আমি কী অর্জন করতে চাই',
+        goal1Title: 'বাংলাদেশের জন্য ওপেন সোর্স লার্নিং প্ল্যাটফর্ম',
+        goal1Desc: 'বাংলাদেশী পাঠ্যক্রমের সাথে সামঞ্জস্যপূর্ণ একটি বিনামূল্যের, ওপেন-সোর্স ব্যক্তিগতকৃত শিক্ষা প্ল্যাটফর্ম তৈরি করুন বাংলায়, লক্ষ লক্ষ শিক্ষার্থীতে পৌঁছে।',
+        goal2Title: 'প্রত্যেক শিক্ষার্থীর জন্য AI টিউটর',
+        goal2Desc: 'সাশ্রয়ী AI টিউটরিং সিস্টেম তৈরি করুন যা সাধারণ স্মার্টফোনে এবং অফলাইনে কাজ করে — গ্রামীণ এবং সুবিধাবঞ্চিত সম্প্রদায়ের জন্য ব্যক্তিগতকৃত শিক্ষা অ্যাক্সেসযোগ্য করে তোলে।',
+        goal3Title: 'দক্ষিণ এশিয়ার জন্য বহুভাষিক EdTech',
+        goal3Desc: 'স্থানীয় ভাষা এবং সাংস্কৃতিক প্রসঙ্গ বোঝে এমন NLP মডেল ব্যবহার করে বাংলা, হিন্দি এবং অন্যান্য দক্ষিণ এশীয় ভাষায় ব্যক্তিগতকৃত শিক্ষা স্কেল করুন।',
+        goal4Title: 'শিক্ষক ক্ষমতায়ন টুলস',
+        goal4Desc: 'অ্যানালিটিক্স ড্যাশবোর্ড এবং AI সহায়ক তৈরি করুন যা শিক্ষকদের তাদের শিক্ষার্থীদের আরও ভালভাবে বুঝতে, কাজের চাপ কমাতে এবং তরুণ মনকে অনুপ্রাণিত করতে সাহায্য করে।',
+        ctaTitle: 'চলুন শিক্ষার ভবিষ্যৎ গড়ি',
+        ctaDesc: 'EdTech, ব্যক্তিগতকৃত শিক্ষা সম্পর্কে আগ্রহী বা একটি শিক্ষামূলক AI প্রকল্পে সহযোগিতা করতে আগ্রহী? আসুন সংযোগ করি এবং শিক্ষাকে সবার জন্য অ্যাক্সেসযোগ্য করে তুলি।',
+        ctaCollaborate: 'চলুন সহযোগিতা করি',
+        ctaGithub: 'GitHub দেখুন',
+        ctaBack: '← পোর্টফোলিওতে ফিরুন',
+        footerTag: 'কৃত্রিম বুদ্ধিমত্তার সাথে মানসম্মত শিক্ষাকে ব্যক্তিগতকৃত করা',
+      },
+      zh: {
+        badge: '教育革命',
+        heroTitle: '个性化<br/>学习系统',
+        heroSub: '让优质教育 ',
+        exploreBtn: '探索兴趣',
+        viewImpact: '查看影响',
+        backPortfolio: '← 返回作品集',
+        scroll: '滚动探索',
+        aboutLabel: '关于此兴趣',
+        aboutTitle: '为什么是个性化学习？',
+        aboutDesc: '教育是改变生活最强大的工具。我相信AI可以让每个学生都能获得个性化、高质量的教育——无论他们的背景、地点或学习速度如何。',
+        aboutCard1Title: '人人享有教育',
+        aboutCard1Text: '在孟加拉国和许多发展中国家，学生面临拥挤的教室、有限的教师资源和一刀切的课程。AI驱动的个性化学习系统可以适应每个学生的独特需求——提供定制的解释、练习题和反馈，帮助他们按照自己的节奏学习。我的梦想是让这项技术惠及每个讲孟加拉语的学生。',
+        aboutCard2Title: 'AI作为学习伙伴',
+        aboutCard2Text: '想象一个AI导师，它确切知道你在哪里遇到困难，调整教学方式以匹配你的学习偏好，并提供即时反馈——24/7免费提供。由知识图谱和NLP驱动的智能辅导系统正在使这一愿景成为现实。我致力于构建能够增强教师能力、赋予学习者力量的系统。',
+        topicsLabel: '知识领域',
+        topicsTitle: '我探索的关键主题',
+        topicsDesc: 'AI驱动的个性化教育和EdTech的核心领域',
+        topic1Title: '自适应学习算法',
+        topic1Desc: '根据学生个人表现和参与模式动态调整内容难度、节奏和学习路径的ML模型。',
+        topic2Title: '知识图谱构建',
+        topic2Desc: '构建教育内容的结构化表示，映射先决条件关系、概念依赖关系和学习轨迹。',
+        topic3Title: '学生表现预测',
+        topic3Desc: '早期识别有风险学生、预测学习成果并推荐及时干预措施以保持学习者正常学习的预测模型。',
+        topic4Title: '智能辅导系统',
+        topic4Desc: 'AI驱动的导师，在数学和科学等科目中提供逐步指导、错误概念诊断和个性化反馈。',
+        topic5Title: '教育NLP',
+        topic5Desc: '自然语言处理在自动作文评分、问题生成、内容摘要和多语言学习支持中的应用。',
+        topic6Title: '学习分析与仪表板',
+        topic6Desc: '为教师和学生提供学习进度、参与度指标和需要改进领域的实时洞察的可视化分析平台。',
+        techLabel: '技术',
+        techTitle: '工具与框架',
+        techDesc: '驱动个性化学习系统的技术',
+        flowLabel: '工作原理',
+        flowTitle: '个性化学习循环',
+        flowDesc: 'AI如何创建个性化教育的持续循环',
+        flow1: '学生输入',
+        flow2: 'AI分析',
+        flow3: '个性化内容',
+        flow4: '反馈循环',
+        impactLabel: '现实世界影响',
+        impactTitle: '改变教育',
+        impactDesc: '个性化学习系统的可衡量影响',
+        stat1Label: '辍学率降低',
+        stat2Label: '学生参与度提升',
+        stat3Label: '覆盖农村学生',
+        researchLabel: '研究与启发',
+        researchTitle: '我关注的EdTech研究',
+        researchDesc: 'AI驱动教育领域的开创性工作激励着我的旅程',
+        res1Title: '智能辅导系统',
+        res1Desc: '卡内基梅隆大学的认知导师开创了AI驱动辅导领域。他们的工作表明一对一的AI辅导可以超越传统课堂教学。',
+        res2Title: '知识追踪与贝叶斯模型',
+        res2Desc: '知识追踪模型使用贝叶斯推理和深度学习追踪学生随时间推移的技能掌握情况，实现准确预测和针对性干预。',
+        res3Title: '低资源教育AI',
+        res3Desc: '联合国教科文组织及合作伙伴探索AI如何弥合发展中国家的教育差距——从语言自适应内容到偏远地区的离线学习平台。',
+        learnMore: '探索 →',
+        goalsLabel: '未来',
+        goalsTitle: '我对未来的愿景',
+        goalsDesc: '我在AI驱动的个性化教育中旨在实现的目标',
+        goal1Title: '孟加拉国开源学习平台',
+        goal1Desc: '构建一个免费的、开源的个性化学习平台，适配孟加拉语课程，覆盖数百万学生，提供优质自适应教育。',
+        goal2Title: '每个学生都有AI导师',
+        goal2Desc: '开发可在基本智能手机和离线环境下工作的经济实惠的AI辅导系统——使农村和弱势社区也能获得个性化学习。',
+        goal3Title: '南亚多语言EdTech',
+        goal3Desc: '使用理解当地语言和文化背景的NLP模型，将个性化学习扩展到孟加拉语、印地语和其他南亚语言。',
+        goal4Title: '教师赋能工具',
+        goal4Desc: '创建分析仪表板和AI助手，帮助教师更好地了解学生、减轻工作负担，专注于激励年轻的心灵。',
+        ctaTitle: '让我们一起构建教育的未来',
+        ctaDesc: '对EdTech、个性化学习充满热情，或有兴趣在教育AI项目上合作？让我们联系，让学习变得人人可及。',
+        ctaCollaborate: '让我们合作',
+        ctaGithub: '查看GitHub',
+        ctaBack: '← 返回作品集',
+        footerTag: '用人工智能让优质教育个性化',
+      },
+      hi: {
+        badge: 'शिक्षा क्रांति',
+        heroTitle: 'व्यक्तिगत<br/>शिक्षण प्रणाली',
+        heroSub: 'गुणवत्तापूर्ण शिक्षा को ',
+        exploreBtn: 'रुचि का अन्वेषण करें',
+        viewImpact: 'प्रभाव देखें',
+        backPortfolio: '← पोर्टफोलियो पर वापस जाएं',
+        scroll: 'अन्वेषण करने के लिए स्क्रॉल करें',
+        aboutLabel: 'इस रुचि के बारे में',
+        aboutTitle: 'व्यक्तिगत शिक्षा क्यों?',
+        aboutDesc: 'शिक्षा जीवन को बदलने का सबसे शक्तिशाली उपकरण है। मेरा मानना है कि AI प्रत्येक छात्र के लिए व्यक्तिगत, उच्च गुणवत्ता वाली शिक्षा को सुलभ बना सकता है — चाहे उनकी पृष्ठभूमि, स्थान या सीखने की गति कुछ भी हो।',
+        aboutCard1Title: 'सभी के लिए शिक्षा',
+        aboutCard1Text: 'बांग्लादेश और कई विकासशील देशों में, छात्रों को भीड़भाड़ वाली कक्षाओं, सीमित शिक्षक पहुंच और एक-आकार-सभी-के-लिए-उपयुक्त पाठ्यक्रम का सामना करना पड़ता है। AI-संचालित व्यक्तिगत शिक्षण प्रणालियां प्रत्येक छात्र की अनूठी जरूरतों के अनुकूल हो सकती हैं — कस्टम स्पष्टीकरण, अभ्यास समस्याएं और प्रतिक्रिया प्रदान करना जो उन्हें अपनी गति से सीखने में मदद करती हैं। मेरा सपना इस तकनीक को हर बंगाली-भाषी छात्र तक उपलब्ध कराना है।',
+        aboutCard2Title: 'एक शिक्षण साथी के रूप में AI',
+        aboutCard2Text: 'एक AI ट्यूटर की कल्पना करें जो जानता है कि आप वास्तव में कहां संघर्ष कर रहे हैं, आपकी सीखने की प्राथमिकताओं से मेल खाने के लिए अपनी शिक्षण शैली को अनुकूलित करता है, और तत्काल प्रतिक्रिया प्रदान करता है — 24/7 शून्य लागत पर उपलब्ध। नॉलेज ग्राफ और NLP द्वारा संचालित इंटेलिजेंट ट्यूटरिंग सिस्टम इस दृष्टि को वास्तविकता बना रहे हैं। मैं ऐसी प्रणालियां बनाने के लिए प्रेरित हूं जो शिक्षकों को बढ़ाएं और शिक्षार्थियों को सशक्त बनाएं।',
+        topicsLabel: 'ज्ञान क्षेत्र',
+        topicsTitle: 'मुख्य विषय जिनका मैं अन्वेषण करता हूं',
+        topicsDesc: 'AI-संचालित व्यक्तिगत शिक्षा और EdTech के मुख्य डोमेन',
+        topic1Title: 'अनुकूली शिक्षण एल्गोरिदम',
+        topic1Desc: 'ML मॉडल जो व्यक्तिगत छात्र प्रदर्शन और जुड़ाव पैटर्न के आधार पर गतिशील रूप से सामग्री कठिनाई, गति और सीखने के पथ को समायोजित करते हैं।',
+        topic2Title: 'नॉलेज ग्राफ निर्माण',
+        topic2Desc: 'शैक्षिक सामग्री का संरचित प्रतिनिधित्व बनाना जो पूर्वापेक्षा संबंधों, अवधारणा निर्भरताओं और सीखने के प्रक्षेप पथ को मैप करता है।',
+        topic3Title: 'छात्र प्रदर्शन भविष्यवाणी',
+        topic3Desc: 'पूर्वानुमान मॉडल जो जोखिम वाले छात्रों की जल्दी पहचान करते हैं, सीखने के परिणामों का पूर्वानुमान लगाते हैं, और शिक्षार्थियों को ट्रैक पर रखने के लिए समय पर हस्तक्षेप की सिफारिश करते हैं।',
+        topic4Title: 'इंटेलिजेंट ट्यूटरिंग सिस्टम',
+        topic4Desc: 'AI-संचालित ट्यूटर जो गणित और विज्ञान जैसे विषयों में चरण-दर-चरण मार्गदर्शन, गलत धारणा निदान और व्यक्तिगत प्रतिक्रिया प्रदान करते हैं।',
+        topic5Title: 'शिक्षा के लिए NLP',
+        topic5Desc: 'स्वचालित निबंध स्कोरिंग, प्रश्न निर्माण, सामग्री सारांश और बहुभाषी शिक्षण सहायता के लिए प्राकृतिक भाषा प्रसंस्करण अनुप्रयोग।',
+        topic6Title: 'लर्निंग एनालिटिक्स और डैशबोर्ड',
+        topic6Desc: 'विज़ुअल एनालिटिक्स प्लेटफॉर्म जो शिक्षकों और छात्रों को सीखने की प्रगति, जुड़ाव मीट्रिक और सुधार की आवश्यकता वाले क्षेत्रों में रीयल-टाइम अंतर्दृष्टि देते हैं।',
+        techLabel: 'प्रौद्योगिकियां',
+        techTitle: 'उपकरण और फ्रेमवर्क',
+        techDesc: 'व्यक्तिगत शिक्षण प्रणालियों को संचालित करने वाली प्रौद्योगिकियां',
+        flowLabel: 'यह कैसे काम करता है',
+        flowTitle: 'व्यक्तिगत शिक्षण लूप',
+        flowDesc: 'AI व्यक्तिगत शिक्षा का एक सतत चक्र कैसे बनाता है',
+        flow1: 'छात्र इनपुट',
+        flow2: 'AI विश्लेषण',
+        flow3: 'व्यक्तिगत सामग्री',
+        flow4: 'फीडबैक लूप',
+        impactLabel: 'वास्तविक दुनिया प्रभाव',
+        impactTitle: 'शिक्षा को बदलना',
+        impactDesc: 'व्यक्तिगत शिक्षण प्रणालियों का मापनीय प्रभाव',
+        stat1Label: 'ड्रॉपआउट दर में कमी',
+        stat2Label: 'छात्र जुड़ाव में वृद्धि',
+        stat3Label: 'ग्रामीण छात्रों तक पहुंच',
+        researchLabel: 'अनुसंधान और प्रेरणा',
+        researchTitle: 'मैं जिन EdTech अनुसंधानों का अनुसरण करता हूं',
+        researchDesc: 'AI-संचालित शिक्षा में अग्रणी कार्य जो मेरी यात्रा को प्रेरित करता है',
+        res1Title: 'इंटेलिजेंट ट्यूटरिंग सिस्टम',
+        res1Desc: 'कार्नेगी मेलन के कॉग्निटिव ट्यूटर ने AI-संचालित ट्यूटरिंग के क्षेत्र का बीड़ा उठाया। उनका काम दिखाता है कि एक-पर-एक AI ट्यूटरिंग पारंपरिक कक्षा निर्देश से बेहतर प्रदर्शन कर सकती है।',
+        res2Title: 'नॉलेज ट्रेसिंग और बायेसियन मॉडल',
+        res2Desc: 'नॉलेज ट्रेसिंग मॉडल समय के साथ छात्र की कौशल निपुणता को ट्रैक करने के लिए बायेसियन अनुमान और डीप लर्निंग का उपयोग करते हैं, सटीक भविष्यवाणियां और लक्षित हस्तक्षेप सक्षम करते हैं।',
+        res3Title: 'कम-संसाधन शिक्षा के लिए AI',
+        res3Desc: 'यूनेस्को और साझेदार यह पता लगाते हैं कि कैसे AI विकासशील देशों में शिक्षा के अंतर को पाट सकता है — भाषा-अनुकूली सामग्री से लेकर दूरस्थ क्षेत्रों के लिए ऑफलाइन-सक्षम लर्निंग प्लेटफॉर्म तक।',
+        learnMore: 'अन्वेषण →',
+        goalsLabel: 'भविष्य',
+        goalsTitle: 'भविष्य के लिए मेरी दृष्टि',
+        goalsDesc: 'AI-संचालित व्यक्तिगत शिक्षा में मैं क्या हासिल करना चाहता हूं',
+        goal1Title: 'बांग्लादेश के लिए ओपन सोर्स लर्निंग प्लेटफॉर्म',
+        goal1Desc: 'बांग्लादेशी पाठ्यक्रम के अनुरूप बंगाली में एक मुफ्त, ओपन-सोर्स व्यक्तिगत शिक्षण प्लेटफॉर्म बनाएं, लाखों छात्रों तक गुणवत्तापूर्ण अनुकूली शिक्षा पहुंचाएं।',
+        goal2Title: 'हर छात्र के लिए AI ट्यूटर',
+        goal2Desc: 'किफायती AI ट्यूटरिंग सिस्टम विकसित करें जो बुनियादी स्मार्टफोन और ऑफलाइन पर काम करें — ग्रामीण और वंचित समुदायों के लिए व्यक्तिगत शिक्षा को सुलभ बनाना।',
+        goal3Title: 'दक्षिण एशिया के लिए बहुभाषी EdTech',
+        goal3Desc: 'स्थानीय भाषाओं और सांस्कृतिक संदर्भों को समझने वाले NLP मॉडल का उपयोग करके बंगाली, हिंदी और अन्य दक्षिण एशियाई भाषाओं में व्यक्तिगत शिक्षा का विस्तार करें।',
+        goal4Title: 'शिक्षक सशक्तिकरण उपकरण',
+        goal4Desc: 'एनालिटिक्स डैशबोर्ड और AI सहायक बनाएं जो शिक्षकों को अपने छात्रों को बेहतर ढंग से समझने, कार्यभार कम करने और युवा दिमाग को प्रेरित करने पर ध्यान केंद्रित करने में मदद करें।',
+        ctaTitle: 'आइए शिक्षा का भविष्य बनाएं',
+        ctaDesc: 'EdTech, व्यक्तिगत शिक्षा के बारे में भावुक हैं या किसी शैक्षिक AI प्रोजेक्ट पर सहयोग करने में रुचि रखते हैं? आइए जुड़ें और सीखने को सभी के लिए सुलभ बनाएं।',
+        ctaCollaborate: 'आइए सहयोग करें',
+        ctaGithub: 'GitHub देखें',
+        ctaBack: '← पोर्टफोलियो पर वापस जाएं',
+        footerTag: 'कृत्रिम बुद्धिमत्ता के साथ गुणवत्तापूर्ण शिक्षा को व्यक्तिगत बनाना',
+      },
+    };
+
+    function applyLanguage(lang) {
+      const t = translations[lang] || translations.en;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key] !== undefined) {
+          if (key === 'heroTitle') { el.innerHTML = t[key]; }
+          else { el.textContent = t[key]; }
+        }
+      });
+    }
+
+    const langSelect = document.getElementById('langSelect');
+    const savedLang = localStorage.getItem('learn-lang') || 'en';
+    langSelect.value = savedLang;
+    applyLanguage(savedLang);
+
+    langSelect.addEventListener('change', () => {
+      const lang = langSelect.value;
+      localStorage.setItem('learn-lang', lang);
+      applyLanguage(lang);
+    });
+  </script>
+
+  <script id="custom-cursor-js">
+    (function() {
+      var cursor = document.getElementById('custom-cursor');
+      if (!cursor) return;
+      var isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      if (!isTouch) {
+        document.addEventListener('mousemove', function(e) {
+          cursor.style.opacity = '1';
+          cursor.style.left = e.clientX + 'px';
+          cursor.style.top = e.clientY + 'px';
+        });
+        document.addEventListener('mouseleave', function() { cursor.style.opacity = '0'; });
+        document.addEventListener('mouseenter', function() { cursor.style.opacity = '1'; });
+        document.querySelectorAll('a, button, [role="button"]').forEach(function(el) {
+          el.addEventListener('mouseenter', function() {
+            cursor.style.width = '40px'; cursor.style.height = '40px';
+            cursor.style.background = 'radial-gradient(circle, rgba(139,92,246,0.4), transparent)';
+          });
+          el.addEventListener('mouseleave', function() {
+            cursor.style.width = '20px'; cursor.style.height = '20px';
+            cursor.style.background = 'radial-gradient(circle, rgba(59,130,246,0.3), transparent)';
+          });
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

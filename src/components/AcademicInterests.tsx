@@ -1,81 +1,93 @@
 import { useTranslation } from "react-i18next";
-import { Brain, Dna, GraduationCap, Microscope, Leaf, Database } from "lucide-react";
+import { Brain, Dna, GraduationCap, Microscope, Leaf, Database, ArrowRight, Sparkles } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 const interests = [
-  { title: "Artificial Intelligence & Machine Learning", icon: Brain },
-  { title: "Agriculture", icon: Leaf },
-  { title: "Bioinformatics and Healthcare Technology", icon: Dna },
-  { title: "Data Science & Big Data Analytics", icon: Database },
-  { title: "AI-based Protein Structure Prediction", icon: Microscope },
-  { title: "Personalized Learning Systems", icon: GraduationCap },
+  { title: "Artificial Intelligence & Machine Learning", icon: Brain, link: "/projects/ai-ml.html" },
+  { title: "Agriculture & AI", icon: Leaf, link: "/projects/agriculture-ai.html" },
+  { title: "Bioinformatics and Healthcare Technology", icon: Dna, link: "/projects/bioinformatics-healthcare.html" },
+  { title: "Data Science & Big Data Analytics", icon: Database, link: "/projects/data-science-analytics.html" },
+  { title: "AI-based Protein Structure Prediction", icon: Microscope, link: "/projects/ai-protein-structure.html" },
+  { title: "Personalized Learning Systems", icon: GraduationCap, link: "/projects/personalized-learning.html" },
+];
+
+const cardGradients = [
+  "from-blue-600 to-purple-600",
+  "from-emerald-500 to-teal-600",
+  "from-cyan-500 to-blue-600",
+  "from-amber-500 to-orange-600",
+  "from-violet-600 to-purple-600",
+  "from-rose-500 to-pink-600",
 ];
 
 const AcademicInterests = () => {
   const { t } = useTranslation();
 
   return (
-    <section id="interests" className="relative py-20 px-4 bg-muted/30 overflow-hidden">
-
-      {/* Mesh gradient background */}
+    <section id="interests" className="relative py-24 px-4 overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,hsl(var(--primary)/0.1),transparent_50%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,hsl(var(--accent)/0.08),transparent_50%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--gradient-start)/0.06),transparent_50%)]" />
 
-      {/* Glow orbs */}
-      <div className="absolute top-1/3 right-1/3 w-60 h-60 rounded-full bg-accent opacity-8 blur-[90px] animate-hero-orb-3" />
-      <div className="absolute bottom-1/4 left-1/4 w-52 h-52 rounded-full bg-primary opacity-8 blur-[80px] animate-hero-orb-1" />
-      <div className="absolute top-1/2 left-1/2 w-36 h-36 rounded-full bg-emerald-500 opacity-8 blur-[60px] animate-hero-orb-2" />
+      <div className="absolute inset-0 animate-shimmer" />
+      <div className="section-overlay section-noise" />
+      <div className="section-overlay section-grid" />
 
-      {/* Floating Bubbles */}
-      <div className="absolute top-10 left-5 w-20 h-20 bg-indigo-900 rounded-full opacity-20 animate-bounce-slow"></div>
-      <div className="absolute bottom-10 right-10 w-32 h-32 bg-purple-900 rounded-full opacity-15 animate-bounce-slower"></div>
-      <div className="absolute top-1/2 right-1/4 w-16 h-16 bg-yellow-800/50 rounded-full opacity-25 animate-bounce-slow"></div>
-      <div className="absolute bottom-1/3 left-1/3 w-24 h-24 bg-green-900/40 rounded-full opacity-20 animate-bounce-slower"></div>
-
-      {/* Additional floating bubbles */}
-      <div className="hidden md:block absolute top-20 right-20 w-12 h-12 rounded-full bg-blue-800/30 opacity-30 animate-bounce-slow"></div>
-      <div className="hidden md:block absolute top-1/3 left-10 w-28 h-28 rounded-full bg-pink-900/25 opacity-18 animate-bounce-slower"></div>
-      <div className="hidden md:block absolute bottom-20 left-20 w-18 h-18 rounded-full bg-teal-900/35 opacity-22 animate-bounce-slow"></div>
-      <div className="hidden md:block absolute top-2/3 right-1/3 w-22 h-22 rounded-full bg-orange-900/20 opacity-28 animate-bounce-slower"></div>
-      <div className="hidden md:block absolute bottom-1/4 right-5 w-14 h-14 rounded-full bg-cyan-900/40 opacity-25 animate-bounce-slow"></div>
-      <div className="hidden md:block absolute top-40 left-1/4 w-26 h-26 rounded-full bg-violet-900/30 opacity-20 animate-bounce-slower"></div>
-      <div className="hidden md:block absolute bottom-40 right-1/2 w-16 h-16 rounded-full bg-emerald-900/35 opacity-30 animate-bounce-slow"></div>
-      <div className="hidden md:block absolute top-3/4 left-2/3 w-20 h-20 rounded-full bg-rose-900/25 opacity-24 animate-bounce-slower"></div>
+      <div className="absolute top-1/3 right-1/3 w-60 h-60 rounded-full bg-accent opacity-12 blur-[90px] animate-hero-orb-3" />
+      <div className="absolute bottom-1/4 left-1/4 w-52 h-52 rounded-full bg-primary opacity-12 blur-[80px] animate-hero-orb-1" />
 
       <div className="container mx-auto max-w-6xl relative z-10">
-        {/* Header */}
-        <div className="text-center mb-12 animate-fade-in">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            {/* aykhane blue hoiche Skills style gradient */}
-            <span className="gradient-text">{t("interests.title")}</span>
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-500 text-sm font-medium mb-6">
+            <Sparkles className="h-4 w-4" />
+            {t("interests.title")}
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            <span className="gradient-text-rich">{t("interests.title")}</span>
           </h2>
           <p className="text-muted-foreground">{t("interests.subtitle")}</p>
         </div>
 
-        {/* Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {interests.map((interest, index) => {
             const Icon = interest.icon;
             return (
               <Card
                 key={index}
-                className="p-6 transform transition-all duration-500 hover:scale-[1.05] hover:shadow-xl hover:shadow-indigo-900/40 cursor-default text-center border-blue-50/50 bg-card/50 backdrop-blur-sm"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className="group p-6 transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_30px_60px_rgba(0,0,0,0.15)] glass border-border/50 hover:border-transparent relative overflow-hidden"
               >
-                <div className="flex flex-col items-center gap-4">
-                  {/* Icon with hover effect */}
-                  <div className="p-4 rounded-full bg-gradient-to-tr from-indigo-900 via-purple-800 to-green-800 text-white transition-all duration-500 hover:scale-110 hover:rotate-6">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] to-accent/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                <div className="absolute -top-12 -right-12 w-24 h-24 rounded-full bg-gradient-to-br from-primary/10 to-accent/10 blur-2xl group-hopver:scale-150 transition-transform duration-700" />
+
+                <div className="flex flex-col items-center gap-4 relative z-10">
+                  <div className={`p-4 rounded-full bg-gradient-to-br ${cardGradients[index]} text-white shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:rotate-6`}>
                     <Icon className="h-8 w-8" />
                   </div>
-                  {/* Item Title: Keeps the glow effect you liked */}
-                  <h3 className="text-lg font-semibold gradient-header">{interest.title}</h3>
+
+                  <h3 className="text-lg font-semibold text-center gradient-header">{interest.title}</h3>
+
+                  {interest.link && (
+                    <Button
+                      asChild
+                      variant="ghost"
+                      className="mt-2 gap-2 shimmer-btn rounded-xl px-5"
+                    >
+                      <a href={interest.link} target="_blank" rel="noopener noreferrer">
+                        See More
+                        <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                      </a>
+                    </Button>
+                  )}
                 </div>
               </Card>
             );
           })}
         </div>
       </div>
+
+      <div className="gradient-divider-wave absolute bottom-0 left-10 right-10" />
     </section>
   );
 };

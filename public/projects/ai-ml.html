@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI &amp; Machine Learning | Ahamad Ullah</title>
+  <meta name="description" content="Exploring Artificial Intelligence and Machine Learning" />
+  <style>body{background:#0a0a0f}.loader-bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:99999;pointer-events:none;background:linear-gradient(90deg,transparent,#3b82f6,#8b5cf6,transparent);animation:loaderBar .45s ease forwards}@keyframes loaderBar{0%{transform:scaleX(0);transform-origin:left}40%{transform:scaleX(.55)}100%{transform:scaleX(1);opacity:0}}
+    /* ─── Premium Upgrade Styles ─── */
+    .glass {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px) saturate(1.4);
+      -webkit-backdrop-filter: blur(20px) saturate(1.4);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+    }
+
+    .shimmer-btn {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shimmer-btn::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.15) 50%, transparent 70%);
+      background-size: 200% 200%;
+      animation: shimmerBtn 3s ease-in-out infinite;
+      transform: rotate(25deg);
+    }
+
+    @keyframes shimmerBtn {
+      0% { background-position: 200% 50%; }
+      100% { background-position: -200% 50%; }
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--primary), var(--purple), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      background-size: 200% 200%;
+      animation: gradientShift 6s ease infinite;
+    }
+
+    .gradient-divider {
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--primary), var(--purple), var(--accent), transparent);
+      border-radius: 2px;
+      margin: 0 20px;
+    }
+
+    .card-hover-effect {
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .card-hover-effect:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+
+    .fade-zoom {
+      opacity: 0;
+      transform: scale(0.95);
+      transition: all 0.7s ease;
+    }
+
+    .fade-zoom.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    #custom-cursor {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999999;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(var(--primary-rgb, 59,130,246), 0.3), transparent);
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, opacity 0.2s;
+      opacity: 0;
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      #custom-cursor { display: none; }
+    }
+
+    @keyframes countUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    @media (max-width: 600px) {
+      .stat-number { font-size: 2rem; }
+    }
+
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --primary:#3b82f6;--primary-dark:#2563eb;--primary-glow:rgba(59,130,246,0.3);
+      --accent:#06b6d4;--accent-glow:rgba(6,182,212,0.3);
+      --purple:#8b5cf6;--purple-glow:rgba(139,92,246,0.3);
+      --bg-primary:#0a0a0f;--bg-secondary:#111118;--bg-card:rgba(17,17,24,0.8);
+      --text-primary:#f1f7f5;--text-secondary:#94a3b8;--text-muted:#64748b;
+      --border-color:rgba(59,130,246,0.1);--nav-bg:rgba(10,10,15,0.85);
+      --alpha-3:rgba(255,255,255,0.03);--alpha-4:rgba(255,255,255,0.04);
+      --alpha-6:rgba(255,255,255,0.06);--alpha-8:rgba(255,255,255,0.08);
+      --radius:16px;--radius-sm:10px;
+    }
+    [data-theme="light"]{
+      --bg-primary:#f8fafc;--bg-secondary:#f1f5f9;--bg-card:rgba(255,255,255,0.85);
+      --text-primary:#0f172a;--text-secondary:#475569;--text-muted:#94a3b8;
+      --border-color:rgba(0,0,0,0.08);--nav-bg:rgba(255,255,255,0.85);
+      --alpha-3:rgba(0,0,0,0.03);--alpha-4:rgba(0,0,0,0.04);
+      --alpha-6:rgba(0,0,0,0.06);--alpha-8:rgba(0,0,0,0.08);
+    }
+    html{scroll-behavior:smooth}
+    body{
+      font-family:'Space Grotesk',sans-serif;background:var(--bg-primary);
+      color:var(--text-primary);line-height:1.6;overflow-x:hidden;
+    }
+    ::-webkit-scrollbar{width:8px}
+    ::-webkit-scrollbar-track{background:var(--bg-secondary)}
+    ::-webkit-scrollbar-thumb{background:var(--primary);border-radius:4px}
+    ::selection{background:var(--primary);color:#fff}
+
+    nav{
+      position:fixed;top:0;left:0;right:0;z-index:1000;
+      background:var(--nav-bg);backdrop-filter:blur(16px);
+      border-bottom:1px solid var(--border-color);height:56px;
+    }
+    .nav-inner{max-width:1200px;margin:0 auto;padding:0 20px;height:100%;display:flex;align-items:center;justify-content:space-between}
+    .logo{font-weight:700;font-size:18px;text-decoration:none}
+    .logo .g{background:linear-gradient(135deg,var(--primary),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .nav-right{display:flex;align-items:center;gap:8px}
+    .nav-btn{
+      width:36px;height:36px;border-radius:10px;border:1px solid var(--border-color);
+      background:var(--alpha-4);color:var(--text-secondary);cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      transition:all .25s ease;font-size:16px;
+    }
+    .nav-btn:hover{background:var(--alpha-8);color:var(--text-primary);border-color:var(--primary)}
+    .lang-select{
+      padding:6px 10px;border-radius:10px;border:1px solid var(--border-color);
+      background:var(--alpha-4);color:var(--text-secondary);font-size:13px;
+      cursor:pointer;font-family:inherit;transition:all .25s ease;
+    }
+    .lang-select:hover{border-color:var(--primary);color:var(--text-primary);background:var(--alpha-8)}
+    .lang-select option{background:var(--bg-secondary);color:var(--text-primary)}
+
+    .progress-bar{
+      position:fixed;top:56px;left:0;right:0;height:3px;z-index:999;
+      background:linear-gradient(90deg,var(--primary),var(--purple),var(--accent));
+      transform-origin:left;transform:scaleX(0);transition:transform .1s linear;
+    }
+
+    section{padding:100px 20px;position:relative}
+    .container{max-width:1100px;margin:0 auto;position:relative;z-index:2}
+
+    .hero{
+      min-height:100vh;display:flex;align-items:center;justify-content:center;
+      text-align:center;padding-top:80px;overflow:hidden;
+    }
+    #particles-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+    .hero-content{position:relative;z-index:2;max-width:800px}
+    .hero-badge{
+      display:inline-flex;align-items:center;gap:8px;padding:6px 16px;
+      border-radius:999px;background:var(--alpha-6);border:1px solid var(--border-color);
+      font-size:13px;color:var(--text-secondary);margin-bottom:24px;animation:fadeUp .8s ease;
+    }
+    .hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--primary);animation:pulse 2s infinite}
+    .hero-title{
+      font-size:clamp(32px,6vw,64px);font-weight:700;line-height:1.1;margin-bottom:16px;animation:fadeUp .8s ease .1s both;
+    }
+    .hero-title .g{background:linear-gradient(135deg,var(--primary),var(--purple),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% 200%;animation:gradientShift 6s ease infinite}
+    .hero-sub{
+      font-size:clamp(16px,2.2vw,22px);color:var(--text-secondary);margin-bottom:32px;animation:fadeUp .8s ease .2s both;
+    }
+    .hero-typed{color:var(--primary);font-weight:600}
+    .hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:fadeUp .8s ease .3s both}
+    .btn{
+      display:inline-flex;align-items:center;gap:8px;padding:12px 28px;
+      border-radius:12px;font-size:15px;font-weight:500;text-decoration:none;
+      cursor:pointer;font-family:inherit;transition:all .3s ease;border:none;
+    }
+    .btn-primary{
+      background:linear-gradient(135deg,var(--primary),var(--purple));color:#fff;
+      box-shadow:0 4px 20px var(--primary-glow);
+    }
+    .btn-primary:hover{transform:translateY(-3px);box-shadow:0 8px 30px var(--primary-glow)}
+    .btn-outline{
+      background:transparent;border:1px solid var(--border-color);color:var(--text-secondary);
+    }
+    .btn-outline:hover{background:var(--alpha-6);border-color:var(--primary);color:var(--text-primary);transform:translateY(-3px)}
+    .btn-sm{padding:8px 18px;font-size:13px}
+    .scroll-indicator{
+      position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:2;
+      display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--text-muted);font-size:12px;animation:fadeUp .8s ease .5s both;
+    }
+    .scroll-mouse{width:22px;height:34px;border:2px solid var(--text-muted);border-radius:999px;position:relative}
+    .scroll-dot{position:absolute;top:6px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--primary);animation:scrollDot 2s infinite}
+
+    .section-label{
+      display:inline-flex;align-items:center;gap:6px;padding:4px 14px;
+      border-radius:999px;background:var(--alpha-6);border:1px solid var(--border-color);
+      font-size:12px;font-weight:500;color:var(--primary);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;
+    }
+    .section-title{
+      font-size:clamp(24px,3.5vw,40px);font-weight:700;margin-bottom:8px;
+    }
+    .section-title .g{background:linear-gradient(135deg,var(--primary),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .section-desc{color:var(--text-secondary);font-size:16px;max-width:600px;margin-bottom:40px}
+
+    .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:32px}
+    .about-card,.topic-card,.project-card,.resource-card{
+      background:var(--bg-card);backdrop-filter:blur(12px);border:1px solid var(--border-color);
+      border-radius:var(--radius);padding:28px;transition:all .35s ease;
+    }
+    .about-card:hover,.topic-card:hover,.project-card:hover,.resource-card:hover{
+      transform:translateY(-6px);border-color:var(--primary);box-shadow:0 20px 60px rgba(0,0,0,0.2);
+    }
+    .about-card p{color:var(--text-secondary);font-size:15px;line-height:1.7}
+    .about-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px;background:linear-gradient(135deg,var(--primary),var(--purple));}
+
+    .topics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .topic-card{text-align:center;padding:32px 24px}
+    .topic-icon{width:52px;height:52px;border-radius:14px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:24px;transition:all .35s ease}
+    .topic-card:hover .topic-icon{transform:scale(1.15) rotate(-6deg);border-radius:50%}
+    .topic-icon-blue{background:linear-gradient(135deg,#3b82f6,#2563eb);box-shadow:0 4px 15px rgba(59,130,246,0.3)}
+    .topic-icon-purple{background:linear-gradient(135deg,#8b5cf6,#7c3aed);box-shadow:0 4px 15px rgba(139,92,246,0.3)}
+    .topic-icon-cyan{background:linear-gradient(135deg,#06b6d4,#0891b2);box-shadow:0 4px 15px rgba(6,182,212,0.3)}
+    .topic-icon-emerald{background:linear-gradient(135deg,#10b981,#059669);box-shadow:0 4px 15px rgba(16,185,129,0.3)}
+    .topic-icon-amber{background:linear-gradient(135deg,#f59e0b,#d97706);box-shadow:0 4px 15px rgba(245,158,11,0.3)}
+    .topic-icon-rose{background:linear-gradient(135deg,#f43f5e,#e11d48);box-shadow:0 4px 15px rgba(244,63,94,0.3)}
+    .topic-card h3{font-size:16px;font-weight:600;margin-bottom:8px}
+    .topic-card p{color:var(--text-secondary);font-size:13px;line-height:1.6}
+
+    .tech-section{text-align:center}
+    .tech-grid{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:24px}
+    .tech-badge{
+      display:inline-flex;align-items:center;gap:8px;padding:10px 20px;
+      border-radius:12px;background:var(--alpha-6);border:1px solid var(--border-color);
+      font-size:14px;font-weight:500;transition:all .3s ease;cursor:default;
+    }
+    .tech-badge:hover{transform:translateY(-4px);background:var(--alpha-8);border-color:var(--primary);box-shadow:0 8px 25px var(--primary-glow)}
+    .tech-badge .icon{font-size:20px}
+
+    .projects-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .project-card .tag{display:inline-block;padding:2px 10px;border-radius:6px;background:var(--alpha-6);font-size:11px;color:var(--text-secondary);margin:2px}
+    .project-card h3{font-size:17px;font-weight:600;margin:12px 0 8px}
+    .project-card p{color:var(--text-secondary);font-size:13px;margin-bottom:16px;line-height:1.6}
+
+    .resources-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .resource-card .r-icon{font-size:28px;margin-bottom:12px}
+    .resource-card h3{font-size:15px;font-weight:600;margin-bottom:6px}
+    .resource-card p{color:var(--text-secondary);font-size:13px;line-height:1.6}
+    .resource-card .r-link{display:inline-flex;align-items:center;gap:4px;color:var(--primary);font-size:13px;text-decoration:none;margin-top:12px;font-weight:500;transition:all .2s}
+    .resource-card .r-link:hover{gap:8px}
+
+    .goals-list{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:24px}
+    .goal-item{display:flex;align-items:flex-start;gap:12px;padding:16px;border-radius:var(--radius-sm);background:var(--alpha-4);border:1px solid var(--border-color);transition:all .3s}
+    .goal-item:hover{background:var(--alpha-6);border-color:var(--primary);transform:translateX(4px)}
+    .goal-item .check{width:24px;height:24px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--purple));display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0}
+    .goal-item div{flex:1}
+    .goal-item h4{font-size:15px;font-weight:600;margin-bottom:2px}
+    .goal-item p{color:var(--text-secondary);font-size:13px}
+
+    .cta-section{text-align:center;padding:80px 20px}
+    .cta-section h2{font-size:clamp(24px,4vw,42px);margin-bottom:12px}
+    .cta-section p{color:var(--text-secondary);margin-bottom:28px;font-size:16px}
+    .cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+    .footer-bar{text-align:center;padding:24px;border-top:1px solid var(--border-color);color:var(--text-muted);font-size:13px}
+    .footer-bar a{color:var(--primary);text-decoration:none}
+
+    [data-anim]{opacity:0;transform:translateY(30px);transition:all .7s ease}
+    [data-anim].visible{opacity:1;transform:translateY(0)}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes gradientShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+    @keyframes scrollDot{0%{top:6px;opacity:1}100%{top:20px;opacity:0}}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+
+    .hidden{display:none!important}
+
+    @media(max-width:900px){
+      .about-grid,.goals-list{grid-template-columns:1fr}
+      .topics-grid,.projects-grid,.resources-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:600px){
+      .topics-grid,.projects-grid,.resources-grid{grid-template-columns:1fr}
+      section{padding:60px 16px}
+      .hero{padding-top:60px}
+      .nav-inner{padding:0 12px}
+      .btn{padding:10px 20px;font-size:14px}
+    }
+  </style>
+</head>
+<body>
+  <div class="loader-bar"></div>
+  <div id="custom-cursor"></div>
+  <div class="progress-bar" id="progressBar"></div>
+
+  <canvas id="particles-canvas"></canvas>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="../../" class="logo"><span class="g">Ahamad</span></a>
+      <div class="nav-right">
+        <button class="nav-btn" id="themeToggle" title="Toggle theme">🌙</button>
+        <select class="lang-select" id="langSelect">
+          <option value="en">English</option>
+          <option value="bn">বাংলা</option>
+          <option value="zh">中文</option>
+          <option value="hi">हिन्दी</option>
+        </select>
+        <a href="../../" class="nav-btn" title="Back to Portfolio">←</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <div class="hero-badge"><span class="hero-badge-dot"></span><span data-i18n="badge">Field of Study</span></div>
+      <h1 class="hero-title"><span class="g" data-i18n="heroTitle">Artificial Intelligence<br/>&amp; Machine Learning</span></h1>
+      <p class="hero-sub"><span data-i18n="heroSub">Exploring the frontiers of </span><span class="hero-typed" id="typedText"></span></p>
+      <div class="hero-btns">
+        <a href="#about" class="btn btn-primary shimmer-btn" data-i18n="exploreBtn">Explore Interest</a>
+        <a href="#projects" class="btn btn-outline" data-i18n="viewProjects">View Projects</a>
+        <a href="../../" class="btn btn-outline" data-i18n="backPortfolio">← Back to Portfolio</a>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <div class="scroll-mouse"><div class="scroll-dot"></div></div>
+      <span data-i18n="scroll">Scroll to explore</span>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="container">
+      <div data-anim>
+        <div class="section-label" data-i18n="aboutLabel">About This Interest</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="aboutTitle">Why AI &amp; Machine Learning?</span></h2>
+        <p class="section-desc" data-i18n="aboutDesc">My journey into artificial intelligence started with a simple question: can machines think? Here's what drives me.</p>
+      </div>
+      <div class="about-grid">
+        <div class="about-card" data-anim>
+          <div class="about-icon">💡</div>
+          <h3 style="margin-bottom:8px;font-size:18px" data-i18n="aboutCard1Title">The Spark</h3>
+          <p data-i18n="aboutCard1Text">I first encountered AI through a documentary on DeepMind's AlphaGo. Watching a machine master the ancient game of Go with creative moves that no human had ever played fascinated me. That moment ignited my passion for understanding how intelligence can emerge from code and data.</p>
+        </div>
+        <div class="about-card" data-anim>
+          <div class="about-icon">🎯</div>
+          <h3 style="margin-bottom:8px;font-size:18px" data-i18n="aboutCard2Title">My Mission</h3>
+          <p data-i18n="aboutCard2Text">I believe AI has the power to transform every sector — healthcare, agriculture, education, and beyond. My goal is to build intelligent systems that solve real-world problems, especially in underserved communities. From predicting crop yields to detecting diseases, I want to make AI accessible and impactful.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="topics" style="background:var(--alpha-3)">
+    <div class="container">
+      <div data-anim style="text-align:center;margin-bottom:40px">
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="topicsLabel">Knowledge Areas</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="topicsTitle">Key Topics I Explore</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="topicsDesc">Core domains within artificial intelligence and machine learning</p>
+      </div>
+      <div class="topics-grid">
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-blue">📊</div>
+          <h3 data-i18n="topic1Title">Supervised &amp; Unsupervised Learning</h3>
+          <p data-i18n="topic1Desc">Building models that learn from labeled data and discovering hidden patterns in unlabeled datasets.</p>
+        </div>
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-purple">🧠</div>
+          <h3 data-i18n="topic2Title">Deep Learning &amp; Neural Networks</h3>
+          <p data-i18n="topic2Desc">Designing multi-layer neural architectures for complex tasks like image recognition and sequence prediction.</p>
+        </div>
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-cyan">💬</div>
+          <h3 data-i18n="topic3Title">Natural Language Processing</h3>
+          <p data-i18n="topic3Desc">Teaching machines to understand, interpret, and generate human language with context and nuance.</p>
+        </div>
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-emerald">👁️</div>
+          <h3 data-i18n="topic4Title">Computer Vision</h3>
+          <p data-i18n="topic4Desc">Enabling machines to interpret visual data — from image classification to object detection and segmentation.</p>
+        </div>
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-amber">🤖</div>
+          <h3 data-i18n="topic5Title">Reinforcement Learning</h3>
+          <p data-i18n="topic5Desc">Training agents to make decisions through interaction with environments using reward-based learning.</p>
+        </div>
+        <div class="topic-card" data-anim>
+          <div class="topic-icon topic-icon-rose">🔥</div>
+          <h3 data-i18n="topic6Title">Generative AI &amp; LLMs</h3>
+          <p data-i18n="topic6Desc">Exploring large language models, diffusion models, and generative techniques for creating novel content.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="technologies">
+    <div class="container tech-section">
+      <div data-anim>
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="techLabel">Technologies</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="techTitle">Tools &amp; Frameworks</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="techDesc">Technologies I use to build and train AI/ML models</p>
+      </div>
+      <div class="tech-grid">
+        <div class="tech-badge" data-anim><span class="icon">🐍</span> Python</div>
+        <div class="tech-badge" data-anim><span class="icon">🧩</span> TensorFlow</div>
+        <div class="tech-badge" data-anim><span class="icon">🔥</span> PyTorch</div>
+        <div class="tech-badge" data-anim><span class="icon">📈</span> Scikit-Learn</div>
+        <div class="tech-badge" data-anim><span class="icon">⚡</span> Keras</div>
+        <div class="tech-badge" data-anim><span class="icon">🤗</span> Hugging Face</div>
+        <div class="tech-badge" data-anim><span class="icon">📊</span> Pandas</div>
+        <div class="tech-badge" data-anim><span class="icon">🔢</span> NumPy</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" style="background:var(--alpha-3)">
+    <div class="container">
+      <div data-anim style="text-align:center;margin-bottom:40px">
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="projectsLabel">Related Work</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="projectsTitle">Projects in AI &amp; ML</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="projectsDesc">Real-world applications I've built using machine learning techniques</p>
+      </div>
+      <div class="projects-grid">
+        <div class="project-card" data-anim>
+          <div class="topic-icon topic-icon-emerald" style="margin:0">🌾</div>
+          <h3 data-i18n="proj1Title">Crop Recommendation System</h3>
+          <p data-i18n="proj1Desc">ML model that recommends optimal crops based on soil nutrients, rainfall, and climate data using classification algorithms.</p>
+          <div><span class="tag">Python</span><span class="tag">Scikit-Learn</span><span class="tag">Streamlit</span></div>
+          <a href="crop-recommendation.html" class="btn btn-primary btn-sm" style="margin-top:12px;display:inline-flex" data-i18n="viewProject">View Project →</a>
+        </div>
+        <div class="project-card" data-anim>
+          <div class="topic-icon topic-icon-amber" style="margin:0">📈</div>
+          <h3 data-i18n="proj2Title">Crop Yield Prediction</h3>
+          <p data-i18n="proj2Desc">Regression-based yield forecasting using historical rainfall, fertilizer, and area data for agricultural planning.</p>
+          <div><span class="tag">Python</span><span class="tag">Pandas</span><span class="tag">Plotly</span></div>
+          <a href="crop-yield-prediction.html" class="btn btn-primary btn-sm" style="margin-top:12px;display:inline-flex" data-i18n="viewProject">View Project →</a>
+        </div>
+        <div class="project-card" data-anim>
+          <div class="topic-icon topic-icon-rose" style="margin:0">🍂</div>
+          <h3 data-i18n="proj3Title">Crop Disease Detection</h3>
+          <p data-i18n="proj3Desc">Deep CNN model trained on plant leaf images to classify diseases and recommend treatments in real-time.</p>
+          <div><span class="tag">TensorFlow</span><span class="tag">Keras</span><span class="tag">Flask</span></div>
+          <a href="crop-disease-detection.html" class="btn btn-primary btn-sm" style="margin-top:12px;display:inline-flex" data-i18n="viewProject">View Project →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="resources">
+    <div class="container">
+      <div data-anim style="text-align:center;margin-bottom:40px">
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="resourcesLabel">Learning</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="resourcesTitle">Resources I Follow</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="resourcesDesc">Courses, books, and platforms that shaped my AI/ML journey</p>
+      </div>
+      <div class="resources-grid">
+        <div class="resource-card" data-anim>
+          <div class="r-icon">📘</div>
+          <h3 data-i18n="res1Title">Deep Learning Specialization</h3>
+          <p data-i18n="res1Desc">Andrew Ng's comprehensive Deep Learning Specialization on Coursera covering neural networks, CNNs, RNNs, and more.</p>
+          <a href="https://www.coursera.org/specializations/deep-learning" target="_blank" class="r-link" data-i18n="visit">Visit →</a>
+        </div>
+        <div class="resource-card" data-anim>
+          <div class="r-icon">📕</div>
+          <h3 data-i18n="res2Title">Hands-On ML</h3>
+          <p data-i18n="res2Desc">Aurélien Géron's "Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow" — my go-to reference.</p>
+          <a href="https://www.oreilly.com/library/view/hands-on-machine-learning/9781492032632/" target="_blank" class="r-link" data-i18n="visit">Visit →</a>
+        </div>
+        <div class="resource-card" data-anim>
+          <div class="r-icon">🎓</div>
+          <h3 data-i18n="res3Title">Fast.ai</h3>
+          <p data-i18n="res3Desc">Jeremy Howard's top-down practical deep learning courses that make AI accessible to everyone.</p>
+          <a href="https://www.fast.ai/" target="_blank" class="r-link" data-i18n="visit">Visit →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="goals">
+    <div class="container">
+      <div data-anim style="text-align:center;margin-bottom:40px">
+        <div class="section-label" style="margin:0 auto 12px" data-i18n="goalsLabel">Future</div>
+        <h2 class="section-title"><span class="gradient-text"<span class="g" data-i18n="goalsTitle">Future Goals &amp; Research Interests</span></h2>
+        <p class="section-desc" style="margin:8px auto 0" data-i18n="goalsDesc">Where I'm heading next in my AI/ML journey</p>
+      </div>
+      <div class="goals-list">
+        <div class="goal-item" data-anim><div class="check">✓</div><div><h4 data-i18n="goal1Title">AI for Healthcare</h4><p data-i18n="goal1Desc">Develop diagnostic tools using deep learning for early disease detection in resource-limited settings.</p></div></div>
+        <div class="goal-item" data-anim><div class="check">✓</div><div><h4 data-i18n="goal2Title">Multimodal AI Systems</h4><p data-i18n="goal2Desc">Research models that combine vision, language, and sensor data for richer understanding.</p></div></div>
+        <div class="goal-item" data-anim><div class="check">✓</div><div><h4 data-i18n="goal3Title">AI in Agriculture</h4><p data-i18n="goal3Desc">Create affordable AI solutions for small-scale farmers to improve crop yield and sustainability.</p></div></div>
+        <div class="goal-item" data-anim><div class="check">✓</div><div><h4 data-i18n="goal4Title">Explainable AI</h4><p data-i18n="goal4Desc">Research interpretable models that explain their decisions, building trust in AI systems.</p></div></div>
+        <div class="goal-item" data-anim><div class="check">✓</div><div><h4 data-i18n="goal5Title">Open Source Contribution</h4><p data-i18n="goal5Desc">Contribute to major ML frameworks and build tools that help others learn and experiment.</p></div></div>
+        <div class="goal-item" data-anim><div class="check">✓</div><div><h4 data-i18n="goal6Title">AI Research Publication</h4><p data-i18n="goal6Desc">Publish research papers in top AI conferences on topics like agricultural AI and bioinformatics.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section" id="cta" style="background:var(--alpha-3)">
+    <div class="container" data-anim>
+      <h2><span class="g" data-i18n="ctaTitle">Let's Build Something Intelligent</span></h2>
+      <p data-i18n="ctaDesc">Have a project idea, research collaboration, or just want to discuss AI? I'd love to hear from you.</p>
+      <div class="cta-btns">
+        <a href="mailto:anmdahamadullah@gmail.com" class="btn btn-primary shimmer-btn" data-i18n="ctaCollaborate">Collaborate with Me</a>
+        <a href="https://github.com/im-ahamad" target="_blank" class="btn btn-outline" data-i18n="ctaGithub">View GitHub</a>
+        <a href="../../" class="btn btn-outline" data-i18n="ctaBack">← Back to Portfolio</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-bar">
+    <p>© 2024 <a href="../../">Md Ahamad Ullah</a> — <span data-i18n="footerAI">Exploring the frontiers of Artificial Intelligence</span></p>
+  </div>
+
+  <script>
+    // ===== THEME =====
+    const themeToggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    const savedTheme = localStorage.getItem('aiml-theme') || 'light';
+    html.setAttribute('data-theme', savedTheme);
+    themeToggle.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+
+    themeToggle.addEventListener('click', () => {
+      const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('aiml-theme', next);
+      themeToggle.textContent = next === 'dark' ? '🌙' : '☀️';
+    });
+
+    // ===== PARTICLES =====
+    const canvas = document.getElementById('particles-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let mouseX = -1000, mouseY = -1000;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = document.documentElement.scrollHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 0.5;
+        this.speedX = (Math.random() - 0.5) * 0.5;
+        this.speedY = (Math.random() - 0.5) * 0.5;
+        this.opacity = Math.random() * 0.5 + 0.1;
+        this.color = ['59,130,246','139,92,246','6,182,212'][Math.floor(Math.random()*3)];
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+        const dx = this.x - mouseX, dy = this.y - mouseY, dist = Math.sqrt(dx*dx+dy*dy);
+        if (dist < 120) {
+          this.x += dx/dist * 0.5;
+          this.y += dy/dist * 0.5;
+        }
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${this.color},${this.opacity})`;
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < 80; i++) particles.push(new Particle());
+
+    let connectionOpacity = 0.08;
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const isDark = html.getAttribute('data-theme') === 'dark';
+      connectionOpacity = isDark ? 0.08 : 0.04;
+      particles.forEach(p => { p.update(); p.draw(); });
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x, dy = particles[i].y - particles[j].y, dist = Math.sqrt(dx*dx+dy*dy);
+          if (dist < 150) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(59,130,246,${connectionOpacity * (1 - dist/150)})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY + window.scrollY; });
+    document.addEventListener('scroll', () => { canvas.height = document.documentElement.scrollHeight; });
+
+    // ===== TYPED TEXT =====
+    const typedEl = document.getElementById('typedText');
+    const phrases = [
+      'intelligent machines', 'deep neural networks', 'computer vision',
+      'natural language', 'generative AI', 'reinforcement learning'
+    ];
+    let phraseIdx = 0, charIdx = 0, isDeleting = false;
+
+    function typeEffect() {
+      const current = phrases[phraseIdx];
+      if (!isDeleting) {
+        typedEl.textContent = current.substring(0, charIdx + 1);
+        charIdx++;
+        if (charIdx === current.length) { isDeleting = true; setTimeout(typeEffect, 2000); return; }
+        setTimeout(typeEffect, 80);
+      } else {
+        typedEl.textContent = current.substring(0, charIdx - 1);
+        charIdx--;
+        if (charIdx === 0) { isDeleting = false; phraseIdx = (phraseIdx + 1) % phrases.length; setTimeout(typeEffect, 300); return; }
+        setTimeout(typeEffect, 40);
+      }
+    }
+    typeEffect();
+
+    // ===== SCROLL ANIMATIONS =====
+    const animEls = document.querySelectorAll('[data-anim]');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    animEls.forEach(el => observer.observe(el));
+
+    // ===== PROGRESS BAR =====
+    const progressBar = document.getElementById('progressBar');
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = docHeight > 0 ? scrollTop / docHeight : 0;
+      progressBar.style.transform = `scaleX(${progress})`;
+    });
+
+    // ===== LANGUAGE =====
+    const translations = {
+      en: {
+        badge: 'Field of Study',
+        heroTitle: 'Artificial Intelligence<br/>&amp; Machine Learning',
+        heroSub: 'Exploring the frontiers of ',
+        exploreBtn: 'Explore Interest',
+        viewProjects: 'View Projects',
+        backPortfolio: '← Back to Portfolio',
+        scroll: 'Scroll to explore',
+        aboutLabel: 'About This Interest',
+        aboutTitle: 'Why AI &amp; Machine Learning?',
+        aboutDesc: 'My journey into artificial intelligence started with a simple question: can machines think? Here\'s what drives me.',
+        aboutCard1Title: 'The Spark',
+        aboutCard1Text: 'I first encountered AI through a documentary on DeepMind\'s AlphaGo. Watching a machine master the ancient game of Go with creative moves that no human had ever played fascinated me. That moment ignited my passion for understanding how intelligence can emerge from code and data.',
+        aboutCard2Title: 'My Mission',
+        aboutCard2Text: 'I believe AI has the power to transform every sector — healthcare, agriculture, education, and beyond. My goal is to build intelligent systems that solve real-world problems, especially in underserved communities. From predicting crop yields to detecting diseases, I want to make AI accessible and impactful.',
+        topicsLabel: 'Knowledge Areas',
+        topicsTitle: 'Key Topics I Explore',
+        topicsDesc: 'Core domains within artificial intelligence and machine learning',
+        topic1Title: 'Supervised &amp; Unsupervised Learning',
+        topic1Desc: 'Building models that learn from labeled data and discovering hidden patterns in unlabeled datasets.',
+        topic2Title: 'Deep Learning &amp; Neural Networks',
+        topic2Desc: 'Designing multi-layer neural architectures for complex tasks like image recognition and sequence prediction.',
+        topic3Title: 'Natural Language Processing',
+        topic3Desc: 'Teaching machines to understand, interpret, and generate human language with context and nuance.',
+        topic4Title: 'Computer Vision',
+        topic4Desc: 'Enabling machines to interpret visual data — from image classification to object detection and segmentation.',
+        topic5Title: 'Reinforcement Learning',
+        topic5Desc: 'Training agents to make decisions through interaction with environments using reward-based learning.',
+        topic6Title: 'Generative AI &amp; LLMs',
+        topic6Desc: 'Exploring large language models, diffusion models, and generative techniques for creating novel content.',
+        techLabel: 'Technologies',
+        techTitle: 'Tools &amp; Frameworks',
+        techDesc: 'Technologies I use to build and train AI/ML models',
+        projectsLabel: 'Related Work',
+        projectsTitle: 'Projects in AI &amp; ML',
+        projectsDesc: 'Real-world applications I\'ve built using machine learning techniques',
+        proj1Title: 'Crop Recommendation System',
+        proj1Desc: 'ML model that recommends optimal crops based on soil nutrients, rainfall, and climate data using classification algorithms.',
+        proj2Title: 'Crop Yield Prediction',
+        proj2Desc: 'Regression-based yield forecasting using historical rainfall, fertilizer, and area data for agricultural planning.',
+        proj3Title: 'Crop Disease Detection',
+        proj3Desc: 'Deep CNN model trained on plant leaf images to classify diseases and recommend treatments in real-time.',
+        viewProject: 'View Project →',
+        resourcesLabel: 'Learning',
+        resourcesTitle: 'Resources I Follow',
+        resourcesDesc: 'Courses, books, and platforms that shaped my AI/ML journey',
+        res1Title: 'Deep Learning Specialization',
+        res1Desc: 'Andrew Ng\'s comprehensive Deep Learning Specialization on Coursera covering neural networks, CNNs, RNNs, and more.',
+        res2Title: 'Hands-On ML',
+        res2Desc: 'Aurélien Géron\'s "Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow" — my go-to reference.',
+        res3Title: 'Fast.ai',
+        res3Desc: 'Jeremy Howard\'s top-down practical deep learning courses that make AI accessible to everyone.',
+        visit: 'Visit →',
+        goalsLabel: 'Future',
+        goalsTitle: 'Future Goals &amp; Research Interests',
+        goalsDesc: 'Where I\'m heading next in my AI/ML journey',
+        goal1Title: 'AI for Healthcare',
+        goal1Desc: 'Develop diagnostic tools using deep learning for early disease detection in resource-limited settings.',
+        goal2Title: 'Multimodal AI Systems',
+        goal2Desc: 'Research models that combine vision, language, and sensor data for richer understanding.',
+        goal3Title: 'AI in Agriculture',
+        goal3Desc: 'Create affordable AI solutions for small-scale farmers to improve crop yield and sustainability.',
+        goal4Title: 'Explainable AI',
+        goal4Desc: 'Research interpretable models that explain their decisions, building trust in AI systems.',
+        goal5Title: 'Open Source Contribution',
+        goal5Desc: 'Contribute to major ML frameworks and build tools that help others learn and experiment.',
+        goal6Title: 'AI Research Publication',
+        goal6Desc: 'Publish research papers in top AI conferences on topics like agricultural AI and bioinformatics.',
+        ctaTitle: 'Let\'s Build Something Intelligent',
+        ctaDesc: 'Have a project idea, research collaboration, or just want to discuss AI? I\'d love to hear from you.',
+        ctaCollaborate: 'Collaborate with Me',
+        ctaGithub: 'View GitHub',
+        ctaBack: '← Back to Portfolio',
+        footerAI: 'Exploring the frontiers of Artificial Intelligence',
+      },
+      bn: {
+        badge: 'অধ্যয়নের ক্ষেত্র',
+        heroTitle: 'কৃত্রিম বুদ্ধিমত্তা<br/>&amp; মেশিন লার্নিং',
+        heroSub: 'এর সীমানা অন্বেষণ ',
+        exploreBtn: 'আগ্রহ অন্বেষণ',
+        viewProjects: 'প্রকল্প দেখুন',
+        backPortfolio: '← পোর্টফোলিওতে ফিরুন',
+        scroll: 'অন্বেষণ করতে স্ক্রোল করুন',
+        aboutLabel: 'এই আগ্রহ সম্পর্কে',
+        aboutTitle: 'কেন AI &amp; মেশিন লার্নিং?',
+        aboutDesc: 'কৃত্রিম বুদ্ধিমত্তা নিয়ে আমার যাত্রা শুরু হয়েছিল একটি সহজ প্রশ্ন দিয়ে: মেশিন কি ভাবতে পারে? এখানে কি আমাকে চালিত করে।',
+        aboutCard1Title: 'স্ফুলিঙ্গ',
+        aboutCard1Text: 'আমি প্রথম AI-এর সাথে পরিচিত হই DeepMind-এর AlphaGo নিয়ে একটি তথ্যচিত্রের মাধ্যমে। একটি মেশিনকে গো-এর প্রাচীন খেলায় এমন সৃজনশীল চাল দিয়ে আয়ত্ত করতে দেখা যে কোনো মানুষ কখনো খেলেনি, আমাকে মুগ্ধ করেছিল। সেই মুহূর্তটি বোঝার জন্য আমার আবেগকে জাগ্রত করেছিল যে কীভাবে বুদ্ধিমত্তা কোড এবং ডেটা থেকে উদ্ভূত হতে পারে।',
+        aboutCard2Title: 'আমার লক্ষ্য',
+        aboutCard2Text: 'আমি বিশ্বাস করি AI-এর প্রতিটি ক্ষেত্রকে রূপান্তরিত করার ক্ষমতা আছে — স্বাস্থ্যসেবা, কৃষি, শিক্ষা এবং আরও অনেক কিছু। আমার লক্ষ্য হল বুদ্ধিমান সিস্টেম তৈরি করা যা বাস্তব-world সমস্যার সমাধান করে, বিশেষ করে অনুন্নত সম্প্রদায়গুলিতে। ফসলের ফলন পূর্বাভাস থেকে রোগ সনাক্তকরণ পর্যন্ত, আমি AI-কে অ্যাক্সেসযোগ্য এবং প্রভাবশালী করতে চাই।',
+        topicsLabel: 'জ্ঞানের ক্ষেত্র',
+        topicsTitle: 'আমি যে মূল বিষয়গুলি অন্বেষণ করি',
+        topicsDesc: 'কৃত্রিম বুদ্ধিমত্তা এবং মেশিন লার্নিংয়ের মূল ডোমেন',
+        topic1Title: 'তত্ত্বাবধানে ও unsupervised লার্নিং',
+        topic1Desc: 'লেবেলযুক্ত ডেটা থেকে শেখার মডেল তৈরি করা এবং অলেবেলযুক্ত ডেটাসেটে লুকানো প্যাটার্ন আবিষ্কার করা।',
+        topic2Title: 'ডিপ লার্নিং ও নিউরাল নেটওয়ার্ক',
+        topic2Desc: 'জটিল কাজের জন্য মাল্টি-লেয়ার নিউরাল আর্কিটেকচার ডিজাইন করা যেমন ইমেজ রিকগনিশন এবং সিকোয়েন্স প্রিডিকশন।',
+        topic3Title: 'ন্যাচারাল ল্যাঙ্গুয়েজ প্রসেসিং',
+        topic3Desc: 'মেশিনকে প্রসঙ্গ এবং সূক্ষ্মতা সহ মানব ভাষা বুঝতে, ব্যাখ্যা করতে এবং তৈরি করতে শেখানো।',
+        topic4Title: 'কম্পিউটার ভিশন',
+        topic4Desc: 'ইমেজ ক্লাসিফিকেশন থেকে অবজেক্ট ডিটেকশন এবং সেগমেন্টেশন পর্যন্ত ভিজ্যুয়াল ডেটা ব্যাখ্যা করতে মেশিন সক্ষম করা।',
+        topic5Title: 'রিইনফোর্সমেন্ট লার্নিং',
+        topic5Desc: 'পুরস্কার-ভিত্তিক লার্নিং ব্যবহার করে পরিবেশের সাথে মিথস্ক্রিয়ার মাধ্যমে সিদ্ধান্ত নিতে এজেন্টদের প্রশিক্ষণ দেওয়া।',
+        topic6Title: 'জেনারেটিভ AI ও LLM',
+        topic6Desc: 'নতুন কন্টেন্ট তৈরির জন্য বড় ভাষা মডেল, ডিফিউশন মডেল এবং জেনারেটিভ কৌশল অন্বেষণ।',
+        techLabel: 'প্রযুক্তি',
+        techTitle: 'টুলস ও ফ্রেমওয়ার্ক',
+        techDesc: 'AI/ML মডেল তৈরি এবং প্রশিক্ষণের জন্য আমি যে প্রযুক্তি ব্যবহার করি',
+        projectsLabel: 'সম্পর্কিত কাজ',
+        projectsTitle: 'AI ও ML-এ প্রকল্প',
+        projectsDesc: 'মেশিন লার্নিং কৌশল ব্যবহার করে আমি তৈরি করা বাস্তব-world অ্যাপ্লিকেশন',
+        proj1Title: 'ফসল সুপারিশ সিস্টেম',
+        proj1Desc: 'মাটির পুষ্টি, বৃষ্টিপাত এবং জলবায়ু ডেটার উপর ভিত্তি করে সর্বোত্তম ফসল সুপারিশ করে এমন ML মডেল।',
+        proj2Title: 'ফসলের ফলন পূর্বাভাস',
+        proj2Desc: 'কৃষি পরিকল্পনার জন্য ঐতিহাসিক বৃষ্টিপাত, সার এবং এলাকা ডেটা ব্যবহার করে রিগ্রেশন-ভিত্তিক ফলনের পূর্বাভাস।',
+        proj3Title: 'ফসলের রোগ সনাক্তকরণ',
+        proj3Desc: 'রিয়েল-টাইমে রোগ শ্রেণীবদ্ধ করতে এবং চিকিৎসা সুপারিশ করতে উদ্ভিদ পাতার ছবিতে প্রশিক্ষিত ডিপ CNN মডেল।',
+        viewProject: 'প্রকল্প দেখুন →',
+        resourcesLabel: 'শিক্ষা',
+        resourcesTitle: 'আমি যে রিসোর্স অনুসরণ করি',
+        resourcesDesc: 'কোর্স, বই এবং প্ল্যাটফর্ম যা আমার AI/ML যাত্রা গঠন করেছে',
+        res1Title: 'ডিপ লার্নিং স্পেশালাইজেশন',
+        res1Desc: 'নিউরাল নেটওয়ার্ক, CNN, RNN এবং আরও অনেক কিছু কভার করে Coursera-তে Andrew Ng-এর বিস্তৃত ডিপ লার্নিং স্পেশালাইজেশন।',
+        res2Title: 'হ্যান্ডস-অন ML',
+        res2Desc: 'Aurélien Géron-এর "Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow" — আমার প্রিয় রেফারেন্স।',
+        res3Title: 'Fast.ai',
+        res3Desc: 'Jeremy Howard-এর ব্যবহারিক ডিপ লার্নিং কোর্স যা AI-কে সবার জন্য অ্যাক্সেসযোগ্য করে তোলে।',
+        visit: 'ভিজিট করুন →',
+        goalsLabel: 'ভবিষ্যৎ',
+        goalsTitle: 'ভবিষ্যৎ লক্ষ্য ও গবেষণার আগ্রহ',
+        goalsDesc: 'আমার AI/ML যাত্রায় আমি এরপর কোথায় যাচ্ছি',
+        goal1Title: 'স্বাস্থ্যসেবার জন্য AI',
+        goal1Desc: 'সীমিত সম্পদের সেটিংসে প্রাথমিক রোগ সনাক্তকরণের জন্য ডিপ লার্নিং ব্যবহার করে ডায়াগনস্টিক টুল তৈরি করুন।',
+        goal2Title: 'মাল্টিমোডাল AI সিস্টেম',
+        goal2Desc: 'সমৃদ্ধ বোঝাপড়ার জন্য ভিশন, ভাষা এবং সেন্সর ডেটা একত্রিত করে এমন মডেল গবেষণা করুন।',
+        goal3Title: 'কৃষিতে AI',
+        goal3Desc: 'ফসলের ফলন এবং স্থায়িত্ব উন্নত করতে ছোট আকারের কৃষকদের জন্য সাশ্রয়ী AI সমাধান তৈরি করুন।',
+        goal4Title: 'ব্যাখ্যাযোগ্য AI',
+        goal4Desc: 'ব্যাখ্যাযোগ্য মডেল গবেষণা করুন যা তাদের সিদ্ধান্ত ব্যাখ্যা করে, AI সিস্টেমে বিশ্বাস তৈরি করে।',
+        goal5Title: 'ওপেন সোর্স অবদান',
+        goal5Desc: 'প্রধান ML ফ্রেমওয়ার্কে অবদান রাখুন এবং অন্যদের শিখতে এবং পরীক্ষা করতে সাহায্য করার জন্য টুল তৈরি করুন।',
+        goal6Title: 'AI গবেষণা প্রকাশনা',
+        goal6Desc: 'কৃষি AI এবং বায়োইনফরমেটিক্সের মতো বিষয়ে শীর্ষ AI কনফারেন্সে গবেষণা পত্র প্রকাশ করুন।',
+        ctaTitle: 'চলুন বুদ্ধিমান কিছু তৈরি করি',
+        ctaDesc: 'একটি প্রকল্পের ধারণা, গবেষণা সহযোগিতা, বা শুধু AI নিয়ে আলোচনা করতে চান? আমি আপনার কথা শুনতে চাই।',
+        ctaCollaborate: 'আমার সাথে সহযোগিতা করুন',
+        ctaGithub: 'GitHub দেখুন',
+        ctaBack: '← পোর্টফোলিওতে ফিরুন',
+        footerAI: 'কৃত্রিম বুদ্ধিমত্তার সীমানা অন্বেষণ',
+      },
+      zh: {
+        badge: '研究领域',
+        heroTitle: '人工智能<br/>&amp; 机器学习',
+        heroSub: '探索前沿 ',
+        exploreBtn: '探索兴趣',
+        viewProjects: '查看项目',
+        backPortfolio: '← 返回作品集',
+        scroll: '滚动探索',
+        aboutLabel: '关于此兴趣',
+        aboutTitle: '为什么选择AI &amp; 机器学习？',
+        aboutDesc: '我进入人工智能领域的旅程始于一个简单的问题：机器能思考吗？以下是我的动力来源。',
+        aboutCard1Title: '火花',
+        aboutCard1Text: '我第一次接触AI是通过一部关于DeepMind AlphaGo的纪录片。看着一台机器用从未有人下过的创造性走法掌握古老的围棋游戏，让我着迷。那一刻点燃了我理解智能如何从代码和数据中涌现的热情。',
+        aboutCard2Title: '我的使命',
+        aboutCard2Text: '我相信AI有能力改变每个领域——医疗保健、农业、教育等。我的目标是构建能解决现实世界问题的智能系统，特别是在服务不足的社区。从预测作物产量到检测疾病，我希望让AI变得可访问且有影响力。',
+        topicsLabel: '知识领域',
+        topicsTitle: '我探索的关键主题',
+        topicsDesc: '人工智能和机器学习的核心领域',
+        topic1Title: '监督与非监督学习',
+        topic1Desc: '构建从标记数据中学习的模型，发现在未标记数据集中隐藏的模式。',
+        topic2Title: '深度学习与神经网络',
+        topic2Desc: '为图像识别和序列预测等复杂任务设计多层神经架构。',
+        topic3Title: '自然语言处理',
+        topic3Desc: '教机器理解、解释和生成具有上下文和细微差别的人类语言。',
+        topic4Title: '计算机视觉',
+        topic4Desc: '使机器能够解释视觉数据——从图像分类到目标检测和分割。',
+        topic5Title: '强化学习',
+        topic5Desc: '通过基于奖励的学习与环境互动，训练智能体做出决策。',
+        topic6Title: '生成式AI与大语言模型',
+        topic6Desc: '探索用于创建新颖内容的大型语言模型、扩散模型和生成技术。',
+        techLabel: '技术',
+        techTitle: '工具与框架',
+        techDesc: '我用于构建和训练AI/ML模型的技术',
+        projectsLabel: '相关工作',
+        projectsTitle: 'AI与ML项目',
+        projectsDesc: '我使用机器学习技术构建的实际应用',
+        proj1Title: '作物推荐系统',
+        proj1Desc: '基于土壤养分、降雨量和气候数据使用分类算法推荐最佳作物的ML模型。',
+        proj2Title: '作物产量预测',
+        proj2Desc: '使用历史降雨、肥料和面积数据进行农业规划的基于回归的产量预测。',
+        proj3Title: '作物病害检测',
+        proj3Desc: '在植物叶片图像上训练的深度CNN模型，用于实时分类疾病并推荐治疗。',
+        viewProject: '查看项目 →',
+        resourcesLabel: '学习',
+        resourcesTitle: '我关注的资源',
+        resourcesDesc: '塑造我AI/ML旅程的课程、书籍和平台',
+        res1Title: '深度学习专项课程',
+        res1Desc: 'Andrew Ng在Coursera上的全面深度学习专项课程，涵盖神经网络、CNN、RNN等。',
+        res2Title: '动手学ML',
+        res2Desc: 'Aurélien Géron的《动手学机器学习》——我的首选参考书。',
+        res3Title: 'Fast.ai',
+        res3Desc: 'Jeremy Howard自顶向下的实用深度学习课程，让AI对每个人都可访问。',
+        visit: '访问 →',
+        goalsLabel: '未来',
+        goalsTitle: '未来目标与研究兴趣',
+        goalsDesc: '我在AI/ML旅程中的下一步',
+        goal1Title: '医疗AI',
+        goal1Desc: '使用深度学习开发诊断工具，在资源有限的环境中进行早期疾病检测。',
+        goal2Title: '多模态AI系统',
+        goal2Desc: '研究结合视觉、语言和传感器数据以获得更丰富理解的模型。',
+        goal3Title: '农业AI',
+        goal3Desc: '为小规模农民创造经济实惠的AI解决方案，以提高作物产量和可持续性。',
+        goal4Title: '可解释AI',
+        goal4Desc: '研究可解释的模型，解释其决策，建立对AI系统的信任。',
+        goal5Title: '开源贡献',
+        goal5Desc: '为主要ML框架做贡献，并构建帮助他人学习和实验的工具。',
+        goal6Title: 'AI研究发表',
+        goal6Desc: '在顶级AI会议上发表关于农业AI和生物信息学等主题的研究论文。',
+        ctaTitle: '让我们构建智能的东西',
+        ctaDesc: '有项目想法、研究合作，或只是想讨论AI？我很想听听你的想法。',
+        ctaCollaborate: '与我合作',
+        ctaGithub: '查看GitHub',
+        ctaBack: '← 返回作品集',
+        footerAI: '探索人工智能的前沿',
+      },
+      hi: {
+        badge: 'अध्ययन का क्षेत्र',
+        heroTitle: 'कृत्रिम बुद्धिमत्ता<br/>&amp; मशीन लर्निंग',
+        heroSub: 'की सीमाओं की खोज ',
+        exploreBtn: 'रुचि अन्वेषण',
+        viewProjects: 'प्रोजेक्ट देखें',
+        backPortfolio: '← पोर्टफोलियो पर वापस',
+        scroll: 'स्क्रॉल करें खोजने के लिए',
+        aboutLabel: 'इस रुचि के बारे में',
+        aboutTitle: 'AI &amp; मशीन लर्निंग क्यों?',
+        aboutDesc: 'कृत्रिम बुद्धिमत्ता में मेरी यात्रा एक सरल प्रश्न से शुरू हुई: क्या मशीनें सोच सकती हैं? यहाँ वह है जो मुझे प्रेरित करता है।',
+        aboutCard1Title: 'चिंगारी',
+        aboutCard1Text: 'मैं पहली बार AI से DeepMind के AlphaGo पर एक डॉक्यूमेंट्री के माध्यम से परिचित हुआ। एक मशीन को गो के प्राचीन खेल में ऐसी रचनात्मक चालों के साथ महारत हासिल करते देखना जो किसी भी इंसान ने कभी नहीं खेली थी, मुझे मोहित कर गया। उस पल ने यह समझने के लिए मेरे जुनून को प्रज्वलित किया कि कोड और डेटा से बुद्धिमत्ता कैसे उभर सकती है।',
+        aboutCard2Title: 'मेरा मिशन',
+        aboutCard2Text: 'मेरा मानना है कि AI में हर क्षेत्र को बदलने की शक्ति है — स्वास्थ्य सेवा, कृषि, शिक्षा, और उससे भी आगे। मेरा लक्ष्य बुद्धिमान सिस्टम बनाना है जो वास्तविक दुनिया की समस्याओं को हल करते हैं, विशेष रूप से वंचित समुदायों में। फसल की पैदावार की भविष्यवाणी से लेकर बीमारियों का पता लगाने तक, मैं AI को सुलभ और प्रभावशाली बनाना चाहता हूँ।',
+        topicsLabel: 'ज्ञान के क्षेत्र',
+        topicsTitle: 'मेरे द्वारा खोजे जाने वाले मुख्य विषय',
+        topicsDesc: 'कृत्रिम बुद्धिमत्ता और मशीन लर्निंग के मुख्य डोमेन',
+        topic1Title: 'पर्यवेक्षित और अप्रशिक्षित अधिगम',
+        topic1Desc: 'लेबल किए गए डेटा से सीखने वाले मॉडल बनाना और अलेबल डेटासेट में छिपे पैटर्न की खोज करना।',
+        topic2Title: 'डीप लर्निंग और न्यूरल नेटवर्क',
+        topic2Desc: 'छवि पहचान और अनुक्रम भविष्यवाणी जैसे जटिल कार्यों के लिए बहु-स्तरीय तंत्रिका आर्किटेक्चर डिज़ाइन करना।',
+        topic3Title: 'प्राकृतिक भाषा प्रसंस्करण',
+        topic3Desc: 'मशीनों को संदर्भ और सूक्ष्मता के साथ मानव भाषा को समझना, व्याख्या करना और उत्पन्न करना सिखाना।',
+        topic4Title: 'कंप्यूटर विज़न',
+        topic4Desc: 'मशीनों को दृश्य डेटा की व्याख्या करने में सक्षम बनाना — छवि वर्गीकरण से ऑब्जेक्ट डिटेक्शन और सेगमेंटेशन तक।',
+        topic5Title: 'पुनर्बलन अधिगम',
+        topic5Desc: 'पुरस्कार-आधारित शिक्षण के माध्यम से पर्यावरण के साथ बातचीत करके निर्णय लेने के लिए एजेंटों को प्रशिक्षित करना।',
+        topic6Title: 'जनरेटिव AI और LLM',
+        topic6Desc: 'नवीन सामग्री बनाने के लिए बड़े भाषा मॉडल, डिफ्यूज़न मॉडल और जनरेटिव तकनीकों की खोज।',
+        techLabel: 'प्रौद्योगिकियाँ',
+        techTitle: 'उपकरण और फ्रेमवर्क',
+        techDesc: 'AI/ML मॉडल बनाने और प्रशिक्षित करने के लिए मेरे द्वारा उपयोग की जाने वाली प्रौद्योगिकियाँ',
+        projectsLabel: 'संबंधित कार्य',
+        projectsTitle: 'AI और ML में प्रोजेक्ट',
+        projectsDesc: 'मशीन लर्निंग तकनीकों का उपयोग करके मेरे द्वारा बनाए गए वास्तविक दुनिया के अनुप्रयोग',
+        proj1Title: 'फसल अनुशंसा प्रणाली',
+        proj1Desc: 'मिट्टी के पोषक तत्वों, वर्षा और जलवायु डेटा के आधार पर वर्गीकरण एल्गोरिदम का उपयोग करके इष्टतम फसलों की सिफारिश करने वाला ML मॉडल।',
+        proj2Title: 'फसल उपज भविष्यवाणी',
+        proj2Desc: 'कृषि योजना के लिए ऐतिहासिक वर्षा, उर्वरक और क्षेत्र डेटा का उपयोग करके प्रतिगमन-आधारित उपज पूर्वानुमान।',
+        proj3Title: 'फसल रोग का पता लगाना',
+        proj3Desc: 'रीयल-टाइम में रोगों को वर्गीकृत करने और उपचार की सिफारिश करने के लिए पौधे की पत्ती की छवियों पर प्रशिक्षित डीप CNN मॉडल।',
+        viewProject: 'प्रोजेक्ट देखें →',
+        resourcesLabel: 'सीखना',
+        resourcesTitle: 'मेरे द्वारा अनुसरण किए जाने वाले संसाधन',
+        resourcesDesc: 'पाठ्यक्रम, किताबें और प्लेटफ़ॉर्म जिन्होंने मेरी AI/ML यात्रा को आकार दिया',
+        res1Title: 'डीप लर्निंग स्पेशलाइज़ेशन',
+        res1Desc: 'Coursera पर Andrew Ng का व्यापक डीप लर्निंग स्पेशलाइज़ेशन जिसमें न्यूरल नेटवर्क, CNN, RNN और बहुत कुछ शामिल है।',
+        res2Title: 'हैंड्स-ऑन ML',
+        res2Desc: 'Aurélien Géron की "Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow" — मेरी पसंदीदा संदर्भ पुस्तक।',
+        res3Title: 'Fast.ai',
+        res3Desc: 'Jeremy Howard के व्यावहारिक डीप लर्निंग पाठ्यक्रम जो AI को सभी के लिए सुलभ बनाते हैं।',
+        visit: 'विज़िट करें →',
+        goalsLabel: 'भविष्य',
+        goalsTitle: 'भविष्य के लक्ष्य और अनुसंधान रुचियाँ',
+        goalsDesc: 'मैं अपनी AI/ML यात्रा में आगे कहाँ जा रहा हूँ',
+        goal1Title: 'स्वास्थ्य सेवा के लिए AI',
+        goal1Desc: 'सीमित संसाधनों वाली सेटिंग्स में प्रारंभिक रोग का पता लगाने के लिए डीप लर्निंग का उपयोग करके नैदानिक उपकरण विकसित करना।',
+        goal2Title: 'मल्टीमॉडल AI सिस्टम',
+        goal2Desc: 'समृद्ध समझ के लिए दृष्टि, भाषा और सेंसर डेटा को संयोजित करने वाले मॉडलों पर शोध करना।',
+        goal3Title: 'कृषि में AI',
+        goal3Desc: 'फसल की पैदावार और स्थिरता में सुधार के लिए छोटे पैमाने के किसानों के लिए किफायती AI समाधान बनाना।',
+        goal4Title: 'व्याख्यात्मक AI',
+        goal4Desc: 'व्याख्यात्मक मॉडलों पर शोध करना जो अपने निर्णयों की व्याख्या करते हैं, AI सिस्टम में विश्वास बनाते हैं।',
+        goal5Title: 'ओपन सोर्स योगदान',
+        goal5Desc: 'प्रमुख ML फ्रेमवर्क में योगदान देना और ऐसे उपकरण बनाना जो दूसरों को सीखने और प्रयोग करने में मदद करें।',
+        goal6Title: 'AI अनुसंधान प्रकाशन',
+        goal6Desc: 'कृषि AI और बायोइन्फॉर्मेटिक्स जैसे विषयों पर शीर्ष AI सम्मेलनों में शोध पत्र प्रकाशित करना।',
+        ctaTitle: 'चलिए कुछ बुद्धिमान बनाते हैं',
+        ctaDesc: 'कोई प्रोजेक्ट विचार, शोध सहयोग, या बस AI पर चर्चा करना चाहते हैं? मुझे आपसे सुनना अच्छा लगेगा।',
+        ctaCollaborate: 'मेरे साथ सहयोग करें',
+        ctaGithub: 'GitHub देखें',
+        ctaBack: '← पोर्टफोलियो पर वापस',
+        footerAI: 'कृत्रिम बुद्धिमत्ता की सीमाओं की खोज',
+      }
+    };
+
+    const langSelect = document.getElementById('langSelect');
+    const savedLang = localStorage.getItem('aiml-lang') || 'en';
+    langSelect.value = savedLang;
+
+    function applyLanguage(lang) {
+      const t = translations[lang] || translations.en;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key]) el.innerHTML = t[key];
+      });
+      localStorage.setItem('aiml-lang', lang);
+    }
+    applyLanguage(savedLang);
+
+    langSelect.addEventListener('change', () => applyLanguage(langSelect.value));
+
+    // ===== SMOOTH ENTRY =====
+    document.body.style.opacity = '0';
+    document.body.style.transition = 'opacity .4s ease';
+    requestAnimationFrame(() => { document.body.style.opacity = '1'; });
+  </script>
+
+  <script id="custom-cursor-js">
+    (function() {
+      var cursor = document.getElementById('custom-cursor');
+      if (!cursor) return;
+      var isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      if (!isTouch) {
+        document.addEventListener('mousemove', function(e) {
+          cursor.style.opacity = '1';
+          cursor.style.left = e.clientX + 'px';
+          cursor.style.top = e.clientY + 'px';
+        });
+        document.addEventListener('mouseleave', function() { cursor.style.opacity = '0'; });
+        document.addEventListener('mouseenter', function() { cursor.style.opacity = '1'; });
+        document.querySelectorAll('a, button, [role="button"]').forEach(function(el) {
+          el.addEventListener('mouseenter', function() {
+            cursor.style.width = '40px'; cursor.style.height = '40px';
+            cursor.style.background = 'radial-gradient(circle, rgba(139,92,246,0.4), transparent)';
+          });
+          el.addEventListener('mouseleave', function() {
+            cursor.style.width = '20px'; cursor.style.height = '20px';
+            cursor.style.background = 'radial-gradient(circle, rgba(59,130,246,0.3), transparent)';
+          });
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

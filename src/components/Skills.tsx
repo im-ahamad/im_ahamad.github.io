@@ -32,8 +32,8 @@ const skillsData = [
     category: "Language Skills",
     icon: Languages,
     skills: [
-      "Bangla (Native)", "English (Intermediate)",
-      "Urdu / Hindi (Intermediate)", "Chinese (Beginner)"
+      "Bangla (Native)", "English (Fluent)",
+      "Urdu / Hindi (Fluent)", "Chinese (Beginner)"
     ],
   },
   {
@@ -46,8 +46,7 @@ const skillsData = [
   },
 ];
 
-// Skill to URL mapping
-const skillLinks = {
+const skillLinks: Record<string, string> = {
   "C / C++": "https://en.cppreference.com/",
   "Python": "https://www.python.org/",
   "JavaScript(JS)": "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
@@ -77,14 +76,6 @@ const skillLinks = {
   "HTTP": "https://developer.mozilla.org/en-US/docs/Web/HTTP",
   "LoRaWAN": "https://lora-alliance.org/about-lorawan/",
   "Node.js": "https://nodejs.org/",
-  "LLMs": "https://en.wikipedia.org/wiki/Large_language_model",
-  "Prompt Engineering": "https://www.promptingguide.ai/",
-  "RAG": "https://www.langchain.com/",
-  "Fine Tuning": "https://huggingface.co/docs/transformers/training",
-  "AI Agents": "https://www.langchain.com/agents",
-  "LangChain": "https://www.langchain.com/",
-  "Hugging Face": "https://huggingface.co/",
-  "REST APIs": "https://restfulapi.net/",
 };
 
 const Skills = () => {
@@ -99,14 +90,14 @@ const Skills = () => {
       "from-red-500 via-rose-500 to-pink-400",
       "from-sky-500 via-blue-500 to-indigo-400",
     ];
-    return [...Array(25)].map((_, i) => ({
+    return [...Array(15)].map((_, i) => ({
       id: i,
-      size: Math.floor(Math.random() * 50) + 15,
+      size: Math.floor(Math.random() * 40) + 15,
       top: Math.floor(Math.random() * 100),
       left: Math.floor(Math.random() * 100),
       duration: (Math.random() * 10 + 5).toFixed(2),
       delay: (Math.random() * 5).toFixed(2),
-      opacity: Math.random() * 0.25 + 0.05,
+      opacity: Math.random() * 0.2 + 0.03,
       color: colors[i % colors.length],
     }));
   }, []);
@@ -116,19 +107,18 @@ const Skills = () => {
   };
 
   return (
-    <section id="skills" className="relative py-20 px-6 bg-muted/30 overflow-hidden">
-
-      {/* Mesh gradient background */}
+    <section id="skills" className="relative py-24 px-6 overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--gradient-start)/0.1),transparent_50%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--accent)/0.08),transparent_50%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.06),transparent_50%)]" />
 
-      {/* Glow orbs */}
-      <div className="absolute top-1/4 right-1/4 w-72 h-72 rounded-full bg-accent opacity-10 blur-[100px] animate-hero-orb-2" />
-      <div className="absolute bottom-1/3 left-1/4 w-56 h-56 rounded-full bg-primary opacity-10 blur-[90px] animate-hero-orb-1" />
-      <div className="absolute top-1/2 left-1/3 w-44 h-44 rounded-full bg-emerald-500 opacity-8 blur-[70px] animate-hero-orb-3" />
+      <div className="absolute inset-0 animate-shimmer" />
+      <div className="section-overlay section-noise" />
+      <div className="section-overlay section-grid" />
 
-      {/* Floating Bubbles */}
+      <div className="absolute top-1/4 right-1/4 w-72 h-72 rounded-full bg-accent opacity-15 blur-[100px] animate-hero-orb-2" />
+      <div className="absolute bottom-1/3 left-1/4 w-56 h-56 rounded-full bg-primary opacity-15 blur-[90px] animate-hero-orb-1" />
+
       <div className="absolute inset-0 pointer-events-none z-0 hidden md:block">
         {bubbles.map((bubble) => (
           <div
@@ -145,21 +135,20 @@ const Skills = () => {
             }}
           />
         ))}
-
-        {/* Animations consolidated in index.css */}
       </div>
 
       <div className="container mx-auto max-w-6xl relative z-10">
-
-        {/* Section Header */}
-        <div className="text-center mb-12 animate-fade-in">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            <span className="gradient-text">{t("skills.title")}</span>
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 text-sm font-medium mb-6">
+            <Brain className="h-4 w-4" />
+            {t("skills.title")}
+          </div>
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            <span className="gradient-text-rich">{t("skills.title")}</span>
           </h2>
           <p className="text-muted-foreground">{t("skills.subtitle")}</p>
         </div>
 
-        {/* Skills Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {skillsData.map((category, index) => {
             const Icon = category.icon;
@@ -169,51 +158,45 @@ const Skills = () => {
               <Card
                 key={category.category}
                 onMouseEnter={() => setExpandedCategory(null)}
-                className={`group p-7 transition-all duration-500 hover:scale-[1.05] hover:-translate-y-2 hover:shadow-[0_30px_70px_rgba(0,0,0,0.15)] hover:shadow-accent/30 border border-transparent hover:border-accent/60 bg-card/50 backdrop-blur-sm ${isSoft ? "md:col-span-2" : ""}`}
+                className={`group p-7 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_30px_70px_rgba(0,0,0,0.12)] glass border-border/50 hover:border-accent/50 ${isSoft ? "md:col-span-2" : ""}`}
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-
-                {/* Heading + Icon */}
-                <div className={`flex items-center gap-4 mb-6 ${isSoft ? "justify-center" : "justify-start"}`}>
-                  <div className="p-4 rounded-xl bg-accent/10 text-accent transition-all duration-500 group-hover:rotate-24 group-hover:scale-125">
+                <div className={`flex items-center gap-4 mb-6 ${isSoft ? "justify-center" : ""}`}>
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-accent/20 to-accent/5 text-accent transition-all duration-500 group-hover:rotate-12 group-hover:scale-110">
                     <Icon className="h-6 w-6" />
                   </div>
-                  <h3 className="text-xl font-bold pt-2 tracking-tight gradient-header">
-                    {category.category}
-                  </h3>
+                  <h3 className="text-xl font-bold gradient-text">{category.category}</h3>
                 </div>
 
-                {/* Skills Badges */}
                 <div className={`flex flex-wrap gap-3 ${isSoft ? "justify-center" : ""}`}>
                   {category.skills.map((skill) => (
                     <Badge
                       key={skill}
                       variant="secondary"
-                      className="text-sm px-4 py-1.5 transition-all duration-300 cursor-default font-medium border border-transparent hover:-translate-y-1 hover:scale-105 will-change-transform transform-gpu hover:bg-accent hover:text-white hover:shadow-[0_10px_25px_rgba(var(--accent-rgb),0.5)]"
+                      className="text-sm px-4 py-1.5 transition-all duration-300 cursor-default font-medium border border-border/30 hover:-translate-y-1 hover:scale-105 hover:bg-primary hover:text-white hover:shadow-[0_10px_25px_hsl(var(--primary)/0.3)]"
                     >
                       {skill}
                     </Badge>
                   ))}
                 </div>
 
-                {/* Visit Official Website */}
                 {!isSoft && category.category !== "Language Skills" && (
                   <div className="mt-6">
                     <button
                       onClick={() => toggleCategory(category.category)}
-                      className="inline-flex items-center gap-1 px-2 py-1.5 text-xs font-semibold text-accent hover:text-white bg-accent/10 hover:bg-accent rounded-md transition-all duration-200 hover:scale-105 hover:shadow-sm border border-transparent hover:border-accent/50"
+                      className="inline-flex items-center gap-1 px-2 py-1.5 text-xs font-semibold text-accent hover:text-white bg-accent/10 hover:bg-accent rounded-md transition-all duration-200 hover:scale-105"
                     >
                       <ExternalLink className="h-3 w-3" />
                       Visit Official Website
                       {expandedCategory === category.category ? (
-                        <ChevronUp className="h-3 w-3 ml-auto" />
+                        <ChevronUp className="h-3 w-3" />
                       ) : (
-                        <ChevronDown className="h-3 w-3 ml-auto" />
+                        <ChevronDown className="h-3 w-3" />
                       )}
                     </button>
 
                     {expandedCategory === category.category && (
-                      <div className="mt-4 pt-4 border-t border-gray-200/20 dark:border-gray-700/20">
+                      <div className="mt-4 pt-4 border-t border-border/20">
                         <div className={`flex flex-wrap gap-2 ${isSoft ? "justify-center" : ""}`}>
                           {category.skills.map((skill) => {
                             const link = skillLinks[skill];
@@ -223,7 +206,7 @@ const Skills = () => {
                                 href={link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-accent hover:text-white bg-accent/10 hover:bg-accent rounded-sm transition-all duration-200 hover:scale-105 hover:shadow-sm border border-transparent hover:border-accent/50"
+                                className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-accent hover:text-white bg-accent/10 hover:bg-accent rounded-sm transition-all duration-200 hover:scale-105"
                                 title={`Visit ${skill} official website`}
                               >
                                 {skill}
@@ -236,12 +219,13 @@ const Skills = () => {
                     )}
                   </div>
                 )}
-
               </Card>
             );
           })}
         </div>
       </div>
+
+      <div className="gradient-divider-wave absolute bottom-0 left-10 right-10" />
     </section>
   );
 };

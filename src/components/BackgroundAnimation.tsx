@@ -11,8 +11,8 @@ const BackgroundAnimation = () => {
 
   return (
     <div className="background-animation">
-      <div className="absolute inset-0 z-0 opacity-20">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--border))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border))_1px,transparent_1px)] bg-[size:4rem_4rem] animate-pulse"></div>
+      <div className="absolute inset-0 z-0 opacity-15">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--border))_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border))_1px,transparent_1px)] bg-[size:4rem_4rem]" />
       </div>
       <motion.div
         className="absolute inset-0 z-0 opacity-10"
