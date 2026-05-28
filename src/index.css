@@ -516,37 +516,10 @@
   animation: revealGradient 1s ease forwards;
 }
 
-@media (hover: none) and (pointer: coarse), (max-width: 768px) {
-  html { touch-action: manipulation; }
-
-  * { transition-duration: 0.15s !important; }
-
-  body { transition: none !important; }
-
-  .glass,
-  .glass-strong {
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-  }
-
-  .shimmer-btn::after { animation: none !important; display: none !important; }
-
-  .animate-shimmer,
-  .animate-shimmer { animation: none !important; display: none !important; }
-
-  .animate-gradient-flow,
-  .gradient-text-rich,
-  .name-gradient,
-  .gradient-header {
-    animation: none !important;
-    background-size: 100% !important;
-  }
-
-  .gradient-divider-wave { animation: none !important; }
-
+@media (max-width: 768px) {
   .animate-bounce-slow,
   .animate-bounce-slower {
-    animation: none !important;
+    animation: none;
     opacity: 0.1 !important;
   }
 
@@ -554,36 +527,11 @@
   .animate-hero-orb-2,
   .animate-hero-orb-3,
   .animate-hero-orb-4 {
-    animation: none !important;
+    animation: none;
   }
 
-  .animate-float,
-  .animate-float-slow,
-  .animate-pulse-soft,
-  .animate-pulse-soft-slow,
-  .animate-border-glow {
-    animation: none !important;
-  }
-
-  .section-grid { display: none !important; }
-  .section-noise { display: none !important; }
-
-  [class*='blur-'],
-  [class*='blur['],
-  [style*='blur'] {
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-  }
-
-  .hover\:-translate-y-2:hover { transform: none !important; }
-  .group:hover .group-hover\:rotate-12 { transform: none !important; }
-  .group:hover .group-hover\:scale-110 { transform: none !important; }
-
-  ::-webkit-scrollbar { width: 4px; }
-
-  .background-animation .opacity-10,
-  .background-animation [style*="opacity: 0"] {
-    opacity: 0.03 !important;
+  .section-grid {
+    display: none;
   }
 }
 
