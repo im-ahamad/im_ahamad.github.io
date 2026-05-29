@@ -59,18 +59,18 @@ const Certifications = () => {
 
   return (
     <section id="certifications" className="relative py-24 px-6 overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_center,hsl(var(--gradient-end)/0.1),transparent_50%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--accent)/0.08),transparent_50%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.06),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_center,hsl(var(--gradient-end)/0.15),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--accent)/0.12),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.1),transparent_50%)]" />
 
       <div className="absolute inset-0 animate-shimmer" />
       <div className="section-overlay section-noise" />
       <div className="section-overlay section-grid" />
 
-      <div className="absolute top-1/4 left-1/4 w-56 h-56 rounded-full bg-accent opacity-12 blur-[90px] animate-hero-orb-2" />
-      <div className="absolute bottom-1/3 right-1/4 w-72 h-72 rounded-full bg-primary opacity-12 blur-[100px] animate-hero-orb-1" />
+      <div className="absolute top-1/4 left-1/4 w-56 h-56 rounded-full bg-accent opacity-18 blur-[75px] animate-hero-orb-2" />
+      <div className="absolute bottom-1/3 right-1/4 w-72 h-72 rounded-full bg-primary opacity-18 blur-[85px] animate-hero-orb-1" />
 
-      <div className="absolute inset-0 pointer-events-none z-0">
+      <div className="absolute inset-0 pointer-events-none z-0 hidden md:block">
         {bubbles.map((b, i) => (
           <div
             key={i}
@@ -104,7 +104,7 @@ const Certifications = () => {
           {certifications.map((cert, index) => (
             <Card
               key={index}
-              className="p-6 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_30px_70px_rgba(0,0,0,0.12)] glass border-border/50 hover:border-amber-500/50"
+              className="p-6 transition-[transform,box-shadow,border-color] duration-500 hover:-translate-y-2 hover:shadow-[0_30px_70px_hsl(var(--foreground)/0.12)] glass border-border/50 hover:border-amber-500/50"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="flex items-start gap-4 mb-4">
@@ -127,17 +127,17 @@ const Certifications = () => {
                   </div>
 
                   {cert.reference && (
-                    <p className="text-xs text-muted-foreground mb-3">Reference: {cert.reference}</p>
+                    <p className="text-xs text-muted-foreground mb-3">{t("certifications.reference")}: {cert.reference}</p>
                   )}
 
                   <Button
                     asChild
                     variant="outline"
                     size="sm"
-                    className="gap-2 transition-all duration-300 hover:scale-105 border-border/50 hover:border-amber-500/50 hover:bg-gradient-to-r hover:from-primary hover:to-accent hover:text-white"
+                    className="gap-2 transition-[transform,border-color,background-image,color] duration-300 hover:scale-105 border-border/50 hover:border-amber-500/50 hover:bg-gradient-to-r hover:from-primary hover:to-accent hover:text-white"
                   >
                     <a href={cert.url} target="_blank" rel="noopener noreferrer">
-                      View Certificate
+                      {t("certifications.viewCertificate")}
                       <ExternalLink className="h-3 w-3" />
                     </a>
                   </Button>

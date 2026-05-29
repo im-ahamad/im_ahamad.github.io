@@ -928,5 +928,93 @@
       }
     })();
   </script>
+
+    <script>
+    // ===== IFRAME STATE CLIENT =====
+    (function() {
+      function getIframeState() {
+        var theme = (document.documentElement.getAttribute('data-theme') === 'dark') ? 'dark' : 'light';
+        var langEl = document.getElementById('langSelect') || document.getElementById('lang-select');
+        var lang = langEl ? langEl.value : 'en';
+        var sections = document.querySelectorAll('section[id]');
+        var visibleSection = '';
+        sections.forEach(function(s) {
+          var rect = s.getBoundingClientRect();
+          if (rect.top < window.innerHeight / 2 && rect.bottom > 0) visibleSection = s.id;
+        });
+        var btn = document.getElementById('themeToggle') || document.getElementById('theme-btn');
+        return {
+          type: 'nav-snapshot',
+          payload: {
+            scrollY: window.scrollY,
+            theme: theme,
+            lang: lang,
+            visibleSection: visibleSection
+          }
+        };
+      }
+    
+      function restoreIframeState(payload) {
+        if (!payload) return;
+        if (payload.theme) {
+          document.documentElement.setAttribute('data-theme', payload.theme);
+          var btn = document.getElementById('themeToggle') || document.getElementById('theme-btn');
+          if (btn) btn.textContent = payload.theme === 'dark' ? '🌙' : '☀️';
+        }
+        if (payload.lang) {
+          var langEl = document.getElementById('langSelect') || document.getElementById('lang-select');
+          if (langEl && langEl.value !== payload.lang) {
+            langEl.value = payload.lang;
+            if (typeof changeLang === 'function') changeLang(payload.lang);
+            else if (typeof applyLanguage === 'function') applyLanguage(payload.lang);
+          }
+        }
+        if (payload.scrollY > 0) {
+          setTimeout(function() { window.scrollTo(0, payload.scrollY); }, 50);
+          setTimeout(function() { window.scrollTo(0, payload.scrollY); }, 200);
+        }
+        if (payload.visibleSection) {
+          setTimeout(function() {
+            var el = document.getElementById(payload.visibleSection);
+            if (el) el.scrollIntoView({ behavior: 'instant', block: 'start' });
+          }, 100);
+        }
+      }
+    
+      window.addEventListener('message', function(e) {
+        if (!e.data || typeof e.data !== 'object') return;
+        if (e.data.type === 'restore-state') restoreIframeState(e.data.payload);
+        if (e.data.type === 'request-snapshot') {
+          try { e.source.postMessage(getIframeState(), '*'); } catch(ex) {}
+        }
+      });
+    
+      window.addEventListener('beforeunload', function() {
+        try { window.parent.postMessage(getIframeState(), '*'); } catch(ex) {}
+      });
+    })();
+    
+      // ===== BACK TO PORTFOLIO =====
+      document.addEventListener('click', function(e) {
+        var link = e.target.closest('a');
+        if (!link) return;
+        var href = link.getAttribute('href');
+        if (!href) return;
+        var shouldIntercept = false;
+        if (href === '/#projects') {
+          shouldIntercept = true;
+        } else if (href === '../../') {
+          var title = link.getAttribute('title');
+          var i18n = link.getAttribute('data-i18n');
+          if (title === 'Back to Portfolio' || i18n === 'backPortfolio' || i18n === 'ctaBack') {
+            shouldIntercept = true;
+          }
+        }
+        if (shouldIntercept) {
+          e.preventDefault();
+          window.parent.postMessage('back-to-portfolio', '*');
+        }
+      });
+</script>
 </body>
 </html>

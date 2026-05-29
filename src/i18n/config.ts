@@ -19,12 +19,16 @@ const resources = {
         github: "GitHub",
         linkedin: "LinkedIn",
         wechat: "WeChat",
-        whatsapp: "WhatsApp"
+        whatsapp: "WhatsApp",
+        badge: "Aspiring AI Engineer",
+        photo: "Photo",
+        scroll: "Scroll"
       },
       education: {
         title: "Education",
         subtitle: "Academic journey",
-        session: "Session"
+        session: "Session",
+        visitCollege: "Visit College"
       },
       skills: {
         title: "Skills",
@@ -32,17 +36,20 @@ const resources = {
         programming: "Programming Languages",
         libraries: "Libraries & Frameworks",
         databases: "Databases & Tools",
-        soft: "Soft Skills"
+        soft: "Soft Skills",
+        visitWebsite: "Visit Official Website"
       },
       certifications: {
         title: "Certifications",
         subtitle: "Professional training",
         duration: "Duration",
-        reference: "Reference"
+        reference: "Reference",
+        viewCertificate: "View Certificate"
       },
       interests: {
         title: "Academic Interests",
-        subtitle: "Research passions"
+        subtitle: "Research passions",
+        seeMore: "See More"
       },
       projects: {
         title: "Projects",
@@ -50,11 +57,17 @@ const resources = {
         overview: "Overview",
         problem: "Problem Solved",
         implementation: "Implementation",
-        impact: "Impact"
+        impact: "Impact",
+        viewProject: "View Project"
       },
       footer: {
         languages: "Languages",
         copyright: "All rights reserved"
+      },
+      notFound: {
+        title: "Oops! Page not found",
+        description: "The page you're looking for doesn't exist or has been moved.",
+        returnHome: "Return to Home"
       }
     }
   },
@@ -75,12 +88,16 @@ const resources = {
         github: "গিটহাব",
         linkedin: "লিংকডইন",
         wechat: "ওয়েচ্যাট",
-        whatsapp: "হোয়াটসঅ্যাপ"
+        whatsapp: "হোয়াটসঅ্যাপ",
+        badge: "উদীয়মান AI ইঞ্জিনিয়ার",
+        photo: "ছবি",
+        scroll: "স্ক্রোল"
       },
       education: {
         title: "শিক্ষা",
         subtitle: "একাডেমিক যাত্রা",
-        session: "সেশন"
+        session: "সেশন",
+        visitCollege: "কলেজ দেখুন"
       },
       skills: {
         title: "দক্ষতা",
@@ -88,17 +105,20 @@ const resources = {
         programming: "প্রোগ্রামিং ভাষা",
         libraries: "লাইব্রেরি এবং ফ্রেমওয়ার্ক",
         databases: "ডাটাবেস এবং টুলস",
-        soft: "সফট স্কিলস"
+        soft: "সফট স্কিলস",
+        visitWebsite: "অফিসিয়াল ওয়েবসাইট দেখুন"
       },
       certifications: {
         title: "সার্টিফিকেট",
         subtitle: "পেশাদার প্রশিক্ষণ",
         duration: "সময়কাল",
-        reference: "রেফারেন্স"
+        reference: "রেফারেন্স",
+        viewCertificate: "সার্টিফিকেট দেখুন"
       },
       interests: {
         title: "একাডেমিক আগ্রহ",
-        subtitle: "গবেষণার আগ্রহ"
+        subtitle: "গবেষণার আগ্রহ",
+        seeMore: "আরও দেখুন"
       },
       projects: {
         title: "প্রকল্প",
@@ -106,11 +126,17 @@ const resources = {
         overview: "ওভারভিউ",
         problem: "সমাধান করা সমস্যা",
         implementation: "বাস্তবায়ন",
-        impact: "প্রভাব"
+        impact: "প্রভাব",
+        viewProject: "প্রকল্প দেখুন"
       },
       footer: {
         languages: "ভাষা",
         copyright: "সর্বস্বত্ব সংরক্ষিত"
+      },
+      notFound: {
+        title: "ওহ! পৃষ্ঠা পাওয়া যায়নি",
+        description: "আপনি যে পৃষ্ঠাটি খুঁজছেন তা বিদ্যমান নেই বা সরানো হয়েছে।",
+        returnHome: "হোমে ফিরে যান"
       }
     }
   },
@@ -131,12 +157,16 @@ const resources = {
         github: "गिटहब",
         linkedin: "लिंक्डइन",
         wechat: "वीचैट",
-        whatsapp: "व्हाट्सएप"
+        whatsapp: "व्हाट्सएप",
+        badge: "महत्वाकांक्षी AI इंजीनियर",
+        photo: "फोटो",
+        scroll: "स्क्रॉल"
       },
       education: {
         title: "शिक्षा",
         subtitle: "शैक्षणिक यात्रा",
-        session: "सत्र"
+        session: "सत्र",
+        visitCollege: "कॉलेज देखें"
       },
       skills: {
         title: "कौशल",
@@ -144,17 +174,20 @@ const resources = {
         programming: "प्रोग्रामिंग भाषाएं",
         libraries: "लाइब्रेरी और फ्रेमवर्क",
         databases: "डेटाबेस और उपकरण",
-        soft: "सॉफ्ट स्किल्स"
+        soft: "सॉफ्ट स्किल्स",
+        visitWebsite: "आधिकारिक वेबसाइट देखें"
       },
       certifications: {
         title: "प्रमाणपत्र",
         subtitle: "पेशेवर प्रशिक्षण",
         duration: "अवधि",
-        reference: "संदर्भ"
+        reference: "संदर्भ",
+        viewCertificate: "प्रमाणपत्र देखें"
       },
       interests: {
         title: "शैक्षणिक रुचियां",
-        subtitle: "अनुसंधान जुनून"
+        subtitle: "अनुसंधान जुनून",
+        seeMore: "और देखें"
       },
       projects: {
         title: "परियोजनाएं",
@@ -162,11 +195,17 @@ const resources = {
         overview: "अवलोकन",
         problem: "समस्या समाधान",
         implementation: "कार्यान्वयन",
-        impact: "प्रभाव"
+        impact: "प्रभाव",
+        viewProject: "परियोजना देखें"
       },
       footer: {
         languages: "भाषाएं",
         copyright: "सर्वाधिकार सुरक्षित"
+      },
+      notFound: {
+        title: "ओह! पेज नहीं मिला",
+        description: "आप जिस पेज की तलाश कर रहे हैं वह मौजूद नहीं है या स्थानांतरित कर दिया गया है।",
+        returnHome: "होम पर वापस जाएं"
       }
     }
   },
@@ -187,12 +226,16 @@ const resources = {
         github: "GitHub",
         linkedin: "LinkedIn",
         wechat: "微信",
-        whatsapp: "WhatsApp"
+        whatsapp: "WhatsApp",
+        badge: "有志于AI工程师",
+        photo: "照片",
+        scroll: "滚动"
       },
       education: {
         title: "教育",
         subtitle: "学术历程",
-        session: "学期"
+        session: "学期",
+        visitCollege: "访问学院"
       },
       skills: {
         title: "技能",
@@ -200,17 +243,20 @@ const resources = {
         programming: "编程语言",
         libraries: "库和框架",
         databases: "数据库和工具",
-        soft: "软技能"
+        soft: "软技能",
+        visitWebsite: "访问官网"
       },
       certifications: {
         title: "证书",
         subtitle: "专业培训",
         duration: "时长",
-        reference: "参考"
+        reference: "参考",
+        viewCertificate: "查看证书"
       },
       interests: {
         title: "学术兴趣",
-        subtitle: "研究热情"
+        subtitle: "研究热情",
+        seeMore: "查看更多"
       },
       projects: {
         title: "项目",
@@ -218,11 +264,17 @@ const resources = {
         overview: "概述",
         problem: "解决的问题",
         implementation: "实施",
-        impact: "影响"
+        impact: "影响",
+        viewProject: "查看项目"
       },
       footer: {
         languages: "语言",
         copyright: "版权所有"
+      },
+      notFound: {
+        title: "哎呀！页面未找到",
+        description: "您查找的页面不存在或已被移动。",
+        returnHome: "返回首页"
       }
     }
   }

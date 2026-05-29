@@ -1,8 +1,11 @@
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { Sprout, BarChart3, Leaf, CloudSun, Droplet, Thermometer, ArrowUpRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Sprout, BarChart3, Leaf, CloudSun, Droplet, Thermometer, ArrowUpRight, Code } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useNavigationMemory } from "@/context/NavigationMemory";
+import { saveHomeState } from "@/lib/homeState";
 
 const projectsData = [
   {
@@ -111,23 +114,25 @@ const projectsData = [
 
 const Projects = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { setSourceSection } = useNavigationMemory();
 
   return (
     <section id="projects" className="py-12 md:py-24 px-4 relative overflow-hidden scroll-mt-14">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--primary)/0.1),transparent_50%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--accent)/0.08),transparent_50%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--gradient-start)/0.05),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--primary)/0.15),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--accent)/0.12),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--gradient-start)/0.1),transparent_50%)]" />
 
       <div className="absolute inset-0 animate-shimmer" />
       <div className="section-overlay section-noise" />
       <div className="section-overlay section-grid" />
 
-      <div className="absolute top-1/3 right-1/4 w-80 h-80 rounded-full bg-primary opacity-12 blur-[110px] animate-hero-orb-3" />
-      <div className="absolute bottom-1/4 left-1/4 w-60 h-60 rounded-full bg-accent opacity-12 blur-[90px] animate-hero-orb-1" />
+      <div className="absolute top-1/3 right-1/4 w-80 h-80 rounded-full bg-primary opacity-20 blur-[90px] animate-hero-orb-3" />
+      <div className="absolute bottom-1/4 left-1/4 w-60 h-60 rounded-full bg-accent opacity-20 blur-[75px] animate-hero-orb-1" />
 
       <div className="container mx-auto max-w-7xl relative z-10 text-center mb-10 md:mb-16">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-500 text-sm font-medium mb-6">
-          {t("projects.title")}
+          <Code className="h-4 w-4" />{t("projects.title")}
         </div>
         <h2 className="text-3xl md:text-5xl font-bold mb-3 md:mb-4">
           <span className="gradient-text-rich">{t("projects.title")}</span>
@@ -146,10 +151,10 @@ const Projects = () => {
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.7, delay: index * 0.15 }}
             >
-              <Card className="group p-4 md:p-6 h-full flex flex-col rounded-2xl transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_30px_70px_rgba(0,0,0,0.15)] glass border-border/50 hover:border-transparent relative overflow-hidden">
+              <Card className="group p-4 md:p-6 h-full flex flex-col rounded-2xl transition-[transform,box-shadow,border-color] duration-500 hover:-translate-y-3 hover:shadow-[0_30px_70px_hsl(var(--foreground)/0.12)] glass border-border/50 hover:border-transparent relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.02] to-accent/[0.02] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                <div className={`flex items-center justify-center w-14 md:w-16 h-14 md:h-16 mb-3 md:mb-4 rounded-2xl bg-gradient-to-br ${project.color} shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:rotate-6`}>
+                <div className={`flex items-center justify-center w-14 md:w-16 h-14 md:h-16 mb-3 md:mb-4 rounded-2xl bg-gradient-to-br ${project.color} shadow-lg transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6`}>
                   <Icon className="w-7 md:w-8 h-7 md:h-8 text-white" strokeWidth={1.5} />
                 </div>
 
@@ -160,7 +165,7 @@ const Projects = () => {
                     <Badge
                       key={idx}
                       variant="secondary"
-                      className="text-xs md:text-sm bg-secondary/50 border-border/30 hover:bg-primary hover:text-white transition-all duration-200 cursor-pointer"
+                      className="text-xs md:text-sm bg-secondary/50 border-border/30 hover:bg-primary hover:text-white transition-[background-color,color] duration-200 cursor-pointer"
                     >
                       {tag}
                     </Badge>
@@ -170,12 +175,12 @@ const Projects = () => {
                 <p className="text-muted-foreground text-xs md:text-sm mb-2 md:mb-3">{project.overview}</p>
 
                 <p className="text-foreground/80 text-xs md:text-sm mb-2 md:mb-3">
-                  <span className="font-semibold">Problem: </span>
+                  <span className="font-semibold">{t("projects.problem")}: </span>
                   {project.problem}
                 </p>
 
                 <div className="text-foreground/80 text-xs md:text-sm mb-2 md:mb-3 flex-1">
-                  <span className="font-semibold">Implementation:</span>
+                  <span className="font-semibold">{t("projects.implementation")}:</span>
                   <ul className="list-disc ml-4 md:ml-5 mt-1 space-y-1">
                     {project.implementation.map((item, idx) => (
                       <li key={idx}>{item}</li>
@@ -184,15 +189,16 @@ const Projects = () => {
                 </div>
 
                 <p className="text-foreground/80 text-xs md:text-sm">
-                  <span className="font-semibold">Impact: </span>
+                  <span className="font-semibold">{t("projects.impact")}: </span>
                   {project.impact}
                 </p>
 
                 <a
                   href={project.href}
                   className="shimmer-btn mt-4 inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 text-sm font-semibold rounded-xl"
+                  onClick={(e) => { e.preventDefault(); saveHomeState("projects"); setSourceSection("projects"); navigate(project.href.replace(".html", ""), { state: { fromHome: true, scrollY: window.scrollY, section: "projects" } }); }}
                 >
-                  View Project
+                  {t("projects.viewProject")}
                   <ArrowUpRight className="w-4 h-4" />
                 </a>
               </Card>

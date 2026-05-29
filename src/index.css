@@ -86,15 +86,19 @@
   .glass {
     background: var(--glass-bg);
     backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
     border: 1px solid var(--glass-border);
     box-shadow: var(--glass-shadow);
+    will-change: transform;
   }
 
   .glass-strong {
     background: var(--glass-bg);
     backdrop-filter: blur(30px) saturate(1.6);
+    -webkit-backdrop-filter: blur(30px) saturate(1.6);
     border: 1px solid var(--glass-border);
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+    will-change: transform;
   }
 
   .gradient-tech {
@@ -115,6 +119,7 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     animation: gradientFlow 6s ease infinite;
+    will-change: background-position;
   }
 
   .gradient-border {
@@ -240,19 +245,19 @@
 
   .section-noise {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    opacity: 0.02;
+    opacity: 0.04;
     mix-blend-mode: overlay;
   }
 
   .dark .section-noise {
-    opacity: 0.035;
+    opacity: 0.06;
   }
 
   .section-grid {
-    background-image: linear-gradient(to right, hsl(var(--foreground) / 0.05) 1px, transparent 1px),
-      linear-gradient(to bottom, hsl(var(--foreground) / 0.05) 1px, transparent 1px);
+    background-image: linear-gradient(to right, hsl(var(--foreground) / 0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--foreground) / 0.08) 1px, transparent 1px);
     background-size: 3rem 3rem;
-    opacity: 0.03;
+    opacity: 0.05;
   }
 
   .section-divider {
@@ -266,6 +271,7 @@
     background-size: 200% 100%;
     animation: gradientFlow 4s ease infinite;
     border-radius: 2px;
+    will-change: background-position;
   }
 }
 
@@ -280,8 +286,8 @@
     transition: background-color 0.4s ease, color 0.4s ease;
   }
 
-  * {
-    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  a, button, .card-hover, [class*="transition-all"] {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.3s ease, opacity 0.3s ease, box-shadow 0.3s ease;
   }
 
   h1 {
@@ -355,6 +361,29 @@
   }
 }
 
+section[id] {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 800px;
+}
+
+.background-animation {
+  isolation: isolate;
+}
+
+.animate-hero-orb-1, .animate-hero-orb-2, .animate-hero-orb-3, .animate-hero-orb-4 {
+  transform: translateZ(0);
+}
+
+[class*="hover:-translate"] {
+  transform: translateZ(0);
+}
+
+@media (max-width: 768px) {
+  section[id] {
+    contain-intrinsic-size: 1px 500px;
+  }
+}
+
 @keyframes bounce-slow {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-15px); }
@@ -402,10 +431,10 @@
   66% { transform: translate(-30px, -50px) scale(0.85); }
 }
 
-.animate-hero-orb-1 { animation: hero-orb-1 20s ease-in-out infinite; }
-.animate-hero-orb-2 { animation: hero-orb-2 25s ease-in-out infinite; }
-.animate-hero-orb-3 { animation: hero-orb-3 18s ease-in-out infinite; }
-.animate-hero-orb-4 { animation: hero-orb-2 22s ease-in-out infinite reverse; }
+.animate-hero-orb-1 { animation: hero-orb-1 20s ease-in-out infinite; will-change: transform; }
+.animate-hero-orb-2 { animation: hero-orb-2 25s ease-in-out infinite; will-change: transform; }
+.animate-hero-orb-3 { animation: hero-orb-3 18s ease-in-out infinite; will-change: transform; }
+.animate-hero-orb-4 { animation: hero-orb-2 22s ease-in-out infinite reverse; will-change: transform; }
 
 @keyframes shimmer {
   0% { background-position: -200% 50%; }
@@ -417,6 +446,7 @@
   background-size: 200% 100%;
   animation: shimmer 8s ease-in-out infinite;
   pointer-events: none;
+  will-change: background-position;
 }
 
 @keyframes float {
@@ -509,12 +539,40 @@
   animation: revealGradient 1s ease forwards;
 }
 
+@keyframes particle-float {
+  0%, 100% { transform: translateY(0); opacity: 0.2; }
+  50% { transform: translateY(var(--float-y, -25px)); opacity: 0.7; }
+}
+
+.animate-particle {
+  animation: particle-float var(--float-duration, 4s) ease-in-out var(--float-delay, 0s) infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes loaderFill {
+  0% { width: 0; }
+  50% { width: 70%; }
+  100% { width: 100%; }
+}
+
+@keyframes loaderPulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
 @media (hover: none) and (pointer: coarse), (max-width: 768px) {
-  html { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  html {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
 
-  * { transition-duration: 0.15s !important; }
-
-  body { transition: none !important; }
+  body {
+    transition: none !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: none;
+  }
 
   .glass, .glass-strong {
     backdrop-filter: none !important;
@@ -540,6 +598,7 @@
   .animate-hero-orb-1, .animate-hero-orb-2,
   .animate-hero-orb-3, .animate-hero-orb-4 {
     animation: none !important;
+    opacity: 0.08 !important;
   }
 
   .animate-float, .animate-float-slow,
@@ -548,12 +607,23 @@
     animation: none !important;
   }
 
-  .section-grid { display: none !important; }
-  .section-noise { display: none !important; }
+  .section-grid { opacity: 0.03; }
+  .section-noise { opacity: 0.025; }
 
-  [style*="backdrop-filter"] { backdrop-filter: none !important; }
+  [style*="backdrop-filter"] {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
 
   ::-webkit-scrollbar { width: 4px; }
+
+  img { content-visibility: auto; }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  section[id] {
+    contain-intrinsic-size: 1px 600px;
+  }
 }
 
 .name-gradient {
@@ -564,6 +634,7 @@
   background-clip: text;
   animation: gradientFlow 6s ease infinite;
   display: inline-block;
+  will-change: background-position;
 }
 
 .gradient-header {
@@ -573,4 +644,14 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: gradientFlow 6s ease infinite;
+  will-change: background-position;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

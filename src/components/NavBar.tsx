@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import { Menu, X, Sun, Moon, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,6 +9,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useLoader } from "@/context/LoaderContext";
+import { useNavigationMemory } from "@/context/NavigationMemory";
+import { clearHomeState } from "@/lib/homeState";
 
 const navItems = [
   { key: "education", href: "#education", color: "blue" },
@@ -27,6 +31,9 @@ const colorMap: Record<string, { light: string; dark: string; bg: string; border
 
 const NavBar = () => {
   const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const { show } = useLoader();
+  const { sourceSection, setSourceSection } = useNavigationMemory();
   const [open, setOpen] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [activeSection, setActiveSection] = useState("");
@@ -66,39 +73,44 @@ const NavBar = () => {
     return () => observer.disconnect();
   }, []);
 
-  const toggleTheme = () => {
+  const toggleTheme = useCallback(() => {
     const next = theme === "light" ? "dark" : "light";
     setTheme(next);
     document.documentElement.classList.toggle("dark", next === "dark");
     localStorage.setItem("theme", next);
-  };
+  }, [theme]);
 
-  const changeLanguage = (lng: string) => {
+  const changeLanguage = useCallback((lng: string) => {
     i18n.changeLanguage(lng);
     localStorage.setItem("language", lng);
-  };
+  }, [i18n]);
 
-  const handleNavClick = (href: string) => {
+  const handleNavClick = useCallback((href: string) => {
     setOpen(false);
     const el = document.querySelector(href);
     if (el) el.scrollIntoView({ behavior: "smooth" });
-  };
+  }, []);
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-background/80 backdrop-blur-xl border-b border-border/40 shadow-lg shadow-black/5"
-          : "bg-transparent"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300 ${
+         scrolled
+           ? "bg-background/80 backdrop-blur-xl border-b border-border/40 shadow-lg shadow-black/5"
+           : "bg-transparent"
+       }`}
     >
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         <a
-          href="#"
-          className="text-xl font-bold no-underline name-gradient"
+          href="/"
+          className="text-xl font-bold no-underline name-gradient cursor-pointer"
           onClick={(e) => {
             e.preventDefault();
-            window.scrollTo({ top: 0, behavior: "smooth" });
+            sessionStorage.removeItem("nav-memory");
+            clearHomeState();
+            show(600);
+            setTimeout(() => {
+              window.location.href = "/";
+            }, 600);
           }}
         >
           Ahamad
@@ -112,14 +124,20 @@ const NavBar = () => {
               <a
                 key={item.key}
                 href={item.href}
-                className={`relative text-sm font-medium no-underline px-3 py-1.5 rounded-lg border transition-all duration-200 ${
-                  isActive
-                    ? `${c.light} ${c.dark} ${c.bg} ${c.border} shadow-sm`
-                    : "text-muted-foreground/70 hover:text-foreground hover:bg-accent/5 hover:border-border/50"
-                }`}
+                className={`relative text-sm font-medium no-underline px-3 py-1.5 rounded-lg border transition-[background-color,border-color,color] duration-200 ${
+                   isActive
+                     ? `${c.light} ${c.dark} ${c.bg} ${c.border} shadow-sm`
+                     : "text-muted-foreground/70 hover:text-foreground hover:bg-accent/5 hover:border-border/50"
+                 }`}
                 onClick={(e) => {
                   e.preventDefault();
-                  handleNavClick(item.href);
+                  if (window.location.pathname !== "/" || window.location.hash) {
+                    setSourceSection("");
+                    clearHomeState();
+                    navigate(`/${item.href}`);
+                  } else {
+                    handleNavClick(item.href);
+                  }
                 }}
               >
                 {t(`nav.${item.key}`)}
@@ -136,7 +154,8 @@ const NavBar = () => {
             variant="ghost"
             size="icon"
             onClick={toggleTheme}
-            className="h-9 w-9 rounded-full hover:bg-accent/10 transition-all duration-300"
+            aria-label={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
+            className="h-9 w-9 rounded-full hover:bg-accent/10 transition-[background-color] duration-300"
           >
             {theme === "light" ? (
               <Sun className="h-4 w-4 transition-transform duration-300 hover:rotate-45" />
@@ -188,14 +207,20 @@ const NavBar = () => {
                 <a
                   key={item.key}
                   href={item.href}
-                  className={`text-sm font-medium no-underline px-3 py-2.5 rounded-lg border transition-all duration-200 ${
-                    isActive
-                      ? `${c.light} ${c.dark} ${c.bg} ${c.border}`
-                      : "text-muted-foreground hover:text-foreground hover:bg-accent/5"
-                  }`}
+                  className={`text-sm font-medium no-underline px-3 py-2.5 rounded-lg border transition-[background-color,border-color,color] duration-200 ${
+                     isActive
+                       ? `${c.light} ${c.dark} ${c.bg} ${c.border}`
+                       : "text-muted-foreground hover:text-foreground hover:bg-accent/5"
+                   }`}
                   onClick={(e) => {
                     e.preventDefault();
-                    handleNavClick(item.href);
+                    if (window.location.pathname !== "/" || window.location.hash) {
+                      setSourceSection("");
+                      clearHomeState();
+                      navigate(`/${item.href}`);
+                    } else {
+                      handleNavClick(item.href);
+                    }
                   }}
                 >
                   {t(`nav.${item.key}`)}

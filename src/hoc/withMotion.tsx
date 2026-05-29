@@ -18,15 +18,6 @@ const containerVariants: Variants = {
   },
 };
 
-const childVariants: Variants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] },
-  },
-};
-
 export function withScrollMotion<T extends object>(
   WrappedComponent: React.ComponentType<T>
 ) {
@@ -71,7 +62,7 @@ export function withScrollMotion<T extends object>(
         animate={controls}
         variants={containerVariants}
       >
-        <WrappedComponent {...props} motionChildVariants={childVariants} />
+        <WrappedComponent {...props} />
       </motion.section>
     );
   };

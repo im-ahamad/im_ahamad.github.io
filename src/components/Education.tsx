@@ -17,18 +17,18 @@ const Education = () => {
 
   return (
     <section id="education" className="py-24 px-4 relative overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,hsl(var(--primary)/0.1),transparent_50%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,hsl(var(--accent)/0.08),transparent_50%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--gradient-end)/0.06),transparent_50%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--section-edu)/0.05),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,hsl(var(--primary)/0.15),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,hsl(var(--accent)/0.12),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--gradient-end)/0.1),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--section-edu)/0.08),transparent_50%)]" />
 
       <div className="absolute inset-0 animate-shimmer" />
       <div className="section-overlay section-noise" />
       <div className="section-overlay section-grid" />
 
-      <div className="absolute top-1/3 left-1/4 w-64 h-64 rounded-full bg-primary opacity-15 blur-[100px] animate-hero-orb-1" />
-      <div className="absolute bottom-1/3 right-1/4 w-48 h-48 rounded-full bg-accent opacity-15 blur-[80px] animate-hero-orb-2" />
-      <div className="absolute top-1/2 right-1/3 w-40 h-40 rounded-full bg-purple-600 opacity-10 blur-[70px] animate-hero-orb-3" />
+      <div className="absolute top-1/3 left-1/4 w-64 h-64 rounded-full bg-primary opacity-20 blur-[90px] animate-hero-orb-1" />
+      <div className="absolute bottom-1/3 right-1/4 w-48 h-48 rounded-full bg-accent opacity-20 blur-[70px] animate-hero-orb-2" />
+      <div className="absolute top-1/2 right-1/3 w-40 h-40 rounded-full bg-purple-600 opacity-15 blur-[60px] animate-hero-orb-3" />
 
       <div className="hidden md:block absolute top-10 left-5 w-20 h-20 rounded-full bg-indigo-500/20 animate-bounce-slow" />
       <div className="hidden md:block absolute bottom-10 right-10 w-32 h-32 rounded-full bg-purple-500/15 animate-bounce-slower" />
@@ -55,11 +55,11 @@ const Education = () => {
 
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                   <div className="md:text-right md:pr-12">
-                    <Card className="group p-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_30px_70px_rgba(0,0,0,0.15)] glass border-border/50 hover:border-primary/50 relative overflow-hidden">
+                    <Card className="group p-8 transition-[transform,box-shadow,border-color] duration-500 hover:-translate-y-2 hover:shadow-[0_30px_70px_hsl(var(--foreground)/0.12)] glass border-border/50 hover:border-primary/50 relative overflow-hidden">
                       <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.03] to-accent/[0.03] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                       <div className="flex items-center gap-3 mb-4 justify-end">
-                        <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-accent text-white transition-all duration-500 group-hover:rotate-12 group-hover:scale-110 shadow-lg">
+                        <div className="p-3 rounded-xl bg-gradient-to-br from-primary to-accent text-white transition-transform duration-500 group-hover:rotate-12 group-hover:scale-110 shadow-lg">
                           <GraduationCap className="h-6 w-6" />
                         </div>
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -86,10 +86,10 @@ const Education = () => {
                             href={edu.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="shimmer-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5"
+                            className="shimmer-btn inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-[transform,box-shadow] duration-300 hover:-translate-y-0.5"
                           >
                             <ExternalLink className="h-4 w-4" />
-                            Visit College
+                            {t("education.visitCollege")}
                           </a>
                         </div>
                       </div>
