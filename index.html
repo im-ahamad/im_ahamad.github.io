@@ -17,9 +17,10 @@
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
 
   <script>history.scrollRestoration="manual"</script>
+  <script>(function(){try{if(navigator.hardwareConcurrency&&navigator.hardwareConcurrency<=4||navigator.deviceMemory&&navigator.deviceMemory<=4||/Android 1[0-5]/.test(navigator.userAgent))document.documentElement.classList.add('low-end')}catch(e){}})()</script>
 
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -202,47 +203,59 @@
   <script type="module" src="/src/main.tsx"></script>
 
   <script>
-    var loader = document.getElementById('premium-loader');
+    var loaderEl = document.getElementById('premium-loader');
     window.addEventListener('load', function() {
-      setTimeout(function() {
-        loader.classList.add('hidden');
-        setTimeout(function() { loader.style.display = 'none'; }, 600);
-      }, 1000);
+      loaderEl.classList.add('hidden');
+      setTimeout(function() { loaderEl.style.display = 'none'; }, 600);
     });
 
     var progressBar = document.getElementById('scroll-progress');
+    var ticking = false;
     window.addEventListener('scroll', function() {
-      var scrollTop = window.scrollY;
-      var docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      var progress = docHeight > 0 ? scrollTop / docHeight : 0;
-      progressBar.style.transform = 'scaleX(' + progress + ')';
-    });
+      if (!ticking) {
+        requestAnimationFrame(function() {
+          var scrollTop = window.scrollY;
+          var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+          progressBar.style.transform = 'scaleX(' + (docHeight > 0 ? scrollTop / docHeight : 0) + ')';
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
 
     var cursor = document.getElementById('custom-cursor');
     var isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     if (!isTouch) {
+      var cursorRAF;
       document.addEventListener('mousemove', function(e) {
-        cursor.style.opacity = '1';
-        cursor.style.left = e.clientX + 'px';
-        cursor.style.top = e.clientY + 'px';
-      });
+        if (cursorRAF) cancelAnimationFrame(cursorRAF);
+        cursorRAF = requestAnimationFrame(function() {
+          cursor.style.opacity = '1';
+          cursor.style.left = e.clientX + 'px';
+          cursor.style.top = e.clientY + 'px';
+        });
+      }, { passive: true });
       document.addEventListener('mouseleave', function() {
         cursor.style.opacity = '0';
-      });
+      }, { passive: true });
       document.addEventListener('mouseenter', function() {
         cursor.style.opacity = '1';
-      });
-      document.querySelectorAll('a, button, [role="button"], input, textarea').forEach(function(el) {
-        el.addEventListener('mouseenter', function() {
+      }, { passive: true });
+      document.addEventListener('mouseover', function(e) {
+        var target = e.target;
+        if (target.matches('a, button, [role="button"], input, textarea')) {
           cursor.style.width = '40px';
           cursor.style.height = '40px';
           cursor.style.background = 'radial-gradient(circle, rgba(139,92,246,0.4), transparent)';
-        });
-        el.addEventListener('mouseleave', function() {
+        }
+      });
+      document.addEventListener('mouseout', function(e) {
+        var target = e.target;
+        if (target.matches('a, button, [role="button"], input, textarea')) {
           cursor.style.width = '20px';
           cursor.style.height = '20px';
           cursor.style.background = 'radial-gradient(circle, rgba(59,130,246,0.3), transparent)';
-        });
+        }
       });
     }
   </script>

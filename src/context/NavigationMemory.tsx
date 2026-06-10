@@ -5,6 +5,7 @@ import {
   useRef,
   useEffect,
   useState,
+  useMemo,
   type ReactNode,
 } from "react";
 import { useLocation } from "react-router-dom";
@@ -310,25 +311,42 @@ export const NavigationMemoryProvider = ({ children }: { children: ReactNode }) 
     };
   }, []);
 
+  const ctx = useMemo(
+    () => ({
+      pageStates: pageStates.current,
+      savePageState,
+      getPageState,
+      lastVisitedPath,
+      saveSectionState,
+      getSectionState,
+      saveIframeState,
+      getIframeState,
+      clearExpiredStates,
+      signalReady,
+      isRestoring,
+      previousPath,
+      sourceSection,
+      setSourceSection,
+    }),
+    [
+      savePageState,
+      getPageState,
+      lastVisitedPath,
+      saveSectionState,
+      getSectionState,
+      saveIframeState,
+      getIframeState,
+      clearExpiredStates,
+      signalReady,
+      isRestoring,
+      previousPath,
+      sourceSection,
+      setSourceSection,
+    ],
+  );
+
   return (
-    <NavigationMemoryContext.Provider
-      value={{
-        pageStates: pageStates.current,
-        savePageState,
-        getPageState,
-        lastVisitedPath,
-        saveSectionState,
-        getSectionState,
-        saveIframeState,
-        getIframeState,
-        clearExpiredStates,
-        signalReady,
-        isRestoring,
-        previousPath,
-        sourceSection,
-        setSourceSection,
-      }}
-    >
+    <NavigationMemoryContext.Provider value={ctx}>
       {children}
     </NavigationMemoryContext.Provider>
   );

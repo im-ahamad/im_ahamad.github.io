@@ -92,6 +92,7 @@ const ProjectPage = () => {
       src={`/projects/${slug}.html`}
       className="w-full min-h-screen border-0 block"
       title="Project"
+      loading="lazy"
     />
   );
 };

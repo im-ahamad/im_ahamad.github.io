@@ -1,11 +1,11 @@
-import { useCallback } from "react";
+import { memo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useLoader } from "@/context/LoaderContext";
 import { useNavigationMemory } from "@/context/NavigationMemory";
 import { clearHomeState } from "@/lib/homeState";
 
-const Footer = () => {
+const Footer = memo(() => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { show } = useLoader();
@@ -64,6 +64,6 @@ const Footer = () => {
       </div>
     </footer>
   );
-};
+});
 
 export default Footer;

@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Mail, Linkedin, User, MessageCircle, Phone, ArrowDown } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 import Typed from "typed.js";
 
 import myPhoto from "@/assets/Ahamad.jpeg";
@@ -9,7 +9,7 @@ import whatsappQR from "@/assets/WhatsApp_QR.jpg";
 import { Button } from "@/components/ui/button";
 import { useLoader } from "@/context/LoaderContext";
 
-const Hero = () => {
+const Hero = memo(() => {
   const { t } = useTranslation();
   const { show } = useLoader();
   const typedRef = useRef(null);
@@ -132,6 +132,6 @@ const Hero = () => {
       </div>
     </section>
   );
-};
+});
 
 export default Hero;

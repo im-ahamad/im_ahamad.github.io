@@ -364,10 +364,15 @@
 section[id] {
   content-visibility: auto;
   contain-intrinsic-size: 1px 800px;
+  contain: paint layout style;
 }
 
 .background-animation {
   isolation: isolate;
+}
+
+.section-overlay {
+  contain: paint layout style;
 }
 
 .animate-hero-orb-1, .animate-hero-orb-2, .animate-hero-orb-3, .animate-hero-orb-4 {
@@ -384,26 +389,39 @@ section[id] {
   }
 }
 
+@keyframes bg-pulse-slow {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes bg-pulse-slower {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+.animate-bg-pulse-slow { animation: bg-pulse-slow 25s ease-in-out infinite; will-change: transform; }
+.animate-bg-pulse-slower { animation: bg-pulse-slower 30s ease-in-out infinite; will-change: transform; }
+
 @keyframes bounce-slow {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-15px); }
 }
 
-.animate-bounce-slow { animation: bounce-slow 6s ease-in-out infinite; }
+.animate-bounce-slow { animation: bounce-slow 6s ease-in-out infinite; will-change: transform; contain: layout style; }
 
 @keyframes bounce-slower {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
 }
 
-.animate-bounce-slower { animation: bounce-slower 8s ease-in-out infinite; }
+.animate-bounce-slower { animation: bounce-slower 8s ease-in-out infinite; will-change: transform; contain: layout style; }
 
 @keyframes bubble-move {
   0%, 100% { transform: translateY(0) scale(1); }
   50% { transform: translateY(-25px) scale(1.05); }
 }
 
-.animate-bubble { animation: bubble-move ease-in-out infinite; }
+.animate-bubble { animation: bubble-move ease-in-out infinite; will-change: transform; contain: layout style; }
 
 @keyframes gradientFlow {
   0% { background-position: 0% 50%; }
@@ -436,17 +454,28 @@ section[id] {
 .animate-hero-orb-3 { animation: hero-orb-3 18s ease-in-out infinite; will-change: transform; }
 .animate-hero-orb-4 { animation: hero-orb-2 22s ease-in-out infinite reverse; will-change: transform; }
 
-@keyframes shimmer {
-  0% { background-position: -200% 50%; }
-  100% { background-position: 200% 50%; }
+@keyframes beam-sweep {
+  0% { transform: translateX(16.6667%); }
+  100% { transform: translateX(-16.6667%); }
 }
 
 .animate-shimmer {
-  background: linear-gradient(90deg, transparent 0%, hsl(var(--primary) / 0.03) 50%, transparent 100%);
-  background-size: 200% 100%;
-  animation: shimmer 8s ease-in-out infinite;
   pointer-events: none;
-  will-change: background-position;
+  overflow: hidden;
+  will-change: transform;
+  contain: paint layout strict;
+}
+
+.animate-shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 300%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, transparent 30%, hsl(var(--primary) / 0.03) 50%, transparent 70%, transparent 100%);
+  animation: beam-sweep 8s ease-in-out infinite;
+  will-change: transform;
 }
 
 @keyframes float {
@@ -455,16 +484,16 @@ section[id] {
   66% { transform: translateY(5px) rotate(-1deg); }
 }
 
-.animate-float { animation: float 12s ease-in-out infinite; }
-.animate-float-slow { animation: float 18s ease-in-out infinite; }
+.animate-float { animation: float 12s ease-in-out infinite; will-change: transform; contain: layout style; }
+.animate-float-slow { animation: float 18s ease-in-out infinite; will-change: transform; contain: layout style; }
 
 @keyframes pulse-soft {
   0%, 100% { opacity: 0.4; transform: scale(1); }
   50% { opacity: 0.7; transform: scale(1.05); }
 }
 
-.animate-pulse-soft { animation: pulse-soft 6s ease-in-out infinite; }
-.animate-pulse-soft-slow { animation: pulse-soft 10s ease-in-out infinite reverse; }
+.animate-pulse-soft { animation: pulse-soft 6s ease-in-out infinite; will-change: transform, opacity; contain: layout style; }
+.animate-pulse-soft-slow { animation: pulse-soft 10s ease-in-out infinite reverse; will-change: transform, opacity; contain: layout style; }
 
 @keyframes shimmerBtn {
   0% { background-position: 200% 50%; }
@@ -518,6 +547,8 @@ section[id] {
 
 .animate-border-glow {
   animation: borderGlow 3s ease-in-out infinite;
+  will-change: border-color, box-shadow;
+  contain: layout style;
 }
 
 @keyframes slideInLeft {
@@ -590,6 +621,10 @@ section[id] {
 
   .gradient-divider-wave { animation: none !important; }
 
+  .animate-bg-pulse-slow, .animate-bg-pulse-slower {
+    animation: none !important;
+  }
+
   .animate-bounce-slow, .animate-bounce-slower {
     animation: none !important;
     opacity: 0.1 !important;
@@ -645,6 +680,36 @@ section[id] {
   background-clip: text;
   animation: gradientFlow 6s ease infinite;
   will-change: background-position;
+}
+
+.low-end .animate-hero-orb-1,
+.low-end .animate-hero-orb-2,
+.low-end .animate-hero-orb-3,
+.low-end .animate-hero-orb-4 {
+  animation: none !important;
+  opacity: 0.06 !important;
+}
+
+.low-end .gradient-text-rich,
+.low-end .name-gradient,
+.low-end .gradient-header {
+  animation: none !important;
+  background-size: 100% !important;
+}
+
+.low-end .glass, .low-end .glass-strong {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.low-end .shimmer-btn::after { display: none !important; }
+.low-end .animate-shimmer { display: none !important; }
+.low-end .section-noise { opacity: 0.02 !important; }
+.low-end .section-grid { opacity: 0.03 !important; }
+
+.low-end [style*="backdrop-filter"] {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
